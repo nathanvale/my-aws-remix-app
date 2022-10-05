@@ -5,6 +5,7 @@ my-aws-remix-app-d2df
 /*
   method any
   src server
+get /test
 
 @static
 
