@@ -1,0 +1,516 @@
+{
+  "ModelName": "campaign processing",
+  "ModelMetadata": {
+    "Author": "Nathan Vale",
+    "DateCreated": "Oct 16, 2022, 05:12 PM",
+    "DateLastModified": "Oct 18, 2022, 11:21 AM",
+    "Description": "",
+    "AWSService": "Amazon DynamoDB",
+    "Version": "3.0"
+  },
+  "DataModel": [
+    {
+      "TableName": "campaign_processing",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "EntityType",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "Email",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "FirstName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "LastName",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "Detail",
+          "AttributeType": "M"
+        },
+        {
+          "AttributeName": "Price",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "Address",
+          "AttributeType": "M"
+        },
+        {
+          "AttributeName": "Quantity",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "Date",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "Amount",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "WarehouseId",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "Gift",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GS1-PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GS1-SK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GS2-PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GS2-SK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GS3-PK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "GS3-SK",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "GSI1",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GS1-PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GS1-SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "GSI2",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GS2-PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GS2-SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "GS3",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "GS3-PK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "GS3-SK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "KEYS_ONLY"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "SK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "EntityType": {
+            "S": "user"
+          },
+          "Email": {
+            "S": "nathan.vale73@gmail.com"
+          },
+          "FirstName": {
+            "S": "Nathan"
+          },
+          "LastName": {
+            "S": "Vale"
+          }
+        },
+        {
+          "PK": {
+            "S": "PRODUCT#12345"
+          },
+          "SK": {
+            "S": "PRODUCT#12345"
+          },
+          "EntityType": {
+            "S": "product"
+          },
+          "Detail": {
+            "M": {
+              "name": {
+                "S": "Gift Card 1"
+              }
+            }
+          },
+          "Price": {
+            "S": "100.00"
+          }
+        },
+        {
+          "PK": {
+            "S": "WAREHOUSE#12345"
+          },
+          "SK": {
+            "S": "WAREHOUSE#12345"
+          },
+          "EntityType": {
+            "S": "warehouse"
+          },
+          "Address": {
+            "M": {
+              "city": {
+                "S": "Elsternwick"
+              }
+            }
+          },
+          "GS2-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS2-SK": {
+            "S": "WAREHOUSE#12345"
+          }
+        },
+        {
+          "PK": {
+            "S": "PRODUCT#12345"
+          },
+          "SK": {
+            "S": "WAREHOUSE#12345"
+          },
+          "EntityType": {
+            "S": "warehouseItem"
+          },
+          "Quantity": {
+            "S": "50"
+          },
+          "GS2-PK": {
+            "S": "WAREHOUSE#12345"
+          },
+          "GS2-SK": {
+            "S": "WAREHOUSE_ITEM#2020-06-21"
+          }
+        },
+        {
+          "PK": {
+            "S": "ORDER#12345"
+          },
+          "SK": {
+            "S": "ORDER#12345"
+          },
+          "EntityType": {
+            "S": "order"
+          },
+          "Date": {
+            "S": "2020-06-21"
+          },
+          "GS1-PK": {
+            "S": "PRODUCT#12345"
+          },
+          "GS1-SK": {
+            "S": "ORDER#2020-06-21"
+          },
+          "GS2-PK": {
+            "S": "WAREHOUSE#12345"
+          },
+          "GS2-SK": {
+            "S": "ORDER#2020-06-21"
+          }
+        },
+        {
+          "PK": {
+            "S": "ORDER#12345"
+          },
+          "SK": {
+            "S": "PRODUCT#12345"
+          },
+          "EntityType": {
+            "S": "orderItem"
+          },
+          "Quantity": {
+            "S": "2"
+          },
+          "GS1-PK": {
+            "S": "PRODUCT#12345"
+          },
+          "GS1-SK": {
+            "S": "SHIPMENT#12345"
+          },
+          "GS2-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS2-SK": {
+            "S": "ORDER_ITEM#2020-06-21"
+          }
+        },
+        {
+          "PK": {
+            "S": "ORDER#12345"
+          },
+          "SK": {
+            "S": "INVOICE#12345"
+          },
+          "EntityType": {
+            "S": "invoice"
+          },
+          "Date": {
+            "S": "2020-06-21"
+          },
+          "Amount": {
+            "S": "50"
+          },
+          "GS1-PK": {
+            "S": "INVOICE#12345"
+          },
+          "GS1-SK": {
+            "S": "INVOICE#12345"
+          },
+          "GS2-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS2-SK": {
+            "S": "INVOICE#2020-06-21"
+          }
+        },
+        {
+          "PK": {
+            "S": "ORDER#12345"
+          },
+          "SK": {
+            "S": "SHIPMENT#12345"
+          },
+          "EntityType": {
+            "S": "shipment"
+          },
+          "Price": {
+            "S": "{\"city\":{\"S\":\"Elsternwick\"}}"
+          },
+          "Date": {
+            "S": "2020-06-21"
+          },
+          "WarehouseId": {
+            "S": "WAREHOUSE#12345"
+          },
+          "GS1-PK": {
+            "S": "SHIPMENT#12345"
+          },
+          "GS1-SK": {
+            "S": "SHIPMENT#12345"
+          },
+          "GS2-PK": {
+            "S": "WAREHOUSE#12345"
+          },
+          "GS2-SK": {
+            "S": "SHIPMENT#2020-06-21"
+          }
+        },
+        {
+          "PK": {
+            "S": "CAMPAIGN#12345"
+          },
+          "SK": {
+            "S": "CAMPAIGN#12345"
+          },
+          "EntityType": {
+            "S": "campaign"
+          },
+          "Detail": {
+            "M": {
+              "name": {
+                "S": "Levi's Birthday"
+              }
+            }
+          },
+          "Date": {
+            "S": "2020-06-21"
+          },
+          "Gift": {
+            "S": "ORDER#12345"
+          },
+          "GS3-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS3-SK": {
+            "S": "CAMPAIGN#12345"
+          }
+        },
+        {
+          "PK": {
+            "S": "CAMPAIGN#12345"
+          },
+          "SK": {
+            "S": "CONTRIBUTION#12345"
+          },
+          "EntityType": {
+            "S": "contribution"
+          },
+          "Date": {
+            "S": "2020-06-21"
+          },
+          "Amount": {
+            "S": "10"
+          },
+          "GS3-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS3-SK": {
+            "S": "CONTRIBUTION#12345"
+          }
+        },
+        {
+          "PK": {
+            "S": "CAMPAIGN#12345"
+          },
+          "SK": {
+            "S": "CONTRIBUTION#54321"
+          },
+          "EntityType": {
+            "S": "contribution"
+          },
+          "Date": {
+            "S": "2020-06-21"
+          },
+          "Amount": {
+            "S": "20"
+          },
+          "GS3-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS3-SK": {
+            "S": "CONTRIBUTION#54321"
+          }
+        },
+        {
+          "PK": {
+            "S": "CAMPAIGN#12345"
+          },
+          "SK": {
+            "S": "INVITEE#12345"
+          },
+          "EntityType": {
+            "S": "invitee"
+          },
+          "Email": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS3-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS3-SK": {
+            "S": "INVITEE#12345"
+          }
+        },
+        {
+          "PK": {
+            "S": "CAMPAIGN#12345"
+          },
+          "SK": {
+            "S": "ENTRY#12345"
+          },
+          "EntityType": {
+            "S": "entry"
+          },
+          "Date": {
+            "S": "2020-06-21"
+          },
+          "GS3-PK": {
+            "S": "USER#nathan.vale73@gmail.com"
+          },
+          "GS3-SK": {
+            "S": "ENTRY#12345"
+          }
+        },
+        {
+          "PK": {
+            "S": "ORDER#12345"
+          },
+          "SK": {
+            "S": "SHIPMENT_ITEM#12345"
+          },
+          "EntityType": {
+            "S": "shipmentItem"
+          },
+          "Quantity": {
+            "S": "3"
+          },
+          "GS1-PK": {
+            "S": "SHIPMENT#12345"
+          },
+          "GS1-SK": {
+            "S": "PRODUCT#12345"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      },
+      "BillingMode": "PROVISIONED",
+      "ProvisionedCapacitySettings": {
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "AutoScalingRead": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        },
+        "AutoScalingWrite": {
+          "ScalableTargetRequest": {
+            "MinCapacity": 1,
+            "MaxCapacity": 10,
+            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+          },
+          "ScalingPolicyConfiguration": {
+            "TargetValue": 70
+          }
+        }
+      }
+    }
+  ]
+}
