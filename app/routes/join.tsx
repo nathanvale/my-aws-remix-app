@@ -7,13 +7,16 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
-import { getUserId, createUserSession } from "~/session.server";
+import {
+  getUserIdFromSession,
+  createUserSession,
+} from "~/session/session.server";
 
-import { createUser, getUserByEmail } from "~/models/user.server";
+import { createUser, verifyEmailNotExist } from "~/models/user/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const userId = await getUserId(request);
+  const userId = await getUserIdFromSession(request);
   if (userId) return redirect("/");
   return json({});
 };
@@ -45,6 +48,15 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
+  const result1 = await verifyEmailNotExist(email);
+  if (result1.err) {
+    const error = result1.val;
+    return json<ActionData>(
+      { errors: { email: error.message } },
+      { status: error.statusCode }
+    );
+  }
+
   if (password.length < 8) {
     return json<ActionData>(
       { errors: { password: "Password is too short" } },
@@ -52,19 +64,21 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const existingUser = await getUserByEmail(email);
-  if (existingUser) {
+  const result2 = await createUser(email, password);
+
+  if (result2.err) {
+    const error = result2.val;
     return json<ActionData>(
-      { errors: { email: "A user already exists with this email" } },
-      { status: 400 }
+      { errors: { email: error.message } },
+      { status: error.statusCode }
     );
   }
 
-  const user = await createUser(email, password);
+  const user = result2.val;
 
   return createUserSession({
     request,
-    userId: user.id,
+    userId: user.userId,
     remember: false,
     redirectTo,
   });

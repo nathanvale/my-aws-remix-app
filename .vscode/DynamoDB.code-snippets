@@ -1,0 +1,64 @@
+{
+  "DynamoDB getSomething()": {
+    "scope": "javascript,typescript",
+    "prefix": "dyna",
+    "body": [
+      "export const ${1:getSomething} = async (): Promise<",
+      "  Result<${2:ENTITY}, $2Error | UnknownError>",
+      "> => {",
+      "  const { client, TableName } = await getClient();",
+      "  $0",
+      "  try {",
+      "    return new Ok(new $2());",
+      "  } catch (error) {",
+      "    return new Err(new UnknownError(error));",
+      "  }",
+      "};"
+    ],
+    "description": "DynamoDB"
+  },
+  "DynamoDB createEntity()": {
+    "scope": "javascript,typescript",
+    "prefix": "dynac",
+    "body": [],
+    "description": "DynamoDB"
+  },
+  "DynamoDB getEntity()": {
+    "scope": "javascript,typescript",
+    "prefix": "dynar",
+    "body": [],
+    "description": "DynamoDB"
+  },
+  "DynamoDB updateEntity()": {
+    "scope": "javascript,typescript",
+    "prefix": "dynau",
+    "body": [],
+    "description": "DynamoDB"
+  },
+  "DynamoDB deleteEntity()": {
+    "scope": "javascript,typescript",
+    "prefix": "dynad",
+    "body": [
+      "export const delete${1:Entity} = async (",
+      "  id: ${1:Entity}Attributes[\"id\"]",
+      "): Promise<Result<${1:Entity}, ${1:Entity}Error | UnknownError>> => {",
+      "  const { client, TableName } = await getClient();",
+      "  const Key = User.getCompositeKeys(id);",
+      "  try {",
+      "    const resp = await client",
+      "      .deleteItem({",
+      "        TableName,",
+      "        Key,",
+      "        ReturnValues: \"ALL_OLD\",",
+      "      })",
+      "      .promise();",
+      "    if (resp.Attributes) return new Ok(${1:Entity}.fromItem(resp.Attributes));",
+      "    else return Err(new ${1:Entity}Error(\"${2:ENTITY}_DOES_NOT_EXIST\"));",
+      "  } catch (error) {",
+      "    return new Err(new UnknownError(error));",
+      "  }",
+      "};"
+    ],
+    "description": "DynamoDB"
+  }
+}

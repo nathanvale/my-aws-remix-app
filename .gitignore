@@ -1,7 +1,7 @@
 node_modules
 
-/server/index.js
-/server/index.js.map
+/server/index.js*
+/server/_assets/*.css
 /public/build
 preferences.arc
 sam.json
@@ -14,3 +14,5 @@ sam.yaml
 /app/styles/tailwind.css
 
 /docker/*
+
+coverage

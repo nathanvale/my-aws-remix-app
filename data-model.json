@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Nathan Vale",
     "DateCreated": "Oct 16, 2022, 05:12 PM",
-    "DateLastModified": "Oct 18, 2022, 11:21 AM",
+    "DateLastModified": "Oct 30, 2022, 08:11 AM",
     "Description": "",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -71,28 +71,32 @@
           "AttributeType": "S"
         },
         {
-          "AttributeName": "GS1-PK",
+          "AttributeName": "GS1PK",
           "AttributeType": "S"
         },
         {
-          "AttributeName": "GS1-SK",
+          "AttributeName": "GS1SK",
           "AttributeType": "S"
         },
         {
-          "AttributeName": "GS2-PK",
+          "AttributeName": "GS2PK",
           "AttributeType": "S"
         },
         {
-          "AttributeName": "GS2-SK",
+          "AttributeName": "GS2SK",
           "AttributeType": "S"
         },
         {
-          "AttributeName": "GS3-PK",
+          "AttributeName": "GS3PK",
           "AttributeType": "S"
         },
         {
-          "AttributeName": "GS3-SK",
+          "AttributeName": "GS3SK",
           "AttributeType": "S"
+        },
+        {
+          "AttributeName": "Attributes",
+          "AttributeType": "M"
         }
       ],
       "GlobalSecondaryIndexes": [
@@ -100,11 +104,11 @@
           "IndexName": "GSI1",
           "KeyAttributes": {
             "PartitionKey": {
-              "AttributeName": "GS1-PK",
+              "AttributeName": "GS1PK",
               "AttributeType": "S"
             },
             "SortKey": {
-              "AttributeName": "GS1-SK",
+              "AttributeName": "GS1SK",
               "AttributeType": "S"
             }
           },
@@ -116,11 +120,11 @@
           "IndexName": "GSI2",
           "KeyAttributes": {
             "PartitionKey": {
-              "AttributeName": "GS2-PK",
+              "AttributeName": "GS2PK",
               "AttributeType": "S"
             },
             "SortKey": {
-              "AttributeName": "GS2-SK",
+              "AttributeName": "GS2SK",
               "AttributeType": "S"
             }
           },
@@ -132,11 +136,11 @@
           "IndexName": "GS3",
           "KeyAttributes": {
             "PartitionKey": {
-              "AttributeName": "GS3-PK",
+              "AttributeName": "GS3PK",
               "AttributeType": "S"
             },
             "SortKey": {
-              "AttributeName": "GS3-SK",
+              "AttributeName": "GS3SK",
               "AttributeType": "S"
             }
           },
@@ -148,22 +152,41 @@
       "TableData": [
         {
           "PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+            "S": "USER#12345"
           },
           "SK": {
-            "S": "USER#nathan.vale73@gmail.com"
+            "S": "USER#12345"
           },
           "EntityType": {
             "S": "user"
           },
-          "Email": {
-            "S": "nathan.vale73@gmail.com"
+          "GS1PK": {
+            "S": "USER#test@test.com"
           },
-          "FirstName": {
-            "S": "Nathan"
+          "GS1SK": {
+            "S": "USER#test@test.com"
           },
-          "LastName": {
-            "S": "Vale"
+          "Attributes": {
+            "M": {
+              "userId": {
+                "S": "12345"
+              },
+              "email": {
+                "S": "test@test.com"
+              },
+              "password": {
+                "S": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq"
+              },
+              "firstName": {
+                "S": ""
+              },
+              "lastName": {
+                "S": ""
+              },
+              "campaignCount": {
+                "N": "0"
+              }
+            }
           }
         },
         {
@@ -204,10 +227,10 @@
               }
             }
           },
-          "GS2-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS2PK": {
+            "S": "USER#12345"
           },
-          "GS2-SK": {
+          "GS2SK": {
             "S": "WAREHOUSE#12345"
           }
         },
@@ -224,10 +247,10 @@
           "Quantity": {
             "S": "50"
           },
-          "GS2-PK": {
+          "GS2PK": {
             "S": "WAREHOUSE#12345"
           },
-          "GS2-SK": {
+          "GS2SK": {
             "S": "WAREHOUSE_ITEM#2020-06-21"
           }
         },
@@ -244,16 +267,16 @@
           "Date": {
             "S": "2020-06-21"
           },
-          "GS1-PK": {
+          "GS1PK": {
             "S": "PRODUCT#12345"
           },
-          "GS1-SK": {
+          "GS1SK": {
             "S": "ORDER#2020-06-21"
           },
-          "GS2-PK": {
+          "GS2PK": {
             "S": "WAREHOUSE#12345"
           },
-          "GS2-SK": {
+          "GS2SK": {
             "S": "ORDER#2020-06-21"
           }
         },
@@ -270,16 +293,16 @@
           "Quantity": {
             "S": "2"
           },
-          "GS1-PK": {
+          "GS1PK": {
             "S": "PRODUCT#12345"
           },
-          "GS1-SK": {
+          "GS1SK": {
             "S": "SHIPMENT#12345"
           },
-          "GS2-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS2PK": {
+            "S": "USER#12345"
           },
-          "GS2-SK": {
+          "GS2SK": {
             "S": "ORDER_ITEM#2020-06-21"
           }
         },
@@ -299,16 +322,16 @@
           "Amount": {
             "S": "50"
           },
-          "GS1-PK": {
+          "GS1PK": {
             "S": "INVOICE#12345"
           },
-          "GS1-SK": {
+          "GS1SK": {
             "S": "INVOICE#12345"
           },
-          "GS2-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS2PK": {
+            "S": "USER#12345"
           },
-          "GS2-SK": {
+          "GS2SK": {
             "S": "INVOICE#2020-06-21"
           }
         },
@@ -331,16 +354,16 @@
           "WarehouseId": {
             "S": "WAREHOUSE#12345"
           },
-          "GS1-PK": {
+          "GS1PK": {
             "S": "SHIPMENT#12345"
           },
-          "GS1-SK": {
+          "GS1SK": {
             "S": "SHIPMENT#12345"
           },
-          "GS2-PK": {
+          "GS2PK": {
             "S": "WAREHOUSE#12345"
           },
-          "GS2-SK": {
+          "GS2SK": {
             "S": "SHIPMENT#2020-06-21"
           }
         },
@@ -367,10 +390,10 @@
           "Gift": {
             "S": "ORDER#12345"
           },
-          "GS3-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS3PK": {
+            "S": "USER#12345"
           },
-          "GS3-SK": {
+          "GS3SK": {
             "S": "CAMPAIGN#12345"
           }
         },
@@ -390,10 +413,10 @@
           "Amount": {
             "S": "10"
           },
-          "GS3-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS3PK": {
+            "S": "USER#12345"
           },
-          "GS3-SK": {
+          "GS3SK": {
             "S": "CONTRIBUTION#12345"
           }
         },
@@ -413,10 +436,10 @@
           "Amount": {
             "S": "20"
           },
-          "GS3-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS3PK": {
+            "S": "USER#12345"
           },
-          "GS3-SK": {
+          "GS3SK": {
             "S": "CONTRIBUTION#54321"
           }
         },
@@ -431,12 +454,12 @@
             "S": "invitee"
           },
           "Email": {
-            "S": "USER#nathan.vale73@gmail.com"
+            "S": "USER#test@test.com"
           },
-          "GS3-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS3PK": {
+            "S": "USER#12345"
           },
-          "GS3-SK": {
+          "GS3SK": {
             "S": "INVITEE#12345"
           }
         },
@@ -453,10 +476,10 @@
           "Date": {
             "S": "2020-06-21"
           },
-          "GS3-PK": {
-            "S": "USER#nathan.vale73@gmail.com"
+          "GS3PK": {
+            "S": "USER#12345"
           },
-          "GS3-SK": {
+          "GS3SK": {
             "S": "ENTRY#12345"
           }
         },
@@ -473,11 +496,38 @@
           "Quantity": {
             "S": "3"
           },
-          "GS1-PK": {
+          "GS1PK": {
             "S": "SHIPMENT#12345"
           },
-          "GS1-SK": {
+          "GS1SK": {
             "S": "PRODUCT#12345"
+          }
+        },
+        {
+          "PK": {
+            "S": "USER#12345"
+          },
+          "SK": {
+            "S": "NOTE#1"
+          },
+          "EntityType": {
+            "S": "note"
+          },
+          "Attributes": {
+            "M": {
+              "title": {
+                "S": "Title"
+              },
+              "body": {
+                "S": "Body"
+              },
+              "noteId": {
+                "S": "1"
+              },
+              "userId": {
+                "S": "12345"
+              }
+            }
           }
         }
       ],

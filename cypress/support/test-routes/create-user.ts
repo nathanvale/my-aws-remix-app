@@ -1,8 +1,8 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
-import { createUser } from "~/models/user.server";
-import { createUserSession } from "~/session.server";
+import { createUser } from "~/models/user/user.server";
+import { createUserSession } from "~/session/session.server";
 
 export const action: ActionFunction = async ({ request }) => {
   if (process.env.NODE_ENV === "production") {
@@ -23,14 +23,18 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Error("All test emails must end in @example.com");
   }
 
-  const user = await createUser(email, "myreallystrongpassword");
+  const result = await createUser(email, "myreallystrongpassword");
 
-  return createUserSession({
-    request,
-    userId: user.id,
-    remember: true,
-    redirectTo: "/",
-  });
+  if (result.ok) {
+    const user = result.val;
+
+    return createUserSession({
+      request,
+      userId: user.userId,
+      remember: true,
+      redirectTo: "/",
+    });
+  } else throw result.val;
 };
 
 export default null;
