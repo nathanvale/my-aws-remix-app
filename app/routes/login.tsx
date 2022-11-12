@@ -7,12 +7,16 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
-import { createUserSession, getUserId } from "~/session.server";
-import { verifyLogin } from "~/models/user.server";
+import {
+  createUserSession,
+  getUserIdFromSession,
+} from "~/session/session.server";
+import { verifyLogin } from "~/models/user/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
+import { USER_ERROR_MESSAGES } from "~/models/user/errors";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const userId = await getUserId(request);
+  const userId = await getUserIdFromSession(request);
   if (userId) return redirect("/");
   return json({});
 };
@@ -52,18 +56,25 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const user = await verifyLogin(email, password);
+  const result = await verifyLogin(email, password);
 
-  if (!user) {
-    return json<ActionData>(
-      { errors: { email: "Invalid email or password" } },
-      { status: 400 }
-    );
+  if (result.err) {
+    let data: ActionData = {};
+    const error = result.val;
+    if (error.code === USER_ERROR_MESSAGES["USER_NOT_FOUND"].code) {
+      data = { errors: { email: error.message } };
+    } else if (
+      error.code === USER_ERROR_MESSAGES["USER_PASSWORD_INVALID"].code
+    ) {
+      data = { errors: { password: error.message } };
+    }
+    return json<ActionData>(data, { status: error.statusCode });
   }
 
+  const user = result.val;
   return createUserSession({
     request,
-    userId: user.id,
+    userId: user.userId,
     remember: remember === "on" ? true : false,
     redirectTo,
   });

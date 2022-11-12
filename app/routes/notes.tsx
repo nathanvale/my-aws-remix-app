@@ -2,9 +2,9 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
-import { requireUserId } from "~/session.server";
+import { requireUserId } from "~/session/session.server";
 import { useUser } from "~/utils";
-import { getNoteListItems } from "~/models/note.server";
+import { getNoteListItems } from "~/models/note/note.server";
 
 type LoaderData = {
   noteListItems: Awaited<ReturnType<typeof getNoteListItems>>;
@@ -12,13 +12,17 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
-  const noteListItems = await getNoteListItems({ userId });
+  const noteListItems = await getNoteListItems(userId);
   return json<LoaderData>({ noteListItems });
 };
 
 export default function NotesPage() {
   const data = useLoaderData() as LoaderData;
-  const user = useUser();
+  const result = useUser();
+  if (result.err) {
+    throw result.val.message;
+  }
+  const user = result.val;
 
   return (
     <div className="flex h-full min-h-screen flex-col">
@@ -50,12 +54,12 @@ export default function NotesPage() {
           ) : (
             <ol>
               {data.noteListItems.map((note) => (
-                <li key={note.id}>
+                <li key={note.noteId}>
                   <NavLink
                     className={({ isActive }) =>
                       `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
                     }
-                    to={note.id}
+                    to={note.noteId}
                   >
                     📝 {note.title}
                   </NavLink>

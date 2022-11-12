@@ -1,9 +1,11 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
+import { Err, Ok, Result } from "ts-results";
 
-import type { User } from "~/models/user.server";
+import type { User } from "~/models/user/user.server";
+import { AppError, APP_ERROR_MESSAGES } from "./models/errors";
 
-const DEFAULT_REDIRECT = "/";
+export const DEFAULT_REDIRECT = "/";
 
 /**
  * This should be used any time the redirect path is user-provided
@@ -44,10 +46,14 @@ export function useMatchesData(
   return route?.data;
 }
 
-function isUser(user: any): user is User {
+export function isUser(user: any): user is User {
   return user && typeof user === "object" && typeof user.email === "string";
 }
 
+/**
+ * Userful when you need to show user informaiton on a public page.
+ * @returns
+ */
 export function useOptionalUser(): User | undefined {
   const data = useMatchesData("root");
   if (!data || !isUser(data.user)) {
@@ -56,14 +62,18 @@ export function useOptionalUser(): User | undefined {
   return data.user;
 }
 
-export function useUser(): User {
+/**
+ *
+ * @returns Userful for when you need to show user information on a page for users only.
+ */
+export function useUser(): Result<User, AppError> {
   const maybeUser = useOptionalUser();
+
   if (!maybeUser) {
-    throw new Error(
-      "No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead."
-    );
+    const { code, message } = APP_ERROR_MESSAGES.APP_NO_USER_FOUND;
+    return new Err(new AppError(code, message));
   }
-  return maybeUser;
+  return new Ok(maybeUser);
 }
 
 export function validateEmail(email: unknown): email is string {

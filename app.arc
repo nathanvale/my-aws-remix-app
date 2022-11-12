@@ -10,12 +10,22 @@ get /test
 @static
 
 @tables
-user
-  pk *String
+campiagn_processing
+  PK *String 
+  SK **String 
 
-password
-  pk *String # userId
+@tables-indexes
+campiagn_processing
+  GS1PK *String
+  GS1SK **String
+  name GSI1
 
-note
-  pk *String  # userId
-  sk **String # noteId
+campiagn_processing
+  GS2PK *String
+  GS2SK **String
+  name GSI2  
+
+campiagn_processing
+  GS3PK *String
+  GS3SK **String
+  name GSI3  
