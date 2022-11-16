@@ -16,3 +16,6 @@ sam.yaml
 /docker/*
 
 coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/

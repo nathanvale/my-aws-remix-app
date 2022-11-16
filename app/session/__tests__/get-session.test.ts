@@ -1,4 +1,4 @@
-import { getSession } from "./get-session";
+import { getSession } from "../get-session";
 
 describe("getStorage", () => {
   test("should get a session", async () => {

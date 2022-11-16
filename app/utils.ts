@@ -1,6 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-import { Err, Ok, Result } from "ts-results";
+import type { Result } from "ts-results";
+import { Err, Ok } from "ts-results";
 
 import type { User } from "~/models/user/user.server";
 import { AppError, APP_ERROR_MESSAGES } from "./models/errors";

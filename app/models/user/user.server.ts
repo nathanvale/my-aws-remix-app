@@ -16,9 +16,8 @@ export interface User {
   readonly userId: string;
   email: string;
   password: string;
-  firstName?: string;
-  lastName?: string;
-  campaignCount?: number;
+  username: string;
+  name: string;
 }
 
 export class UserItem extends Item {
@@ -28,9 +27,8 @@ export class UserItem extends Item {
     super();
     this.attributes = {
       ...attributes,
-      firstName: attributes.firstName || "",
-      lastName: attributes.lastName || "",
-      campaignCount: attributes.campaignCount || 0,
+      username: attributes.username || "",
+      name: attributes.name || "",
     };
   }
 
@@ -38,7 +36,13 @@ export class UserItem extends Item {
     invariant(item, "No item!");
     invariant(item.Attributes, "No attributes!");
     invariant(item.Attributes.M, "No attributes!");
-    const user = new UserItem({ userId: "", email: "", password: "" });
+    const user = new UserItem({
+      userId: "",
+      email: "",
+      password: "",
+      name: "",
+      username: "",
+    });
     const itemAttributes = item.Attributes.M;
 
     checkForDBAttributes(user.attributes, itemAttributes);
@@ -53,7 +57,13 @@ export class UserItem extends Item {
   static getPrimaryKeyAttributeValues(
     userId: User["userId"]
   ): PrimaryKeyAttributeValues {
-    const note = new UserItem({ userId, email: "", password: "" });
+    const note = new UserItem({
+      userId,
+      email: "",
+      password: "",
+      name: "",
+      username: "",
+    });
     return note.keys();
   }
 
@@ -61,7 +71,13 @@ export class UserItem extends Item {
     userId: User["userId"],
     email: User["email"]
   ): GSIKeyAttributeValue {
-    const note = new UserItem({ userId, email, password: "" });
+    const note = new UserItem({
+      userId,
+      email,
+      password: "",
+      name: "",
+      username: "",
+    });
     return note.gSIKeys();
   }
 
@@ -114,14 +130,13 @@ export class UserItem extends Item {
 }
 
 export const createUser = async (
-  email: User["email"],
-  password: User["password"]
+  user: Omit<User, "userId">
 ): Promise<Result<User, UserError | UnknownError>> => {
   const { client, TableName } = await getClient();
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(user.password, 10);
   const userItem = new UserItem({
+    ...user,
     userId: ulid(),
-    email,
     password: hashedPassword,
   });
   try {

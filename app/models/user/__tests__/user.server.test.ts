@@ -22,6 +22,7 @@ import * as client from "../../client";
 import * as log from "../../log";
 import { UnknownError } from "../../errors";
 import { SpyInstance, Mock } from "vitest";
+import { createUserSeed } from "dynamodb/seed-utils";
 
 vi.mock("ulid");
 
@@ -35,92 +36,88 @@ beforeEach(() => {
   compareSpy = vi.spyOn(bcrypt, "compare");
 });
 
-describe("NoteItem", () => {
+describe("UserItem", () => {
   test("should get a DynamoDB attribute map of a user", async () => {
     const userItem = new UserItem({
       userId: TEST_USER_ID,
       email: TEST_USER_EMAIL,
       password: "password",
+      username: "username",
+      name: "name",
     }).toDynamoDBItem();
     expect(userItem).toMatchInlineSnapshot(`
-        {
-          "Attributes": {
-            "M": {
-              "campaignCount": {
-                "N": "0",
-              },
-              "email": {
-                "S": "test@test.com",
-              },
-              "firstName": {
-                "S": "",
-              },
-              "lastName": {
-                "S": "",
-              },
-              "password": {
-                "S": "password",
-              },
-              "userId": {
-                "S": "12345",
-              },
+      {
+        "Attributes": {
+          "M": {
+            "email": {
+              "S": "test@test.com",
+            },
+            "name": {
+              "S": "name",
+            },
+            "password": {
+              "S": "password",
+            },
+            "userId": {
+              "S": "12345",
+            },
+            "username": {
+              "S": "username",
             },
           },
-          "EntityType": {
-            "S": "user",
-          },
-          "GS1PK": {
-            "S": "USER#test@test.com",
-          },
-          "GS1SK": {
-            "S": "USER#test@test.com",
-          },
-          "GS2PK": {
-            "S": "",
-          },
-          "GS2SK": {
-            "S": "",
-          },
-          "GS3PK": {
-            "S": "",
-          },
-          "GS3SK": {
-            "S": "",
-          },
-          "PK": {
-            "S": "USER#12345",
-          },
-          "SK": {
-            "S": "USER#12345",
-          },
-        }
-      `);
+        },
+        "EntityType": {
+          "S": "user",
+        },
+        "GS1PK": {
+          "S": "USER#test@test.com",
+        },
+        "GS1SK": {
+          "S": "USER#test@test.com",
+        },
+        "GS2PK": {
+          "S": "",
+        },
+        "GS2SK": {
+          "S": "",
+        },
+        "GS3PK": {
+          "S": "",
+        },
+        "GS3SK": {
+          "S": "",
+        },
+        "PK": {
+          "S": "USER#12345",
+        },
+        "SK": {
+          "S": "USER#12345",
+        },
+      }
+    `);
   });
 });
 
 describe("createUser", () => {
   test("should create a user", async () => {
+    const userSeed = createUserSeed();
     const userId = "newUserId";
     mockedUlid.mockReturnValue(userId);
-    const result = await createUser("new.user@test.com", "password");
-    const user = result.val as User;
+    const result = await createUser(userSeed);
+    const newUser = result.val as User; //?
     await deleteUser(userId);
-    expect(user).toMatchInlineSnapshot(`
-        {
-          "campaignCount": 0,
-          "email": "new.user@test.com",
-          "firstName": "",
-          "lastName": "",
-          "password": "hashed-password",
-          "userId": "newUserId",
-        }
-      `);
+    expect(Object.keys(newUser).length).toBe(5);
+    expect(newUser.email).toBe(userSeed.email);
+    expect(newUser.name).toBe(userSeed.name);
+    expect(newUser.username).toBe(userSeed.username);
+    expect(newUser.userId).toBe(userId);
+    expect(newUser.password).toBe("hashed-password");
   });
   test("should throw an unknown error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("putItem", new Error("Unknown error"))
     );
-    const result = await createUser("new.user@test.com", "password");
+    const result = await createUser(createUserSeed());
     const error = result.val as UnknownError;
     delete error.stack;
     expect(error).toMatchInlineSnapshot(`
@@ -137,15 +134,14 @@ describe("createUser", () => {
 describe("readUser", () => {
   test("should read a user", async () => {
     const result = await readUser(TEST_USER_ID);
-    const user = result.val as User;
+    const user = result.val as User; //?
     expect(user).toMatchInlineSnapshot(`
       {
-        "campaignCount": 0,
         "email": "test@test.com",
-        "firstName": "",
-        "lastName": "",
+        "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
         "userId": "12345",
+        "username": "test_user",
       }
     `);
   });
@@ -183,34 +179,32 @@ describe("readUser", () => {
 
 describe("updateUser", () => {
   test("should update a user", async () => {
+    const userSeed = createUserSeed();
     const userId = "updateUserId";
     mockedUlid.mockReturnValue(userId);
-    const result1 = await createUser("update.user@test.com", "password");
+    const result1 = await createUser(userSeed);
     const user = result1.val as User;
+    const updatedUserName = "updatedUserName";
+    const updatedName = "updatedName";
     const result2 = await updateUser({
       ...user,
-      firstName: "First",
-      lastName: "Last",
+      username: updatedUserName,
+      name: updatedName,
     });
-    const updatedNote = result2.val as User;
+    const updatedNote = result2.val as User; //?
     await deleteUser(userId);
-    expect(updatedNote).toMatchInlineSnapshot(`
-        {
-          "campaignCount": 0,
-          "email": "update.user@test.com",
-          "firstName": "First",
-          "lastName": "Last",
-          "password": "hashed-password",
-          "userId": "updateUserId",
-        }
-      `);
+    expect(Object.keys(updatedNote).length).toBe(5);
+    expect(updatedNote.email).toBe(userSeed.email);
+    expect(updatedNote.name).toBe(updatedName);
+    expect(updatedNote.username).toBe(updatedUserName);
+    expect(updatedNote.userId).toBe(userId);
+    expect(updatedNote.password).toBe("hashed-password");
   });
 
   test("should throw an error is a user does not exist", async () => {
     const result = await updateUser({
-      email: "",
+      ...createUserSeed(),
       userId: "unknownUserId",
-      password: "",
     });
 
     expect(result.val).toMatchInlineSnapshot(`
@@ -228,11 +222,8 @@ describe("updateUser", () => {
       clientApiMethodResolve("updateItem", {})
     );
     const result = await updateUser({
-      email: "",
+      ...createUserSeed(),
       userId: "",
-      password: "",
-      firstName: "First",
-      lastName: "Last",
     });
     const error = result.val as UnknownError;
     delete error.stack;
@@ -251,11 +242,8 @@ describe("updateUser", () => {
       clientApiMethodReject("updateItem", new Error("Unknown error"))
     );
     const result = await updateUser({
-      email: "",
+      ...createUserSeed(),
       userId: "",
-      password: "",
-      firstName: "First",
-      lastName: "Last",
     });
     const error = result.val as UnknownError;
     delete error.stack;
@@ -272,30 +260,22 @@ describe("updateUser", () => {
 
 describe("deleteUser", () => {
   test("should delete a user", async () => {
+    const userSeed = createUserSeed();
     const userId = "deleteUserId";
     mockedUlid.mockReturnValue(userId);
-    const email = "delete.me@test.com";
-    await createUser(email, "password");
+    await createUser(userSeed);
     const result = await deleteUser(userId);
-    const deletedNote = result.val as User;
-    expect(deletedNote).toMatchInlineSnapshot(`
-        {
-          "campaignCount": 0,
-          "email": "delete.me@test.com",
-          "firstName": "",
-          "lastName": "",
-          "password": "hashed-password",
-          "userId": "deleteUserId",
-        }
-      `);
+    const deletedNote = result.val as User; //?
+    expect(Object.keys(deletedNote).length).toBe(5);
+    expect(deletedNote.email).toBe(userSeed.email);
+    expect(deletedNote.name).toBe(userSeed.name);
+    expect(deletedNote.username).toBe(userSeed.username);
+    expect(deletedNote.userId).toBe(userId);
+    expect(deletedNote.password).toBe("hashed-password");
   });
   test("should return an error when trying to delete a user that does not exist", async () => {
-    const userId = "deleteUserId";
-    mockedUlid.mockReturnValue(userId);
-    await createUser("delete.user@test.com", "password");
     const result = await deleteUser("doesntExistUserId");
     const error = result.val as UserError;
-    await deleteUser(userId);
     expect(error).toMatchInlineSnapshot(`
         UserError {
           "code": "USER_DOES_NOT_EXIST",
@@ -329,12 +309,11 @@ describe("getUserByEmail", () => {
     const user = result.val as any;
     expect(user).toMatchInlineSnapshot(`
       {
-        "campaignCount": 0,
         "email": "test@test.com",
-        "firstName": "",
-        "lastName": "",
+        "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
         "userId": "12345",
+        "username": "test_user",
       }
     `);
   });
@@ -397,12 +376,11 @@ describe("verifyLogin", () => {
     const user = result.val as User;
     expect(user).toMatchInlineSnapshot(`
       {
-        "campaignCount": 0,
         "email": "test@test.com",
-        "firstName": "",
-        "lastName": "",
+        "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
         "userId": "12345",
+        "username": "test_user",
       }
     `);
   });

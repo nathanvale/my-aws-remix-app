@@ -1,6 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-
+import { createUserSeed } from "dynamodb/seed-utils";
 import { createUser } from "~/models/user/user.server";
 import { createUserSession } from "~/session/session.server";
 
@@ -23,7 +23,7 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Error("All test emails must end in @example.com");
   }
 
-  const result = await createUser(email, "myreallystrongpassword");
+  const result = await createUser(createUserSeed());
 
   if (result.ok) {
     const user = result.val;

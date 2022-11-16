@@ -5,11 +5,14 @@ invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
-    name: "__session",
+    name: "_session",
+    sameSite: "lax",
     httpOnly: true,
     path: "/",
-    sameSite: "lax",
     secrets: [process.env.SESSION_SECRET],
     secure: process.env.NODE_ENV === "production",
   },
 });
+
+/* c8 ignore next */
+export const { getSession, commitSession, destroySession } = sessionStorage;

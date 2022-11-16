@@ -7,10 +7,10 @@ import {
   requireUser,
   requireUserId,
   USER_SESSION_KEY,
-} from "./session.server";
-import * as getSession from "./get-session";
-import { TEST_USER_ID } from "../../test/db-test-helpers";
-import * as logout from "./logout";
+} from "../session.server";
+import * as getSession from "../get-session";
+import { TEST_USER_ID } from "../../../test/db-test-helpers";
+import * as logout from "../logout";
 
 vi.mock("@remix-run/server-runtime");
 
@@ -67,12 +67,11 @@ describe("getUserFromSession", () => {
     const result = await getUserFromSession(request);
     expect(result).toMatchInlineSnapshot(`
       {
-        "campaignCount": 0,
         "email": "test@test.com",
-        "firstName": "",
-        "lastName": "",
+        "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
         "userId": "12345",
+        "username": "test_user",
       }
     `);
   });
@@ -119,12 +118,11 @@ describe("requireUser", () => {
     const result = await requireUser(request);
     expect(result).toMatchInlineSnapshot(`
       {
-        "campaignCount": 0,
         "email": "test@test.com",
-        "firstName": "",
-        "lastName": "",
+        "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
         "userId": "12345",
+        "username": "test_user",
       }
     `);
   });
@@ -150,7 +148,7 @@ describe("requireUser", () => {
       expect(redirect).toBeCalledWith(redirectTo, {
         headers: {
           "Set-Cookie":
-            "__session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Path=/; HttpOnly; SameSite=Lax",
+            "_session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Path=/; HttpOnly; SameSite=Lax",
         },
         status: 302,
       });
@@ -166,7 +164,7 @@ describe("requireUser", () => {
       expect(redirect).toBeCalledWith(redirectTo, {
         headers: {
           "Set-Cookie":
-            "__session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
+            "_session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
         },
         status: 302,
       });
