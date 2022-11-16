@@ -16,7 +16,9 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      "playwright/*": ["./playwright/*"],
+      "dynamodb/*": ["./dynamodb/*"],
     },
     "skipLibCheck": true,
 

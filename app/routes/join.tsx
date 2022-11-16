@@ -64,7 +64,12 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const result2 = await createUser(email, password);
+  const result2 = await createUser({
+    email,
+    password,
+    name: email,
+    username: email,
+  });
 
   if (result2.err) {
     const error = result2.val;

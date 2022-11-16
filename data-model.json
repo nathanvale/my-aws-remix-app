@@ -177,14 +177,11 @@
               "password": {
                 "S": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq"
               },
-              "firstName": {
-                "S": ""
+              "name": {
+                "S": "Test User"
               },
-              "lastName": {
-                "S": ""
-              },
-              "campaignCount": {
-                "N": "0"
+              "username": {
+                "S": "test_user"
               }
             }
           }
