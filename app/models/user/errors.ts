@@ -37,8 +37,10 @@ export const USER_ERROR_MESSAGES: ErrorMessage<UserErrorCodes> = {
 };
 
 export class UserError extends ServerError {
+  code: UserErrorCodes;
   constructor(code: UserErrorCodes) {
     const { stausCode, message } = USER_ERROR_MESSAGES[code];
     super(code, message, stausCode);
+    this.code = code;
   }
 }

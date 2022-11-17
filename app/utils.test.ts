@@ -98,9 +98,9 @@ describe("useUser", () => {
     const id = "root";
     const data = undefined;
     useMatchesMock.mockReturnValue([{ id, data }]);
-    const { result } = renderHook(() => useUser());
+    const result = await getError(async () => renderHook(() => useUser()));
 
-    expect(result.current.val).toMatchInlineSnapshot(
+    expect(result).toMatchInlineSnapshot(
       `
       AppError {
         "code": "APP_NO_USER_FOUND",
@@ -121,7 +121,7 @@ describe("useUser", () => {
     const data = { user };
     useMatchesMock.mockReturnValue([{ id, data }]);
     const { result } = renderHook(() => useUser());
-    expect(result.current.val).toMatchInlineSnapshot(
+    expect(result.current).toMatchInlineSnapshot(
       `
       {
         "email": "test@test.com",

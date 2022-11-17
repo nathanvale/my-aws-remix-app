@@ -35,12 +35,10 @@ export function makeLoginForm(
     faker.helpers.unique(faker.name.lastName);
   const username =
     overrides.username ||
-    faker.internet.userName(firstName, lastName).slice(0, 15);
+    faker.internet.userName(firstName.toLowerCase(), lastName.toLowerCase());
   return {
     name: overrides.name || `${firstName} ${lastName}`,
     username,
-    // Playwright runs tests in parallel, so we need to make sure email is unique
-    // Faker unique appears to be not working with paralles tests here, so we'll use a random string
     email: ulid() + "@example.com",
     password: faker.internet.password(),
   };
@@ -48,22 +46,21 @@ export function makeLoginForm(
 
 export async function insertNewUser({ password }: { password?: string } = {}) {
   const userData = createUserSeed();
-  const result = await createUser({
+  const user = await createUser({
     ...userData,
     password: password ?? userData.password,
   });
-  if (result.err) throw result.val;
-  const user = result.val;
   dataCleanup.users.add(user.userId);
   return user;
 }
 
 export async function deleteUserByEmail(email: string) {
-  const result1 = await getUserByEmail(email);
-  if (result1.err) throw result1.val;
-  const result2 = await deleteUser(result1.val.userId);
-  if (result2.err) throw result2.val;
-  return result2.val;
+  const user = await getUserByEmail(email);
+  try {
+    await deleteUser(user.userId);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export const test = baseTest.extend<{

@@ -13,7 +13,7 @@ import {
 } from "~/session/session.server";
 import { verifyLogin } from "~/models/user/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
-import { USER_ERROR_MESSAGES } from "~/models/user/errors";
+import { UserError, USER_ERROR_MESSAGES } from "~/models/user/errors";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await getUserIdFromSession(request);
@@ -56,28 +56,28 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const result = await verifyLogin(email, password);
-
-  if (result.err) {
+  try {
+    const user = await verifyLogin(email, password);
+    return createUserSession({
+      request,
+      userId: user.userId,
+      remember: remember === "on" ? true : false,
+      redirectTo,
+    });
+  } catch (error) {
     let data: ActionData = {};
-    const error = result.val;
-    if (error.code === USER_ERROR_MESSAGES["USER_NOT_FOUND"].code) {
-      data = { errors: { email: error.message } };
-    } else if (
-      error.code === USER_ERROR_MESSAGES["USER_PASSWORD_INVALID"].code
-    ) {
-      data = { errors: { password: error.message } };
+    if (error instanceof UserError) {
+      if (error.code === USER_ERROR_MESSAGES["USER_NOT_FOUND"].code) {
+        data = { errors: { email: error.message } };
+      } else if (
+        error.code === USER_ERROR_MESSAGES["USER_PASSWORD_INVALID"].code
+      ) {
+        data = { errors: { password: error.message } };
+      }
+      return json<ActionData>(data, { status: error.statusCode });
     }
-    return json<ActionData>(data, { status: error.statusCode });
+    throw error;
   }
-
-  const user = result.val;
-  return createUserSession({
-    request,
-    userId: user.userId,
-    remember: remember === "on" ? true : false,
-    redirectTo,
-  });
 };
 
 export const meta: MetaFunction = () => {

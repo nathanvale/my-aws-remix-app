@@ -16,7 +16,9 @@ export class JoinPage {
   }
 
   async join(login: string, password: string) {
+    await this.emailInput.click();
     await this.emailInput.fill(login);
+    await this.passwordInput.click();
     await this.passwordInput.fill(password);
     await this.signInButton.click();
   }

@@ -1,7 +1,6 @@
 import { DynamoDB, AWSError } from "aws-sdk";
 import bcrypt from "bcryptjs";
 import { ulid } from "ulid";
-import { Ok, Err, Result } from "ts-results";
 import { Item } from "../base";
 import { GSIKeyAttributeValue } from "../base";
 import { ModelKeys } from "../base";
@@ -129,9 +128,7 @@ export class UserItem extends Item {
   }
 }
 
-export const createUser = async (
-  user: Omit<User, "userId">
-): Promise<Result<User, UserError | UnknownError>> => {
+export const createUser = async (user: Omit<User, "userId">): Promise<User> => {
   const { client, TableName } = await getClient();
   const hashedPassword = await bcrypt.hash(user.password, 10);
   const userItem = new UserItem({
@@ -146,15 +143,13 @@ export const createUser = async (
         Item: userItem.toDynamoDBItem(),
       })
       .promise();
-    return new Ok(userItem.attributes);
+    return userItem.attributes;
   } catch (error) {
-    return new Err(new UnknownError(error));
+    throw new UnknownError(error);
   }
 };
 
-export const readUser = async (
-  userId: string
-): Promise<Result<User, UserError | UnknownError>> => {
+export const readUser = async (userId: string): Promise<User> => {
   const { client, TableName } = await getClient();
   const Key = UserItem.getPrimaryKeyAttributeValues(userId);
   try {
@@ -164,16 +159,15 @@ export const readUser = async (
         Key,
       })
       .promise();
-    if (resp.Item) return new Ok(UserItem.fromItem(resp.Item).attributes);
-    else return new Err(new UserError("USER_NOT_FOUND"));
+    if (resp.Item) return UserItem.fromItem(resp.Item).attributes;
+    else throw new UserError("USER_NOT_FOUND");
   } catch (error) {
-    return new Err(new UnknownError(error));
+    if (error instanceof UserError) throw error;
+    throw new UnknownError(error);
   }
 };
 
-export const updateUser = async (
-  user: User
-): Promise<Result<User, UserError | UnknownError>> => {
+export const updateUser = async (user: User): Promise<User> => {
   const { client, TableName } = await getClient();
   const Key = UserItem.getPrimaryKeyAttributeValues(user.userId);
   const userItem = new UserItem(user);
@@ -190,22 +184,20 @@ export const updateUser = async (
         ReturnValues: "ALL_NEW",
       })
       .promise();
-    if (resp.Attributes)
-      return new Ok(UserItem.fromItem(resp.Attributes).attributes);
-    else return new Err(new UserError("USER_UPDATES_MUST_RETURN_VALUES"));
+    if (resp.Attributes) return UserItem.fromItem(resp.Attributes).attributes;
+    else throw new UserError("USER_UPDATES_MUST_RETURN_VALUES");
   } catch (error) {
     if (
       (error as AWSError).code ===
       AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
     )
-      return new Err(new UserError("USER_DOES_NOT_EXIST"));
-    else return new Err(new UnknownError(error));
+      throw new UserError("USER_DOES_NOT_EXIST");
+    else if (error instanceof UserError) throw error;
+    else throw new UnknownError(error);
   }
 };
 
-export const deleteUser = async (
-  userId: User["userId"]
-): Promise<Result<User, UserError | UnknownError>> => {
+export const deleteUser = async (userId: User["userId"]): Promise<User> => {
   const { client, TableName } = await getClient();
   const Key = UserItem.getPrimaryKeyAttributeValues(userId);
   try {
@@ -216,17 +208,17 @@ export const deleteUser = async (
         ReturnValues: "ALL_OLD",
       })
       .promise();
-    if (resp.Attributes)
-      return new Ok(UserItem.fromItem(resp.Attributes).attributes);
-    else return Err(new UserError("USER_DOES_NOT_EXIST"));
+    if (resp.Attributes) return UserItem.fromItem(resp.Attributes).attributes;
+    else throw new UserError("USER_DOES_NOT_EXIST");
   } catch (error) {
-    return new Err(new UnknownError(error));
+    if (error instanceof UserError) throw error;
+    else throw new UnknownError(error);
   }
 };
 
 export const getUserByEmail = async function (
   email: User["email"]
-): Promise<Result<User, UserError | UnknownError>> {
+): Promise<User> {
   const { client, TableName } = await getClient();
   const gSIKeys = UserItem.getGSIAttributeValues("", email);
   try {
@@ -242,34 +234,38 @@ export const getUserByEmail = async function (
       })
       .promise();
     if (resp.Items && resp.Count && resp.Count > 0)
-      return new Ok(
-        resp.Items.map((item) => UserItem.fromItem(item))[0].attributes
-      );
-    else return new Err(new UserError("USER_NOT_FOUND"));
+      return resp.Items.map((item) => UserItem.fromItem(item))[0].attributes;
+    else throw new UserError("USER_NOT_FOUND");
   } catch (error) {
-    return new Err(new UnknownError(error));
+    if (error instanceof UserError) throw error;
+    throw new UnknownError(error);
   }
 };
 
 export const verifyEmailNotExist = async (
   email: User["email"]
-): Promise<Result<boolean, UserError | UnknownError>> => {
-  const result = await getUserByEmail(email);
-  if (result.ok) return new Err(new UserError("USER_ALREADY_EXISTS"));
-  else if (result.val instanceof UnknownError) {
-    return new Err(new UnknownError(result.val));
+): Promise<boolean> => {
+  let user: User;
+  try {
+    user = await getUserByEmail(email);
+    if (user.email === email) throw new UserError("USER_ALREADY_EXISTS");
+  } catch (error) {
+    if (error instanceof UserError) {
+      if (error.code === "USER_NOT_FOUND") return true;
+    }
+    throw error;
   }
-  return new Ok(true);
+  // We should never get here but need to keep TS happy
+  /* c8 ignore next */
+  return false;
 };
 
 export const verifyLogin = async (
   email: User["email"],
   password: User["password"]
-): Promise<Result<User, UserError>> => {
-  const result = await getUserByEmail(email);
-  if (result.err) return new Err(result.val);
-  const existingUser = result.val;
+): Promise<User> => {
+  const existingUser = await getUserByEmail(email);
   const isValidPassword = await bcrypt.compare(password, existingUser.password);
-  if (!isValidPassword) return new Err(new UserError("USER_PASSWORD_INVALID"));
-  return new Ok(existingUser);
+  if (!isValidPassword) throw new UserError("USER_PASSWORD_INVALID");
+  return existingUser;
 };

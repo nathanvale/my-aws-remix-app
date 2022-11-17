@@ -4,6 +4,8 @@ import { readUser } from "~/models/user/user.server";
 import { logout } from "./logout";
 import { redirect } from "@remix-run/server-runtime";
 import { getSession } from "./get-session";
+import { UserError } from "~/models/user/errors";
+import { UnknownError } from "~/models/errors";
 
 export const USER_SESSION_KEY = "userId";
 
@@ -29,15 +31,17 @@ export async function getUserIdFromSession(
 export async function getUserFromSession(
   request: Request
 ): Promise<User | null> {
-  const userId = await getUserIdFromSession(request);
+  const userId = await getUserIdFromSession(request); //?
   if (!userId) return null;
 
-  const result = await readUser(userId);
-  if (result.ok) {
-    const user = result.val;
+  try {
+    const user = await readUser(userId);
     return user;
-  } else {
-    throw await logout(request);
+  } catch (error) {
+    if (error instanceof UserError) {
+      throw await logout(request);
+    }
+    throw new UnknownError(error);
   }
 }
 
@@ -52,7 +56,7 @@ export async function requireUserId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname //?
 ): Promise<User["userId"]> {
-  const userId = await getUserIdFromSession(request);
+  const userId = await getUserIdFromSession(request); //?
   if (!userId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
     throw redirect(`/login?${searchParams}`);
@@ -75,13 +79,12 @@ export async function requireUser(
   redirectTo: string = new URL(request.url).pathname
 ): Promise<User> {
   const userId = await requireUserId(request, redirectTo);
-  const result = await readUser(userId);
-
-  if (result.ok) {
-    const user = result.val;
+  try {
+    const user = await readUser(userId);
     return user;
-  } else {
-    throw await logout(request);
+  } catch (error) {
+    if (error instanceof UserError) throw await logout(request);
+    else throw new UnknownError(error);
   }
 }
 

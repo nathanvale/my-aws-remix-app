@@ -5,7 +5,6 @@ import {
   getUserByEmail,
   readUser,
   updateUser,
-  User,
   UserItem,
   verifyEmailNotExist,
   verifyLogin,
@@ -104,23 +103,23 @@ describe("createUser", () => {
     const userId = "newUserId";
     mockedUlid.mockReturnValue(userId);
     const result = await createUser(userSeed);
-    const newUser = result.val as User; //?
     await deleteUser(userId);
-    expect(Object.keys(newUser).length).toBe(5);
-    expect(newUser.email).toBe(userSeed.email);
-    expect(newUser.name).toBe(userSeed.name);
-    expect(newUser.username).toBe(userSeed.username);
-    expect(newUser.userId).toBe(userId);
-    expect(newUser.password).toBe("hashed-password");
+    expect(Object.keys(result).length).toBe(5);
+    expect(result.email).toBe(userSeed.email);
+    expect(result.name).toBe(userSeed.name);
+    expect(result.username).toBe(userSeed.username);
+    expect(result.userId).toBe(userId);
+    expect(result.password).toBe("hashed-password");
   });
   test("should throw an unknown error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("putItem", new Error("Unknown error"))
     );
-    const result = await createUser(createUserSeed());
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UnknownError>(async () =>
+      createUser(createUserSeed())
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
       UnknownError {
         "code": "Error",
         "id": "id",
@@ -134,8 +133,7 @@ describe("createUser", () => {
 describe("readUser", () => {
   test("should read a user", async () => {
     const result = await readUser(TEST_USER_ID);
-    const user = result.val as User; //?
-    expect(user).toMatchInlineSnapshot(`
+    expect(result).toMatchInlineSnapshot(`
       {
         "email": "test@test.com",
         "name": "Test User",
@@ -147,9 +145,10 @@ describe("readUser", () => {
   });
 
   test("should return an error when getting a user that does not exist", async () => {
-    const result = await readUser("unknown.user@test.com");
-    const error = result.val as UserError;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError(async () =>
+      readUser("unknown.user@test.com")
+    );
+    expect(result).toMatchInlineSnapshot(`
         UserError {
           "code": "USER_NOT_FOUND",
           "id": "id",
@@ -163,10 +162,11 @@ describe("readUser", () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("getItem", new Error("Unknown error"))
     );
-    const result = await readUser(TEST_USER_ID);
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UnknownError>(async () =>
+      readUser(TEST_USER_ID)
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
       UnknownError {
         "code": "Error",
         "id": "id",
@@ -182,16 +182,14 @@ describe("updateUser", () => {
     const userSeed = createUserSeed();
     const userId = "updateUserId";
     mockedUlid.mockReturnValue(userId);
-    const result1 = await createUser(userSeed);
-    const user = result1.val as User;
+    const user = await createUser(userSeed);
     const updatedUserName = "updatedUserName";
     const updatedName = "updatedName";
-    const result2 = await updateUser({
+    const updatedNote = await updateUser({
       ...user,
       username: updatedUserName,
       name: updatedName,
     });
-    const updatedNote = result2.val as User; //?
     await deleteUser(userId);
     expect(Object.keys(updatedNote).length).toBe(5);
     expect(updatedNote.email).toBe(userSeed.email);
@@ -202,12 +200,14 @@ describe("updateUser", () => {
   });
 
   test("should throw an error is a user does not exist", async () => {
-    const result = await updateUser({
-      ...createUserSeed(),
-      userId: "unknownUserId",
-    });
+    const result = await getError(async () =>
+      updateUser({
+        ...createUserSeed(),
+        userId: "unknownUserId",
+      })
+    );
 
-    expect(result.val).toMatchInlineSnapshot(`
+    expect(result).toMatchInlineSnapshot(`
       UserError {
         "code": "USER_DOES_NOT_EXIST",
         "id": "id",
@@ -221,13 +221,13 @@ describe("updateUser", () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodResolve("updateItem", {})
     );
-    const result = await updateUser({
-      ...createUserSeed(),
-      userId: "",
-    });
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UserError>(async () =>
+      updateUser({
+        ...createUserSeed(),
+        userId: "",
+      })
+    );
+    expect(result).toMatchInlineSnapshot(`
       UserError {
         "code": "USER_UPDATES_MUST_RETURN_VALUES",
         "id": "id",
@@ -241,13 +241,15 @@ describe("updateUser", () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("updateItem", new Error("Unknown error"))
     );
-    const result = await updateUser({
-      ...createUserSeed(),
-      userId: "",
-    });
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UnknownError>(async () =>
+      updateUser({
+        ...createUserSeed(),
+        userId: "",
+      })
+    );
+
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
       UnknownError {
         "code": "Error",
         "id": "id",
@@ -265,18 +267,16 @@ describe("deleteUser", () => {
     mockedUlid.mockReturnValue(userId);
     await createUser(userSeed);
     const result = await deleteUser(userId);
-    const deletedNote = result.val as User; //?
-    expect(Object.keys(deletedNote).length).toBe(5);
-    expect(deletedNote.email).toBe(userSeed.email);
-    expect(deletedNote.name).toBe(userSeed.name);
-    expect(deletedNote.username).toBe(userSeed.username);
-    expect(deletedNote.userId).toBe(userId);
-    expect(deletedNote.password).toBe("hashed-password");
+    expect(Object.keys(result).length).toBe(5);
+    expect(result.email).toBe(userSeed.email);
+    expect(result.name).toBe(userSeed.name);
+    expect(result.username).toBe(userSeed.username);
+    expect(result.userId).toBe(userId);
+    expect(result.password).toBe("hashed-password");
   });
   test("should return an error when trying to delete a user that does not exist", async () => {
-    const result = await deleteUser("doesntExistUserId");
-    const error = result.val as UserError;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError(async () => deleteUser("doesntExistUserId"));
+    expect(result).toMatchInlineSnapshot(`
         UserError {
           "code": "USER_DOES_NOT_EXIST",
           "id": "id",
@@ -289,10 +289,11 @@ describe("deleteUser", () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("deleteItem", new Error("Unknown error"))
     );
-    const result = await deleteUser("doesntExistUserId");
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UnknownError>(async () =>
+      deleteUser("doesntExistUserId")
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
       UnknownError {
         "code": "Error",
         "id": "id",
@@ -305,8 +306,7 @@ describe("deleteUser", () => {
 
 describe("getUserByEmail", () => {
   test("should get get a user by email", async () => {
-    const result = await getUserByEmail(TEST_USER_EMAIL);
-    const user = result.val as any;
+    const user = await getUserByEmail(TEST_USER_EMAIL);
     expect(user).toMatchInlineSnapshot(`
       {
         "email": "test@test.com",
@@ -321,10 +321,11 @@ describe("getUserByEmail", () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("query", new Error("Unknown error"))
     );
-    const result = await getUserByEmail(TEST_USER_EMAIL);
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UnknownError>(async () =>
+      getUserByEmail(TEST_USER_EMAIL)
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
       UnknownError {
         "code": "Error",
         "id": "id",
@@ -337,12 +338,15 @@ describe("getUserByEmail", () => {
 
 describe("verifyEmailNotExist", () => {
   test("should verify that an email doesnt not exist", async () => {
-    const result = await verifyEmailNotExist("doesnt.exist@test.com");
-    expect(result.val).toMatchInlineSnapshot("true");
+    const result = await verifyEmailNotExist("doesnt.exist@test.com"); //?
+    expect(result).toMatchInlineSnapshot("true");
   });
+
   test("should return an error when a user already exists", async () => {
-    const result = await verifyEmailNotExist(TEST_USER_EMAIL);
-    expect(result.val).toMatchInlineSnapshot(`
+    const result = await getError<UserError>(async () =>
+      verifyEmailNotExist(TEST_USER_EMAIL)
+    );
+    expect(result).toMatchInlineSnapshot(`
       UserError {
         "code": "USER_ALREADY_EXISTS",
         "id": "id",
@@ -355,10 +359,11 @@ describe("verifyEmailNotExist", () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("query", new Error("Unknown error"))
     );
-    const result = await verifyEmailNotExist("doesnt.exist@test.com");
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UnknownError>(async () =>
+      verifyEmailNotExist("doesnt.exist@test.com")
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
       UnknownError {
         "code": "Error",
         "id": "id",
@@ -373,8 +378,7 @@ describe("verifyLogin", () => {
   test("should get an exisiting user", async () => {
     compareSpy.mockResolvedValue(true);
     const result = await verifyLogin(TEST_USER_EMAIL, "password");
-    const user = result.val as User;
-    expect(user).toMatchInlineSnapshot(`
+    expect(result).toMatchInlineSnapshot(`
       {
         "email": "test@test.com",
         "name": "Test User",
@@ -386,9 +390,10 @@ describe("verifyLogin", () => {
   });
 
   test("should return an error when verifying a user that does not exist", async () => {
-    const result = await verifyLogin("doesnt.exist@test.com", "password");
-    const error = result.val as UserError;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError(async () =>
+      verifyLogin("doesnt.exist@test.com", "password")
+    );
+    expect(result).toMatchInlineSnapshot(`
         UserError {
           "code": "USER_NOT_FOUND",
           "id": "id",
@@ -400,9 +405,10 @@ describe("verifyLogin", () => {
 
   test("should return an error when verifying a user with an invalid password", async () => {
     compareSpy.mockResolvedValue(false);
-    const result = await verifyLogin(TEST_USER_EMAIL, "password");
-    const error = result.val as UserError;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError(async () =>
+      verifyLogin(TEST_USER_EMAIL, "password")
+    );
+    expect(result).toMatchInlineSnapshot(`
         UserError {
           "code": "USER_PASSWORD_INVALID",
           "id": "id",
@@ -415,10 +421,11 @@ describe("verifyLogin", () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("query", new Error("Unknown error"))
     );
-    const result = await verifyLogin(TEST_USER_EMAIL, "password");
-    const error = result.val as UnknownError;
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot(`
+    const result = await getError<UnknownError>(async () =>
+      verifyLogin(TEST_USER_EMAIL, "password")
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
       UnknownError {
         "code": "Error",
         "id": "id",
