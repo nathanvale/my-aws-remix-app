@@ -1,7 +1,5 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-import type { Result } from "ts-results";
-import { Err, Ok } from "ts-results";
 
 import type { User } from "~/models/user/user.server";
 import { AppError, APP_ERROR_MESSAGES } from "./models/errors";
@@ -67,14 +65,14 @@ export function useOptionalUser(): User | undefined {
  *
  * @returns Userful for when you need to show user information on a page for users only.
  */
-export function useUser(): Result<User, AppError> {
+export function useUser(): User {
   const maybeUser = useOptionalUser();
 
   if (!maybeUser) {
     const { code, message } = APP_ERROR_MESSAGES.APP_NO_USER_FOUND;
-    return new Err(new AppError(code, message));
+    throw new AppError(code, message);
   }
-  return new Ok(maybeUser);
+  return maybeUser;
 }
 
 export function validateEmail(email: unknown): email is string {

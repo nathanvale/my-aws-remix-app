@@ -8,14 +8,18 @@ import {
   requireUserId,
   USER_SESSION_KEY,
 } from "../session.server";
+import * as userServer from "~/models/user/user.server";
 import * as getSession from "../get-session";
+import * as log from "../../models/log";
 import { TEST_USER_ID } from "../../../test/db-test-helpers";
 import * as logout from "../logout";
+import { UnknownError } from "~/models/errors";
 
 vi.mock("@remix-run/server-runtime");
 
 let logoutSpy: SpyInstance;
 let getSessionSpy: SpyInstance;
+let readUserSpy: SpyInstance;
 let sessionGetSpy = vi.fn();
 let sessionSetSpy = vi.fn();
 
@@ -23,7 +27,9 @@ const LOCALHOST = "https://localhost:3000";
 
 beforeEach(() => {
   vi.restoreAllMocks();
+  vi.spyOn(log, "logError").mockReturnValue("id");
   logoutSpy = vi.spyOn(logout, "logout");
+  readUserSpy = vi.spyOn(userServer, "readUser");
   getSessionSpy = vi.spyOn(getSession, "getSession").mockResolvedValue({
     get: sessionGetSpy,
     data: vi.fn(),
@@ -82,6 +88,24 @@ describe("getUserFromSession", () => {
     await getError(async () => getUserFromSession(request));
     expect(logoutSpy).toBeCalledWith(request);
   });
+
+  test("should throw an unknown error", async () => {
+    sessionGetSpy.mockResolvedValue("unknownUserId");
+    readUserSpy.mockRejectedValue(new Error("Unknown Error"));
+    const request = new Request(LOCALHOST);
+    const result = await getError<UnknownError>(async () =>
+      getUserFromSession(request)
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
+      UnknownError {
+        "code": "Error",
+        "id": "id",
+        "message": "Unknown Error",
+        "statusCode": 0,
+      }
+    `);
+  });
 });
 
 describe("requireUserId", () => {
@@ -133,41 +157,59 @@ describe("requireUser", () => {
     expect(logoutSpy).toBeCalledWith(request);
   });
 
-  describe("createUserSession", () => {
+  test("should throw an unknown error", async () => {
+    sessionGetSpy.mockResolvedValue("unknownUserId");
+    readUserSpy.mockRejectedValue(new Error("Unknown Error"));
     const request = new Request(LOCALHOST);
-    const userId = TEST_USER_ID;
-    const redirectTo = "/dashboard";
-    test("should create a user session without remembering the session", async () => {
-      await createUserSession({
-        request,
-        userId,
-        remember: false,
-        redirectTo,
-      });
-      expect(sessionSetSpy).toBeCalledWith(USER_SESSION_KEY, TEST_USER_ID);
-      expect(redirect).toBeCalledWith(redirectTo, {
-        headers: {
-          "Set-Cookie":
-            "_session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Path=/; HttpOnly; SameSite=Lax",
-        },
-        status: 302,
-      });
+    const result = await getError<UnknownError>(async () =>
+      requireUser(request)
+    );
+    delete result.stack;
+    expect(result).toMatchInlineSnapshot(`
+      UnknownError {
+        "code": "Error",
+        "id": "id",
+        "message": "Unknown Error",
+        "statusCode": 0,
+      }
+    `);
+  });
+});
+
+describe("createUserSession", () => {
+  const request = new Request(LOCALHOST);
+  const userId = TEST_USER_ID;
+  const redirectTo = "/dashboard";
+  test("should create a user session without remembering the session", async () => {
+    await createUserSession({
+      request,
+      userId,
+      remember: false,
+      redirectTo,
     });
-    test("should create a user session that last 7 days", async () => {
-      await createUserSession({
-        request,
-        userId,
-        remember: true,
-        redirectTo,
-      });
-      expect(sessionSetSpy).toBeCalledWith(USER_SESSION_KEY, TEST_USER_ID);
-      expect(redirect).toBeCalledWith(redirectTo, {
-        headers: {
-          "Set-Cookie":
-            "_session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
-        },
-        status: 302,
-      });
+    expect(sessionSetSpy).toBeCalledWith(USER_SESSION_KEY, TEST_USER_ID);
+    expect(redirect).toBeCalledWith(redirectTo, {
+      headers: {
+        "Set-Cookie":
+          "_session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Path=/; HttpOnly; SameSite=Lax",
+      },
+      status: 302,
+    });
+  });
+  test("should create a user session that last 7 days", async () => {
+    await createUserSession({
+      request,
+      userId,
+      remember: true,
+      redirectTo,
+    });
+    expect(sessionSetSpy).toBeCalledWith(USER_SESSION_KEY, TEST_USER_ID);
+    expect(redirect).toBeCalledWith(redirectTo, {
+      headers: {
+        "Set-Cookie":
+          "_session=dW5kZWZpbmVk.aTVDcuulOOQZcjAdiGfuDCZlVYkNGmSOEkC%2Fm2SDKG4; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax",
+      },
+      status: 302,
     });
   });
 });

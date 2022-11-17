@@ -14,6 +14,7 @@ import {
 
 import { createUser, verifyEmailNotExist } from "~/models/user/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
+import { UserError } from "~/models/user/errors";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await getUserIdFromSession(request);
@@ -48,13 +49,18 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const result1 = await verifyEmailNotExist(email);
-  if (result1.err) {
-    const error = result1.val;
-    return json<ActionData>(
-      { errors: { email: error.message } },
-      { status: error.statusCode }
-    );
+  try {
+    await verifyEmailNotExist(email);
+  } catch (error) {
+    if (error instanceof UserError) {
+      if (error.code === "USER_ALREADY_EXISTS") {
+        return json<ActionData>(
+          { errors: { email: error.message } },
+          { status: error.statusCode }
+        );
+      }
+    }
+    throw error;
   }
 
   if (password.length < 8) {
@@ -64,22 +70,12 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const result2 = await createUser({
+  const user = await createUser({
     email,
     password,
     name: email,
     username: email,
   });
-
-  if (result2.err) {
-    const error = result2.val;
-    return json<ActionData>(
-      { errors: { email: error.message } },
-      { status: error.statusCode }
-    );
-  }
-
-  const user = result2.val;
 
   return createUserSession({
     request,

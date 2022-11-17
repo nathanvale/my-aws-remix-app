@@ -34,7 +34,9 @@ test.describe("Smoke Tests", () => {
       await homePage.viewNotesLink.click();
       const notesPage = new NotesPage(page);
       await notesPage.newNoteLink.click();
+      await notesPage.titleInput.click();
       await notesPage.titleInput.type(faker.lorem.words(1));
+      await notesPage.bodyInput.click();
       await notesPage.bodyInput.type(faker.lorem.sentences(1));
       await notesPage.saveButton.click();
       await notesPage.deleteButton.click();
