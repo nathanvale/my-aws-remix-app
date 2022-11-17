@@ -11,6 +11,7 @@ export default defineConfig({
     exclude: [...configDefaults.exclude, "playwright/**/*"],
     globals: true,
     environment: "happy-dom",
+    globalSetup: ["test/global-setup.ts"],
     setupFiles: ["./test/setup-test-env.ts"],
     coverage: {
       exclude: ["app/models/note/**"],
