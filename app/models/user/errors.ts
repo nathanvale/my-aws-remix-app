@@ -1,5 +1,5 @@
-import { ServerError } from "../errors";
-import { ErrorMessage } from "../errors";
+import { ServerError } from "../../errors";
+import { ErrorMessage } from "../../errors";
 
 export type UserErrorCodes =
   | "USER_ALREADY_EXISTS"

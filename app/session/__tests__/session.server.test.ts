@@ -13,7 +13,6 @@ import * as getSession from "../get-session";
 import * as log from "../../models/log";
 import { TEST_USER_ID } from "../../../test/db-test-helpers";
 import * as logout from "../logout";
-import { UnknownError } from "~/models/errors";
 
 vi.mock("@remix-run/server-runtime");
 
@@ -89,22 +88,15 @@ describe("getUserFromSession", () => {
     expect(logoutSpy).toBeCalledWith(request);
   });
 
-  test("should throw an unknown error", async () => {
+  test("should throw an error", async () => {
     sessionGetSpy.mockResolvedValue("unknownUserId");
     readUserSpy.mockRejectedValue(new Error("Unknown Error"));
     const request = new Request(LOCALHOST);
-    const result = await getError<UnknownError>(async () =>
+    const result = await getError<Error>(async () =>
       getUserFromSession(request)
     );
     delete result.stack;
-    expect(result).toMatchInlineSnapshot(`
-      UnknownError {
-        "code": "Error",
-        "id": "id",
-        "message": "Unknown Error",
-        "statusCode": 0,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot("[Error: Unknown Error]");
   });
 });
 
@@ -157,22 +149,13 @@ describe("requireUser", () => {
     expect(logoutSpy).toBeCalledWith(request);
   });
 
-  test("should throw an unknown error", async () => {
+  test("should throw an error", async () => {
     sessionGetSpy.mockResolvedValue("unknownUserId");
     readUserSpy.mockRejectedValue(new Error("Unknown Error"));
     const request = new Request(LOCALHOST);
-    const result = await getError<UnknownError>(async () =>
-      requireUser(request)
-    );
+    const result = await getError<Error>(async () => requireUser(request));
     delete result.stack;
-    expect(result).toMatchInlineSnapshot(`
-      UnknownError {
-        "code": "Error",
-        "id": "id",
-        "message": "Unknown Error",
-        "statusCode": 0,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot("[Error: Unknown Error]");
   });
 });
 

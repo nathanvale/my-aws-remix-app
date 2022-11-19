@@ -5,7 +5,6 @@ import { logout } from "./logout";
 import { redirect } from "@remix-run/server-runtime";
 import { getSession } from "./get-session";
 import { UserError } from "~/models/user/errors";
-import { UnknownError } from "~/models/errors";
 
 export const USER_SESSION_KEY = "userId";
 
@@ -31,7 +30,7 @@ export async function getUserIdFromSession(
 export async function getUserFromSession(
   request: Request
 ): Promise<User | null> {
-  const userId = await getUserIdFromSession(request); //?
+  const userId = await getUserIdFromSession(request);
   if (!userId) return null;
 
   try {
@@ -41,7 +40,7 @@ export async function getUserFromSession(
     if (error instanceof UserError) {
       throw await logout(request);
     }
-    throw new UnknownError(error);
+    throw error;
   }
 }
 
@@ -54,9 +53,9 @@ export async function getUserFromSession(
  */
 export async function requireUserId(
   request: Request,
-  redirectTo: string = new URL(request.url).pathname //?
+  redirectTo: string = new URL(request.url).pathname
 ): Promise<User["userId"]> {
-  const userId = await getUserIdFromSession(request); //?
+  const userId = await getUserIdFromSession(request);
   if (!userId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
     throw redirect(`/login?${searchParams}`);
@@ -84,7 +83,7 @@ export async function requireUser(
     return user;
   } catch (error) {
     if (error instanceof UserError) throw await logout(request);
-    else throw new UnknownError(error);
+    else throw error;
   }
 }
 
@@ -113,7 +112,7 @@ export async function createUserSession({
         maxAge: remember
           ? 60 * 60 * 24 * 7 // 7 days
           : undefined,
-      }), //?
+      }),
     },
   });
 }

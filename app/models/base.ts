@@ -1,19 +1,7 @@
-import { DynamoDB } from "aws-sdk";
-
-export type PrimaryKeyAttributeValues = Record<
-  PrimaryKeys,
-  DynamoDB.AttributeValue
->;
-
-export type GSIKeyAttributeValue = Record<GSIKeys, DynamoDB.AttributeValue>;
-
-export type PrimaryKeys = "PK" | "SK";
-export type GSIKeys = "GS1PK" | "GS1SK" | "GS2PK" | "GS2SK" | "GS3PK" | "GS3SK";
-
-/**
- * Matches the keys and attributes on the DynamoDB table.
- */
-export type ModelKeys = PrimaryKeys | GSIKeys | "EntityType" | "Attributes";
+import {
+  GSIKeyAttributeValue,
+  PrimaryKeyAttributeValues,
+} from "dynamodb/utils";
 
 export abstract class Item {
   abstract get PK(): string;

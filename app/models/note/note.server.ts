@@ -2,12 +2,17 @@
 import { ulid } from "ulid";
 import { DynamoDB } from "aws-sdk";
 import { Item } from "../base";
-import { PrimaryKeyAttributeValues, ModelKeys } from "../base";
 
 import invariant from "tiny-invariant";
-import { getClient } from "../client";
+import { getClient } from "dynamodb/client";
 import { UserItem } from "../user/user.server";
-import { checkForDBAttributes, marshall, unmarshall } from "../utils.server";
+import {
+  checkForDBAttributes,
+  DynamoDBItem,
+  marshall,
+  PrimaryKeyAttributeValues,
+  unmarshall,
+} from "dynamodb/utils";
 interface NoteWithOptional {
   userId: string;
   noteId: string;
@@ -89,7 +94,7 @@ export class NoteItem extends Item {
     return "";
   }
 
-  toDynamoDBItem(): Record<ModelKeys, DynamoDB.AttributeValue> {
+  toDynamoDBItem(): DynamoDBItem {
     return {
       ...this.keys(),
       ...this.gSIKeys(),

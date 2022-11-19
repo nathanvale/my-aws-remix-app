@@ -2,13 +2,21 @@ import { DynamoDB, AWSError } from "aws-sdk";
 import bcrypt from "bcryptjs";
 import { ulid } from "ulid";
 import { Item } from "../base";
-import { GSIKeyAttributeValue } from "../base";
-import { ModelKeys } from "../base";
-import { PrimaryKeyAttributeValues } from "../base";
-import { getClient } from "../client";
+import { getClient } from "dynamodb/client";
 import invariant from "tiny-invariant";
-import { checkForDBAttributes, marshall, unmarshall } from "../utils.server";
-import { AWSErrorCodes, UnknownError } from "../errors";
+import {
+  AWSErrorCodes,
+  checkForDBAttributes,
+  createItem,
+  deleteItem,
+  DynamoDBItem,
+  GSIKeyAttributeValue,
+  marshall,
+  PrimaryKeyAttributeValues,
+  readItem,
+  unmarshall,
+  updateItem,
+} from "dynamodb/utils";
 import { UserError } from "./errors";
 
 export interface User {
@@ -56,28 +64,28 @@ export class UserItem extends Item {
   static getPrimaryKeyAttributeValues(
     userId: User["userId"]
   ): PrimaryKeyAttributeValues {
-    const note = new UserItem({
+    const user = new UserItem({
       userId,
       email: "",
       password: "",
       name: "",
       username: "",
     });
-    return note.keys();
+    return user.keys();
   }
 
   static getGSIAttributeValues(
     userId: User["userId"],
     email: User["email"]
   ): GSIKeyAttributeValue {
-    const note = new UserItem({
+    const user = new UserItem({
       userId,
       email,
       password: "",
       name: "",
       username: "",
     });
-    return note.gSIKeys();
+    return user.gSIKeys();
   }
 
   get entityType(): string {
@@ -116,7 +124,7 @@ export class UserItem extends Item {
     return "";
   }
 
-  toDynamoDBItem(): Record<ModelKeys, DynamoDB.AttributeValue> {
+  toDynamoDBItem(): DynamoDBItem {
     return {
       ...this.keys(),
       ...this.gSIKeys(),
@@ -129,62 +137,29 @@ export class UserItem extends Item {
 }
 
 export const createUser = async (user: Omit<User, "userId">): Promise<User> => {
-  const { client, TableName } = await getClient();
   const hashedPassword = await bcrypt.hash(user.password, 10);
   const userItem = new UserItem({
     ...user,
     userId: ulid(),
     password: hashedPassword,
   });
-  try {
-    await client
-      .putItem({
-        TableName,
-        Item: userItem.toDynamoDBItem(),
-      })
-      .promise();
-    return userItem.attributes;
-  } catch (error) {
-    throw new UnknownError(error);
-  }
+  await createItem(userItem.toDynamoDBItem());
+  return userItem.attributes;
 };
 
 export const readUser = async (userId: string): Promise<User> => {
-  const { client, TableName } = await getClient();
-  const Key = UserItem.getPrimaryKeyAttributeValues(userId);
-  try {
-    const resp = await client
-      .getItem({
-        TableName,
-        Key,
-      })
-      .promise();
-    if (resp.Item) return UserItem.fromItem(resp.Item).attributes;
-    else throw new UserError("USER_NOT_FOUND");
-  } catch (error) {
-    if (error instanceof UserError) throw error;
-    throw new UnknownError(error);
-  }
+  const key = UserItem.getPrimaryKeyAttributeValues(userId);
+  const resp = await readItem(key);
+  if (resp.Item) return UserItem.fromItem(resp.Item).attributes;
+  else throw new UserError("USER_NOT_FOUND");
 };
 
 export const updateUser = async (user: User): Promise<User> => {
-  const { client, TableName } = await getClient();
-  const Key = UserItem.getPrimaryKeyAttributeValues(user.userId);
-  const userItem = new UserItem(user);
   try {
-    const resp = await client
-      .updateItem({
-        TableName,
-        Key,
-        UpdateExpression: "set Attributes = :val",
-        ConditionExpression: "attribute_exists(PK)",
-        ExpressionAttributeValues: {
-          ":val": userItem.toDynamoDBItem().Attributes,
-        },
-        ReturnValues: "ALL_NEW",
-      })
-      .promise();
-    if (resp.Attributes) return UserItem.fromItem(resp.Attributes).attributes;
+    const key = UserItem.getPrimaryKeyAttributeValues(user.userId);
+    const productItem = new UserItem(user);
+    const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes);
+    if (resp?.Attributes) return UserItem.fromItem(resp.Attributes).attributes;
     else throw new UserError("USER_UPDATES_MUST_RETURN_VALUES");
   } catch (error) {
     if (
@@ -192,28 +167,15 @@ export const updateUser = async (user: User): Promise<User> => {
       AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
     )
       throw new UserError("USER_DOES_NOT_EXIST");
-    else if (error instanceof UserError) throw error;
-    else throw new UnknownError(error);
+    else throw error;
   }
 };
 
 export const deleteUser = async (userId: User["userId"]): Promise<User> => {
-  const { client, TableName } = await getClient();
-  const Key = UserItem.getPrimaryKeyAttributeValues(userId);
-  try {
-    const resp = await client
-      .deleteItem({
-        TableName,
-        Key,
-        ReturnValues: "ALL_OLD",
-      })
-      .promise();
-    if (resp.Attributes) return UserItem.fromItem(resp.Attributes).attributes;
-    else throw new UserError("USER_DOES_NOT_EXIST");
-  } catch (error) {
-    if (error instanceof UserError) throw error;
-    else throw new UnknownError(error);
-  }
+  const key = UserItem.getPrimaryKeyAttributeValues(userId);
+  const resp = await deleteItem(key);
+  if (resp.Attributes) return UserItem.fromItem(resp.Attributes).attributes;
+  else throw new UserError("USER_DOES_NOT_EXIST");
 };
 
 export const getUserByEmail = async function (
@@ -238,7 +200,7 @@ export const getUserByEmail = async function (
     else throw new UserError("USER_NOT_FOUND");
   } catch (error) {
     if (error instanceof UserError) throw error;
-    throw new UnknownError(error);
+    throw error;
   }
 };
 
