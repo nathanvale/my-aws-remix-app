@@ -1,5 +1,6 @@
 export const TEST_USER_EMAIL = "test@test.com";
 export const TEST_USER_ID = "12345";
+export const TEST_PRODUCT_ID = "12345";
 
 export const clientApiMethodReject = (
   apiMethod: "query" | "putItem" | "getItem" | "updateItem" | "deleteItem",

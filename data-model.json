@@ -196,15 +196,15 @@
           "EntityType": {
             "S": "product"
           },
-          "Detail": {
+          "Attributes": {
             "M": {
-              "name": {
-                "S": "Gift Card 1"
+              "productId": { "S": "12345" },
+              "company": { "S": "Mann - Thiel" },
+              "price": { "S": "143.00" },
+              "description": {
+                "S": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
               }
             }
-          },
-          "Price": {
-            "S": "100.00"
           }
         },
         {

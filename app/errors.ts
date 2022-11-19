@@ -1,12 +1,4 @@
-import { AWSError } from "aws-sdk";
-import { logError } from "./log";
-
-/**
- * https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html
- */
-export enum AWSErrorCodes {
-  CONDITIONAL_CHECK_FAILED_EXCEPTION = "ConditionalCheckFailedException",
-}
+import { logError } from "./models/log";
 
 export type AppErrorCodes = "APP_NO_USER_FOUND";
 
@@ -48,25 +40,6 @@ export class ServerError extends BaseError {
 
   constructor(code: string, message: string, statusCode: number) {
     super(code, message);
-    this.statusCode = statusCode;
-  }
-}
-
-export class UnknownError extends AppError implements ServerError {
-  statusCode: number;
-  constructor(error: unknown) {
-    let statusCode = 0;
-    let code;
-    if ((error as AWSError).time) {
-      statusCode = (error as AWSError).statusCode || 0;
-      code = (error as AWSError).code;
-    } else {
-      code =
-        (error as UnknownError)?.code ||
-        (error as Error).name ||
-        "UnknownError";
-    }
-    super(code, (error as AWSError | Error).message, (error as Error).stack);
     this.statusCode = statusCode;
   }
 }

@@ -1,4 +1,8 @@
-import { marshall, unmarshall, checkForDBAttributes } from "../utils.server";
+import {
+  marshall,
+  unmarshall,
+  checkForDBAttributes,
+} from "../../../dynamodb/utils";
 
 describe("marshall", () => {
   test("should convert a JavaScript object into a DynamoDB record", () => {
