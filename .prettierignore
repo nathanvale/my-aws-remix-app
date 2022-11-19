@@ -6,5 +6,8 @@ preferences.arc
 sam.json
 sam.yaml
 .env
+coverage
+playwright-report
+server
 
 /app/styles/tailwind.css

@@ -8,9 +8,6 @@ sam.json
 sam.yaml
 .env
 
-/cypress/screenshots
-/cypress/videos
-
 /app/styles/tailwind.css
 
 /docker/*
