@@ -1,4 +1,3 @@
-
 describe("getError", () => {
   test("should get an error", async () => {
     const result = await getError(() => {});

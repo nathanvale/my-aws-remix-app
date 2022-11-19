@@ -1,5 +1,4 @@
 {
-  "exclude": ["./cypress", "./cypress.config.ts"],
   "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
@@ -18,7 +17,7 @@
     "paths": {
       "~/*": ["./app/*"],
       "playwright/*": ["./playwright/*"],
-      "dynamodb/*": ["./dynamodb/*"],
+      "dynamodb/*": ["./dynamodb/*"]
     },
     "skipLibCheck": true,
 
