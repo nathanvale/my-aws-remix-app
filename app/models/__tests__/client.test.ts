@@ -1,4 +1,4 @@
-import { getClient } from "../client";
+import { getClient } from "../../../dynamodb/client";
 import arc from "@architect/functions";
 
 beforeEach(() => {
