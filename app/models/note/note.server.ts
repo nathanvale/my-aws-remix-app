@@ -94,6 +94,15 @@ export class NoteItem extends Item {
     return "";
   }
 
+  toItem(): Note {
+    return {
+      body: this.attributes.body,
+      noteId: this.attributes.noteId,
+      title: this.attributes.title,
+      userId: this.attributes.userId,
+    };
+  }
+
   toDynamoDBItem(): DynamoDBItem {
     return {
       ...this.keys(),

@@ -88,16 +88,24 @@ describe("ProductItem", () => {
 
 describe("createProduct", () => {
   test("should create a product", async () => {
-    const productSeed = createProductSeed();
     const productId = "newProductId";
     mockedUlid.mockReturnValue(productId);
-    const createdProduct = await createProduct(productSeed);
+    const userMock = new ProductItem({
+      company: "company",
+      description: "description",
+      price: "price",
+      productId: productId,
+    }).toItem();
+    const createdUser = await createProduct(userMock);
     await deleteProduct(productId);
-    expect(Object.keys(createdProduct).length).toBe(4);
-    expect(createdProduct.company).toBe(productSeed.company);
-    expect(createdProduct.description).toBe(productSeed.description);
-    expect(createdProduct.price).toBe(productSeed.price);
-    expect(createdProduct.productId).toBe(productId);
+    expect(createdUser).toMatchInlineSnapshot(`
+      {
+        "company": "company",
+        "description": "description",
+        "price": "price",
+        "productId": "newProductId",
+      }
+    `);
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -152,21 +160,29 @@ describe("readProduct", () => {
 
 describe("updateProduct", () => {
   test("should update a product", async () => {
-    const productSeed = createProductSeed();
     const productId = "updateProductId";
     mockedUlid.mockReturnValue(productId);
-    const createdProduct = await createProduct(productSeed);
+    const userMock = new ProductItem({
+      company: "company",
+      description: "description",
+      price: "price",
+      productId: productId,
+    }).toItem();
+    const createdProduct = await createProduct(userMock);
     const updatedCompany = "updatedCompany";
     const updatedProduct = await updateProduct({
       ...createdProduct,
       company: updatedCompany,
     });
     await deleteProduct(productId);
-    expect(Object.keys(updatedProduct).length).toBe(4);
-    expect(updatedProduct.company).toBe(updatedCompany);
-    expect(updatedProduct.description).toBe(productSeed.description);
-    expect(updatedProduct.price).toBe(productSeed.price);
-    expect(updatedProduct.productId).toBe(productId);
+    expect(updatedProduct).toMatchInlineSnapshot(`
+      {
+        "company": "updatedCompany",
+        "description": "description",
+        "price": "price",
+        "productId": "updateProductId",
+      }
+    `);
   });
 
   test("should throw an error is a product does not exist", async () => {
@@ -185,7 +201,6 @@ describe("updateProduct", () => {
       }
     `);
   });
-
   test("should throw an when an item update doesnt return values", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodResolve("updateItem", {})
@@ -224,16 +239,24 @@ describe("updateProduct", () => {
 
 describe("deleteProduct", () => {
   test("should delete a product", async () => {
-    const productSeed = createProductSeed();
     const productId = "deleteProductId";
     mockedUlid.mockReturnValue(productId);
-    await createProduct(productSeed);
+    const userMock = new ProductItem({
+      company: "company",
+      description: "description",
+      price: "price",
+      productId: productId,
+    }).toItem();
+    await createProduct(userMock);
     const deletedProduct = await deleteProduct(productId);
-    expect(Object.keys(deletedProduct).length).toBe(4);
-    expect(deletedProduct.company).toBe(productSeed.company);
-    expect(deletedProduct.description).toBe(productSeed.description);
-    expect(deletedProduct.price).toBe(productSeed.price);
-    expect(deletedProduct.productId).toBe(productId);
+    expect(deletedProduct).toMatchInlineSnapshot(`
+      {
+        "company": "company",
+        "description": "description",
+        "price": "price",
+        "productId": "deleteProductId",
+      }
+    `);
   });
   test("should return an error when trying to delete a product that does not exist", async () => {
     const error = await getError(async () =>

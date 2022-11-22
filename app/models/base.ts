@@ -13,6 +13,8 @@ export abstract class Item {
   abstract get GS3PK(): string;
   abstract get GS3SK(): string;
   abstract get entityType(): string;
+  abstract toDynamoDBItem(): Record<string, unknown>;
+  abstract toItem(): Record<string, any>;
 
   public keys(): PrimaryKeyAttributeValues {
     return {
@@ -31,6 +33,4 @@ export abstract class Item {
       GS3SK: { S: this.GS3SK },
     };
   }
-
-  abstract toDynamoDBItem(): Record<string, unknown>;
 }

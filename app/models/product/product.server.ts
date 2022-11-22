@@ -104,6 +104,15 @@ export class ProductItem extends Item {
     return "";
   }
 
+  toItem(): Product {
+    return {
+      company: this.attributes.company,
+      description: this.attributes.description,
+      price: this.attributes.price,
+      productId: this.attributes.productId,
+    };
+  }
+
   toDynamoDBItem(): DynamoDBItem {
     return {
       ...this.keys(),
