@@ -124,6 +124,16 @@ export class UserItem extends Item {
     return "";
   }
 
+  toItem(): User {
+    return {
+      name: this.attributes.name,
+      email: this.attributes.email,
+      password: this.attributes.password,
+      userId: this.attributes.userId,
+      username: this.attributes.username,
+    };
+  }
+
   toDynamoDBItem(): DynamoDBItem {
     return {
       ...this.keys(),

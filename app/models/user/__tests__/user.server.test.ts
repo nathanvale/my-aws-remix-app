@@ -98,17 +98,26 @@ describe("UserItem", () => {
 
 describe("createUser", () => {
   test("should create a user", async () => {
-    const userSeed = createUserSeed();
-    const userId = "newUserId";
+    const userId = "newUser";
     mockedUlid.mockReturnValue(userId);
-    const createdUser = await createUser(userSeed);
+    const userMock = new UserItem({
+      email: "email",
+      name: "name",
+      password: "password",
+      username: "username",
+      userId: "newUserId",
+    }).toItem(); //?
+    const createdUser = await createUser(userMock);
     await deleteUser(userId);
-    expect(Object.keys(createdUser).length).toBe(5);
-    expect(createdUser.email).toBe(userSeed.email);
-    expect(createdUser.name).toBe(userSeed.name);
-    expect(createdUser.username).toBe(userSeed.username);
-    expect(createdUser.userId).toBe(userId);
-    expect(createdUser.password).toBe("hashed-password");
+    expect(createdUser).toMatchInlineSnapshot(`
+      {
+        "email": "email",
+        "name": "name",
+        "password": "hashed-password",
+        "userId": "newUser",
+        "username": "username",
+      }
+    `);
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -162,10 +171,16 @@ describe("readUser", () => {
 
 describe("updateUser", () => {
   test("should update a user", async () => {
-    const userSeed = createUserSeed();
     const userId = "updateUserId";
     mockedUlid.mockReturnValue(userId);
-    const createdUser = await createUser(userSeed);
+    const userMock = new UserItem({
+      email: "email",
+      name: "name",
+      password: "password",
+      username: "username",
+      userId: "newUserId",
+    }).toItem(); //?
+    const createdUser = await createUser(userMock);
     const updatedUserName = "updatedUserName";
     const updatedName = "updatedName";
     const updatedUser = await updateUser({
@@ -174,12 +189,15 @@ describe("updateUser", () => {
       name: updatedName,
     });
     await deleteUser(userId);
-    expect(Object.keys(updatedUser).length).toBe(5);
-    expect(updatedUser.email).toBe(userSeed.email);
-    expect(updatedUser.name).toBe(updatedName);
-    expect(updatedUser.username).toBe(updatedUserName);
-    expect(updatedUser.userId).toBe(userId);
-    expect(updatedUser.password).toBe("hashed-password");
+    expect(updatedUser).toMatchInlineSnapshot(`
+      {
+        "email": "email",
+        "name": "updatedName",
+        "password": "hashed-password",
+        "userId": "updateUserId",
+        "username": "updatedUserName",
+      }
+    `);
   });
 
   test("should throw an error is a user does not exist", async () => {
@@ -237,17 +255,26 @@ describe("updateUser", () => {
 
 describe("deleteUser", () => {
   test("should delete a user", async () => {
-    const userSeed = createUserSeed();
     const userId = "deleteUserId";
     mockedUlid.mockReturnValue(userId);
-    await createUser(userSeed);
+    const userMock = new UserItem({
+      email: "email",
+      name: "name",
+      password: "password",
+      username: "username",
+      userId: "newUserId",
+    }).toItem();
+    await createUser(userMock);
     const deletedUser = await deleteUser(userId);
-    expect(Object.keys(deletedUser).length).toBe(5);
-    expect(deletedUser.email).toBe(userSeed.email);
-    expect(deletedUser.name).toBe(userSeed.name);
-    expect(deletedUser.username).toBe(userSeed.username);
-    expect(deletedUser.userId).toBe(userId);
-    expect(deletedUser.password).toBe("hashed-password");
+    expect(deletedUser).toMatchInlineSnapshot(`
+      {
+        "email": "email",
+        "name": "name",
+        "password": "hashed-password",
+        "userId": "deleteUserId",
+        "username": "username",
+      }
+    `)
   });
   test("should return an error when trying to delete a user that does not exist", async () => {
     const error = await getError(async () => deleteUser("doesntExistUserId"));
