@@ -236,19 +236,30 @@
             "S": "PRODUCT#12345"
           },
           "SK": {
-            "S": "WAREHOUSE#12345"
+            "S": "WAREHOUSE_ITEM#12345"
           },
           "EntityType": {
             "S": "warehouseItem"
           },
-          "Quantity": {
-            "S": "50"
-          },
+
           "GS2PK": {
             "S": "WAREHOUSE#12345"
           },
           "GS2SK": {
             "S": "WAREHOUSE_ITEM#2020-06-21"
+          },
+          "Attributes": {
+            "M": {
+              "createdAt": {
+                "S": "2020-06-21"
+              },
+              "Quantity": {
+                "S": "50"
+              },
+              "warehouseItemId": {
+                "S": "12345"
+              }
+            }
           }
         },
         {
