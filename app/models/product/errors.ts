@@ -11,7 +11,7 @@ export const PRODUCT_ERROR_MESSAGES: ErrorMessage<ProductErrorCodes> = {
   PRODUCT_ALREADY_EXISTS: {
     code: "PRODUCT_ALREADY_EXISTS",
     stausCode: 400,
-    message: "There is already an existing product with this email address.",
+    message: "There is already an existing product with this productId.",
   },
   PRODUCT_DOES_NOT_EXIST: {
     code: "PRODUCT_DOES_NOT_EXIST",

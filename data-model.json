@@ -253,10 +253,19 @@
               "createdAt": {
                 "S": "2020-06-21"
               },
-              "Quantity": {
+              "updatedAt": {
+                "S": "2020-06-21"
+              },
+              "productId": {
+                "S": "12345"
+              },
+              "quantity": {
                 "S": "50"
               },
               "warehouseItemId": {
+                "S": "12345"
+              },
+              "warehouseId": {
                 "S": "12345"
               }
             }
