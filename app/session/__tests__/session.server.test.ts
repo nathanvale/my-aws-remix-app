@@ -11,7 +11,7 @@ import {
 import * as userServer from "~/models/user/user.server";
 import * as getSession from "../get-session";
 import * as log from "../../models/log";
-import { TEST_USER_ID } from "../../../test/db-test-helpers";
+import { TEST_USER_ID } from "dynamodb/db-test-helpers";
 import * as logout from "../logout";
 
 vi.mock("@remix-run/server-runtime");

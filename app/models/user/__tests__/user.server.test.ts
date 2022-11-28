@@ -16,7 +16,7 @@ import {
   clientApiMethodResolve,
   TEST_USER_EMAIL,
   TEST_USER_ID,
-} from "../../../../test/db-test-helpers";
+} from "dynamodb/db-test-helpers";
 import * as client from "../../../../dynamodb/client";
 import * as log from "../../log";
 import { SpyInstance, Mock } from "vitest";
@@ -274,7 +274,7 @@ describe("deleteUser", () => {
         "userId": "deleteUserId",
         "username": "username",
       }
-    `)
+    `);
   });
   test("should return an error when trying to delete a user that does not exist", async () => {
     const error = await getError(async () => deleteUser("doesntExistUserId"));

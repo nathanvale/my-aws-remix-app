@@ -2,7 +2,7 @@ import * as log from "../app/models/log";
 import { useMatches } from "@remix-run/react";
 import { renderHook } from "@testing-library/react";
 import type { Mock } from "vitest";
-import { TEST_USER_EMAIL, TEST_USER_ID } from "../test/db-test-helpers";
+import { TEST_USER_EMAIL, TEST_USER_ID } from "dynamodb/db-test-helpers";
 import {
   validateEmail,
   isUser,

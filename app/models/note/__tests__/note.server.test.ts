@@ -7,7 +7,7 @@ import {
 } from "../note.server";
 import { ulid } from "ulid";
 import { Mock, vi } from "vitest";
-import { TEST_USER_ID } from "../../../../test/db-test-helpers";
+import { TEST_USER_ID } from "dynamodb/db-test-helpers";
 
 vi.mock("ulid");
 const mockedUlid = ulid as Mock;

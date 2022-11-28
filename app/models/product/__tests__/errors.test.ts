@@ -6,7 +6,7 @@ describe("USER_ERROR_MESSAGES", () => {
       {
         "PRODUCT_ALREADY_EXISTS": {
           "code": "PRODUCT_ALREADY_EXISTS",
-          "message": "There is already an existing product with this email address.",
+          "message": "There is already an existing product with this productId.",
           "stausCode": 400,
         },
         "PRODUCT_DOES_NOT_EXIST": {

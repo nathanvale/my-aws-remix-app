@@ -12,7 +12,7 @@ import {
   clientApiMethodReject,
   clientApiMethodResolve,
   TEST_PRODUCT_ID,
-} from "../../../../test/db-test-helpers";
+} from "dynamodb/db-test-helpers";
 import * as client from "../../../../dynamodb/client";
 import * as log from "../../log";
 import { createProductSeed } from "dynamodb/seed-utils";
@@ -133,9 +133,7 @@ describe("readProduct", () => {
   });
 
   test("should return an error when getting a product that does not exist", async () => {
-    const result = await getError(async () =>
-      readProduct("unknown.product@test.com")
-    );
+    const result = await getError(async () => readProduct("unknownProductId"));
     expect(result).toMatchInlineSnapshot(`
         ProductError {
           "code": "PRODUCT_NOT_FOUND",
