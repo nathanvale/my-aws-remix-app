@@ -3,6 +3,7 @@ import {
   createProductSeed,
   createUserSeed,
   createWarehouseItemSeed,
+  createWarehouseSeed,
 } from "./seed-utils";
 
 test("should output user seed", async () => {
@@ -16,5 +17,9 @@ test("should output product seed", async () => {
 
 test("should output warehouseItem seed", async () => {
   const result = createWarehouseItemSeed();
+  JSON.stringify(marshall(result)); //?
+});
+test("should output warehouse seed", async () => {
+  const result = createWarehouseSeed();
   JSON.stringify(marshall(result)); //?
 });
