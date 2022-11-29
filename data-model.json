@@ -217,18 +217,20 @@
           "EntityType": {
             "S": "warehouse"
           },
-          "Address": {
-            "M": {
-              "city": {
-                "S": "Elsternwick"
-              }
-            }
-          },
           "GS2PK": {
             "S": "USER#12345"
           },
           "GS2SK": {
             "S": "WAREHOUSE#12345"
+          },
+          "Attributes": {
+            "M": {
+              "warehouseId": { "S": "12345" },
+              "createdAt": { "S": "2022-08-31T05:46:41.205Z" },
+              "userId": { "S": "12345" },
+              "updatedAt": { "S": "2022-11-25T13:45:46.999Z" },
+              "city": { "S": "Fort Ellaboro" }
+            }
           }
         },
         {

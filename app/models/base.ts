@@ -3,6 +3,10 @@ import {
   PrimaryKeyAttributeValues,
 } from "dynamodb/utils";
 
+export interface Base {
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
 export abstract class Item {
   abstract get PK(): string;
   abstract get SK(): string;

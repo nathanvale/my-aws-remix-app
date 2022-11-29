@@ -1,6 +1,6 @@
 import { DynamoDB, AWSError } from "aws-sdk";
 import { ulid } from "ulid";
-import { Item } from "../base";
+import { Base, Item } from "../base";
 import {
   AWSErrorCodes,
   createItem,
@@ -19,11 +19,9 @@ import {
 } from "../../../dynamodb/utils";
 import { WarehouseItemError } from "./errors";
 
-export interface WarehouseItem {
+export interface WarehouseItem extends Base {
   readonly warehouseItemId: string;
   readonly warehouseId: string;
-  readonly createdAt: string;
-  readonly updatedAt: string;
   readonly productId: string;
   quantity: string;
 }
@@ -115,7 +113,7 @@ export class WarehouseItemItem extends Item {
     return `WAREHOUSE#${this.attributes.warehouseId}`;
   }
 
-  get GS2SK() {
+  get GS2SK(): `WAREHOUSE_ITEM#${string}` {
     return `WAREHOUSE_ITEM#${this.attributes.createdAt}`;
   }
 
