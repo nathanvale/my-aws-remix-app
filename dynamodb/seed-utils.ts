@@ -1,9 +1,11 @@
 import { faker } from "@faker-js/faker";
 import {
+  TEST_ORDER_ID,
   TEST_PRODUCT_ID,
   TEST_USER_ID,
   TEST_WAREHOUSE_ID,
 } from "dynamodb/db-test-helpers";
+import type { Invoice } from "~/models/invoice/invoice.server";
 import type { Product } from "~/models/product/product.server";
 import type { User } from "~/models/user/user.server";
 import type { WarehouseItem } from "~/models/warehouse-item/warehouse-item.server";
@@ -66,4 +68,11 @@ export function createWarehouseSeed(): Omit<Warehouse, "warehouseId"> {
   const userId = TEST_USER_ID;
   const city = faker.address.city();
   return { createdAt, userId, updatedAt, city };
+}
+export function createInvoiceSeed(): Omit<Invoice, "invoiceId"> {
+  const { createdAt, updatedAt } = getDates();
+  const userId = TEST_USER_ID;
+  const orderId = TEST_ORDER_ID;
+  const amount = faker.datatype.number({ min: 1, max: 100 }).toString();
+  return { createdAt, userId, updatedAt, amount, orderId };
 }

@@ -1,5 +1,6 @@
 import { marshall } from "dynamodb/utils";
 import {
+  createInvoiceSeed,
   createProductSeed,
   createUserSeed,
   createWarehouseItemSeed,
@@ -21,5 +22,9 @@ test("should output warehouseItem seed", async () => {
 });
 test("should output warehouse seed", async () => {
   const result = createWarehouseSeed();
+  JSON.stringify(marshall(result)); //?
+});
+test("should output invoice seed", async () => {
+  const result = createInvoiceSeed();
   JSON.stringify(marshall(result)); //?
 });
