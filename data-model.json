@@ -335,12 +335,6 @@
           "EntityType": {
             "S": "invoice"
           },
-          "Date": {
-            "S": "2020-06-21"
-          },
-          "Amount": {
-            "S": "50"
-          },
           "GS1PK": {
             "S": "INVOICE#12345"
           },
@@ -352,6 +346,16 @@
           },
           "GS2SK": {
             "S": "INVOICE#2020-06-21"
+          },
+          "Attributes": {
+            "M": {
+              "invoiceId": { "S": "12345" },
+              "createdAt": { "S": "2022-09-29T07:11:20.245Z" },
+              "userId": { "S": "12345" },
+              "updatedAt": { "S": "2022-11-07T19:23:28.342Z" },
+              "amount": { "S": "23" },
+              "orderId": { "S": "12345" }
+            }
           }
         },
         {
