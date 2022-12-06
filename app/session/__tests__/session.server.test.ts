@@ -72,9 +72,11 @@ describe("getUserFromSession", () => {
     const result = await getUserFromSession(request);
     expect(result).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-08-31T05:46:41.205Z",
         "email": "test@test.com",
         "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
+        "updatedAt": "2022-11-25T13:45:46.999Z",
         "userId": "12345",
         "username": "test_user",
       }
@@ -134,9 +136,11 @@ describe("requireUser", () => {
     const result = await requireUser(request);
     expect(result).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-08-31T05:46:41.205Z",
         "email": "test@test.com",
         "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
+        "updatedAt": "2022-11-25T13:45:46.999Z",
         "userId": "12345",
         "username": "test_user",
       }

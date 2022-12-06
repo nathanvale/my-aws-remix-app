@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import {
   createInvoice,
   deleteInvoice,
@@ -18,17 +17,21 @@ import {
 } from "dynamodb/db-test-helpers";
 import * as client from "../../../../dynamodb/client";
 import * as log from "../../log";
+
 import { createInvoiceSeed } from "dynamodb/seed-utils";
 import { Mock } from "vitest";
 
 vi.mock("ulid");
 
 let mockedUlid = ulid as Mock;
+const createdNow = new Date("2022-12-01T00:00:00.000Z");
+const updatedNow = new Date("2022-12-05T00:00:00.000Z");
 
 beforeEach(() => {
   vi.restoreAllMocks();
   vi.spyOn(log, "logError").mockReturnValue("id");
-  vi.spyOn(bcrypt, "hash").mockReturnValue("hashed-password" as any);
+  vi.useFakeTimers();
+  vi.setSystemTime(createdNow);
 });
 
 describe("InvoiceItem", () => {
@@ -145,10 +148,10 @@ describe("createInvoice", () => {
     expect(createdUser).toMatchInlineSnapshot(`
       {
         "amount": "1",
-        "createdAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "invoiceId": "newInvoiceId",
         "orderId": "12345",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "userId": "12345",
       }
     `);
@@ -220,6 +223,7 @@ describe("updateInvoice", () => {
     }).toItem();
     const createdInvoice = await createInvoice(userMock);
     const amount = "updatedAmount";
+    vi.setSystemTime(updatedNow);
     const updatedInvoice = await updateInvoice({
       ...createdInvoice,
       amount,
@@ -228,10 +232,10 @@ describe("updateInvoice", () => {
     expect(updatedInvoice).toMatchInlineSnapshot(`
       {
         "amount": "updatedAmount",
-        "createdAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "invoiceId": "updateInvoiceId",
         "orderId": "12345",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "updatedAt": "2022-12-05T00:00:00.000Z",
         "userId": "12345",
       }
     `);
@@ -306,10 +310,10 @@ describe("deleteInvoice", () => {
     expect(deletedInvoice).toMatchInlineSnapshot(`
       {
         "amount": "1",
-        "createdAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "invoiceId": "deleteInvoiceId",
         "orderId": "12345",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "userId": "12345",
       }
     `);

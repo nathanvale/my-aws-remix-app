@@ -143,10 +143,12 @@ export class WarehouseItem extends Item {
 }
 
 export const createWarehouse = async (
-  warehouse: Omit<Warehouse, "warehouseId">
+  warehouse: Omit<Warehouse, "warehouseId" | "createdAt" | "updatedAt">
 ): Promise<Warehouse> => {
   const warehouseItem = new WarehouseItem({
     ...warehouse,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     warehouseId: ulid(),
   });
   await createItem(warehouseItem.toDynamoDBItem());
@@ -169,7 +171,10 @@ export const updateWarehouse = async (
     const key = WarehouseItem.getPrimaryKeyAttributeValues(
       warehouse.warehouseId
     );
-    const warehouseItem = new WarehouseItem(warehouse);
+    const warehouseItem = new WarehouseItem({
+      ...warehouse,
+      updatedAt: new Date().toISOString(),
+    });
     const resp = await updateItem(
       key,
       warehouseItem.toDynamoDBItem().Attributes

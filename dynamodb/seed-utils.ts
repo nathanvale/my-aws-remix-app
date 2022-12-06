@@ -26,6 +26,7 @@ function getDates() {
 }
 
 export function createUserSeed(): Omit<User, "userId"> {
+  const { createdAt, updatedAt } = getDates();
   const firstName = faker.helpers.unique(faker.name.firstName);
   const lastName = faker.helpers.unique(faker.name.lastName);
 
@@ -42,14 +43,17 @@ export function createUserSeed(): Omit<User, "userId"> {
     name: `${firstName} ${lastName}`,
     username,
     password: faker.internet.password(),
+    createdAt,
+    updatedAt,
   };
 }
 
 export function createProductSeed(): Omit<Product, "productId"> {
+  const { createdAt, updatedAt } = getDates();
   const company = faker.helpers.unique(faker.company.name);
   const price = faker.commerce.price(100, 200);
   const description = faker.commerce.productDescription();
-  return { company, price, description };
+  return { company, price, description, createdAt, updatedAt };
 }
 
 export function createWarehouseItemSeed(): Omit<

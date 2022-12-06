@@ -1,6 +1,6 @@
 import { DynamoDB, AWSError } from "aws-sdk";
 import { ulid } from "ulid";
-import { Item } from "../base";
+import { Base, Item } from "../base";
 import {
   AWSErrorCodes,
   createItem,
@@ -18,7 +18,7 @@ import {
 } from "../../../dynamodb/utils";
 import { ProductError } from "./errors";
 
-export interface Product {
+export interface Product extends Base {
   readonly productId: string;
   company: string;
   price: string;
@@ -40,6 +40,8 @@ export class ProductItem extends Item {
     invariant(item.Attributes, "No attributes!");
     invariant(item.Attributes.M, "No attributes!");
     const product = new ProductItem({
+      createdAt: "",
+      updatedAt: "",
       productId: "",
       company: "",
       price: "",
@@ -60,6 +62,8 @@ export class ProductItem extends Item {
     productId: Product["productId"]
   ): PrimaryKeyAttributeValues {
     const product = new ProductItem({
+      createdAt: "",
+      updatedAt: "",
       productId: productId,
       company: "",
       price: "",
@@ -106,6 +110,8 @@ export class ProductItem extends Item {
 
   toItem(): Product {
     return {
+      createdAt: this.attributes.createdAt,
+      updatedAt: this.attributes.updatedAt,
       company: this.attributes.company,
       description: this.attributes.description,
       price: this.attributes.price,
@@ -126,10 +132,12 @@ export class ProductItem extends Item {
 }
 
 export const createProduct = async (
-  product: Omit<Product, "productId">
+  product: Omit<Product, "productId" | "createdAt" | "updatedAt">
 ): Promise<Product> => {
   const productItem = new ProductItem({
     ...product,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     productId: ulid(),
   });
   await createItem(productItem.toDynamoDBItem());
@@ -146,7 +154,10 @@ export const readProduct = async (productId: string): Promise<Product> => {
 export const updateProduct = async (product: Product): Promise<Product> => {
   try {
     const key = ProductItem.getPrimaryKeyAttributeValues(product.productId);
-    const productItem = new ProductItem(product);
+    const productItem = new ProductItem({
+      ...product,
+      updatedAt: new Date().toISOString(),
+    });
     const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes);
     if (resp?.Attributes)
       return ProductItem.fromItem(resp.Attributes).attributes;

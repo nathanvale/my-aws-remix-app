@@ -17,7 +17,7 @@ import {
   TEST_USER_EMAIL,
   TEST_USER_ID,
 } from "dynamodb/db-test-helpers";
-import * as client from "../../../../dynamodb/client";
+import * as client from "dynamodb/client";
 import * as log from "../../log";
 import { SpyInstance, Mock } from "vitest";
 import { createUserSeed } from "dynamodb/seed-utils";
@@ -26,17 +26,23 @@ vi.mock("ulid");
 
 let mockedUlid = ulid as Mock;
 let compareSpy: SpyInstance;
+const createdNow = new Date("2022-12-01T00:00:00.000Z");
+const updatedNow = new Date("2022-12-05T00:00:00.000Z");
 
 beforeEach(() => {
   vi.restoreAllMocks();
   vi.spyOn(log, "logError").mockReturnValue("id");
   vi.spyOn(bcrypt, "hash").mockReturnValue("hashed-password" as any);
   compareSpy = vi.spyOn(bcrypt, "compare");
+  vi.useFakeTimers();
+  vi.setSystemTime(createdNow);
 });
 
 describe("UserItem", () => {
   test("should get a DynamoDB attribute map of a user", async () => {
     const userItem = new UserItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       userId: TEST_USER_ID,
       email: TEST_USER_EMAIL,
       password: "password",
@@ -47,6 +53,9 @@ describe("UserItem", () => {
       {
         "Attributes": {
           "M": {
+            "createdAt": {
+              "S": "2021-08-01T00:00:00.000Z",
+            },
             "email": {
               "S": "test@test.com",
             },
@@ -55,6 +64,9 @@ describe("UserItem", () => {
             },
             "password": {
               "S": "password",
+            },
+            "updatedAt": {
+              "S": "2021-08-01T00:00:00.000Z",
             },
             "userId": {
               "S": "12345",
@@ -101,19 +113,23 @@ describe("createUser", () => {
     const userId = "newUser";
     mockedUlid.mockReturnValue(userId);
     const userMock = new UserItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       email: "email",
       name: "name",
       password: "password",
       username: "username",
       userId: "newUserId",
-    }).toItem(); //?
+    }).toItem();
     const createdUser = await createUser(userMock);
     await deleteUser(userId);
     expect(createdUser).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "email": "email",
         "name": "name",
         "password": "hashed-password",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "userId": "newUser",
         "username": "username",
       }
@@ -136,9 +152,11 @@ describe("readUser", () => {
     const result = await readUser(TEST_USER_ID);
     expect(result).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-08-31T05:46:41.205Z",
         "email": "test@test.com",
         "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
+        "updatedAt": "2022-11-25T13:45:46.999Z",
         "userId": "12345",
         "username": "test_user",
       }
@@ -174,6 +192,8 @@ describe("updateUser", () => {
     const userId = "updateUserId";
     mockedUlid.mockReturnValue(userId);
     const userMock = new UserItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       email: "email",
       name: "name",
       password: "password",
@@ -183,6 +203,7 @@ describe("updateUser", () => {
     const createdUser = await createUser(userMock);
     const updatedUserName = "updatedUserName";
     const updatedName = "updatedName";
+    vi.setSystemTime(updatedNow);
     const updatedUser = await updateUser({
       ...createdUser,
       username: updatedUserName,
@@ -191,9 +212,11 @@ describe("updateUser", () => {
     await deleteUser(userId);
     expect(updatedUser).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "email": "email",
         "name": "updatedName",
         "password": "hashed-password",
+        "updatedAt": "2022-12-05T00:00:00.000Z",
         "userId": "updateUserId",
         "username": "updatedUserName",
       }
@@ -258,6 +281,8 @@ describe("deleteUser", () => {
     const userId = "deleteUserId";
     mockedUlid.mockReturnValue(userId);
     const userMock = new UserItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       email: "email",
       name: "name",
       password: "password",
@@ -268,9 +293,11 @@ describe("deleteUser", () => {
     const deletedUser = await deleteUser(userId);
     expect(deletedUser).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "email": "email",
         "name": "name",
         "password": "hashed-password",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "userId": "deleteUserId",
         "username": "username",
       }
@@ -304,9 +331,11 @@ describe("getUserByEmail", () => {
     const user = await getUserByEmail(TEST_USER_EMAIL);
     expect(user).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-08-31T05:46:41.205Z",
         "email": "test@test.com",
         "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
+        "updatedAt": "2022-11-25T13:45:46.999Z",
         "userId": "12345",
         "username": "test_user",
       }
@@ -361,9 +390,11 @@ describe("verifyLogin", () => {
     const result = await verifyLogin(TEST_USER_EMAIL, "password");
     expect(result).toMatchInlineSnapshot(`
       {
+        "createdAt": "2022-08-31T05:46:41.205Z",
         "email": "test@test.com",
         "name": "Test User",
         "password": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq",
+        "updatedAt": "2022-11-25T13:45:46.999Z",
         "userId": "12345",
         "username": "test_user",
       }
