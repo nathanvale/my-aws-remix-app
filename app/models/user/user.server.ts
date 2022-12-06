@@ -1,7 +1,7 @@
 import { DynamoDB, AWSError } from "aws-sdk";
 import bcrypt from "bcryptjs";
 import { ulid } from "ulid";
-import { Item } from "../base";
+import { Base, Item } from "../base";
 import { getClient } from "dynamodb/client";
 import invariant from "tiny-invariant";
 import {
@@ -19,7 +19,7 @@ import {
 } from "dynamodb/utils";
 import { UserError } from "./errors";
 
-export interface User {
+export interface User extends Base {
   readonly userId: string;
   email: string;
   password: string;
@@ -44,6 +44,8 @@ export class UserItem extends Item {
     invariant(item.Attributes, "No attributes!");
     invariant(item.Attributes.M, "No attributes!");
     const user = new UserItem({
+      createdAt: "",
+      updatedAt: "",
       userId: "",
       email: "",
       password: "",
@@ -65,6 +67,8 @@ export class UserItem extends Item {
     userId: User["userId"]
   ): PrimaryKeyAttributeValues {
     const user = new UserItem({
+      createdAt: "",
+      updatedAt: "",
       userId,
       email: "",
       password: "",
@@ -79,6 +83,8 @@ export class UserItem extends Item {
     email: User["email"]
   ): GSIKeyAttributeValue {
     const user = new UserItem({
+      createdAt: "",
+      updatedAt: "",
       userId,
       email,
       password: "",
@@ -126,6 +132,8 @@ export class UserItem extends Item {
 
   toItem(): User {
     return {
+      createdAt: this.attributes.createdAt,
+      updatedAt: this.attributes.updatedAt,
       name: this.attributes.name,
       email: this.attributes.email,
       password: this.attributes.password,
@@ -146,10 +154,14 @@ export class UserItem extends Item {
   }
 }
 
-export const createUser = async (user: Omit<User, "userId">): Promise<User> => {
+export const createUser = async (
+  user: Omit<User, "userId" | "createdAt" | "updatedAt">
+): Promise<User> => {
   const hashedPassword = await bcrypt.hash(user.password, 10);
   const userItem = new UserItem({
     ...user,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     userId: ulid(),
     password: hashedPassword,
   });
@@ -167,7 +179,10 @@ export const readUser = async (userId: string): Promise<User> => {
 export const updateUser = async (user: User): Promise<User> => {
   try {
     const key = UserItem.getPrimaryKeyAttributeValues(user.userId);
-    const productItem = new UserItem(user);
+    const productItem = new UserItem({
+      ...user,
+      updatedAt: new Date().toISOString(),
+    });
     const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes);
     if (resp?.Attributes) return UserItem.fromItem(resp.Attributes).attributes;
     else throw new UserError("USER_UPDATES_MUST_RETURN_VALUES");

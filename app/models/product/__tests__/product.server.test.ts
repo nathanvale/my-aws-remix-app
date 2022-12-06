@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import {
   createProduct,
   deleteProduct,
@@ -13,7 +12,7 @@ import {
   clientApiMethodResolve,
   TEST_PRODUCT_ID,
 } from "dynamodb/db-test-helpers";
-import * as client from "../../../../dynamodb/client";
+import * as client from "dynamodb/client";
 import * as log from "../../log";
 import { createProductSeed } from "dynamodb/seed-utils";
 import { Mock } from "vitest";
@@ -21,16 +20,21 @@ import { Mock } from "vitest";
 vi.mock("ulid");
 
 let mockedUlid = ulid as Mock;
+const createdNow = new Date("2022-12-01T00:00:00.000Z");
+const updatedNow = new Date("2022-12-05T00:00:00.000Z");
 
 beforeEach(() => {
   vi.restoreAllMocks();
   vi.spyOn(log, "logError").mockReturnValue("id");
-  vi.spyOn(bcrypt, "hash").mockReturnValue("hashed-password" as any);
+  vi.useFakeTimers();
+  vi.setSystemTime(createdNow);
 });
 
 describe("ProductItem", () => {
   test("should get a DynamoDB attribute map of a product", async () => {
     const productItem = new ProductItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       productId: TEST_PRODUCT_ID,
       description: "description",
       company: "company",
@@ -43,6 +47,9 @@ describe("ProductItem", () => {
             "company": {
               "S": "company",
             },
+            "createdAt": {
+              "S": "2021-08-01T00:00:00.000Z",
+            },
             "description": {
               "S": "description",
             },
@@ -51,6 +58,9 @@ describe("ProductItem", () => {
             },
             "productId": {
               "S": "12345",
+            },
+            "updatedAt": {
+              "S": "2021-08-01T00:00:00.000Z",
             },
           },
         },
@@ -91,6 +101,8 @@ describe("createProduct", () => {
     const productId = "newProductId";
     mockedUlid.mockReturnValue(productId);
     const userMock = new ProductItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       company: "company",
       description: "description",
       price: "price",
@@ -101,9 +113,11 @@ describe("createProduct", () => {
     expect(createdUser).toMatchInlineSnapshot(`
       {
         "company": "company",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "description": "description",
         "price": "price",
         "productId": "newProductId",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
       }
     `);
   });
@@ -125,9 +139,11 @@ describe("readProduct", () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "company": "Mann - Thiel",
+        "createdAt": "2022-08-31T05:46:41.205Z",
         "description": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals",
         "price": "143.00",
         "productId": "12345",
+        "updatedAt": "2022-11-25T13:45:46.999Z",
       }
     `);
   });
@@ -161,6 +177,8 @@ describe("updateProduct", () => {
     const productId = "updateProductId";
     mockedUlid.mockReturnValue(productId);
     const userMock = new ProductItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       company: "company",
       description: "description",
       price: "price",
@@ -168,6 +186,7 @@ describe("updateProduct", () => {
     }).toItem();
     const createdProduct = await createProduct(userMock);
     const updatedCompany = "updatedCompany";
+    vi.setSystemTime(updatedNow);
     const updatedProduct = await updateProduct({
       ...createdProduct,
       company: updatedCompany,
@@ -176,9 +195,11 @@ describe("updateProduct", () => {
     expect(updatedProduct).toMatchInlineSnapshot(`
       {
         "company": "updatedCompany",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "description": "description",
         "price": "price",
         "productId": "updateProductId",
+        "updatedAt": "2022-12-05T00:00:00.000Z",
       }
     `);
   });
@@ -240,6 +261,8 @@ describe("deleteProduct", () => {
     const productId = "deleteProductId";
     mockedUlid.mockReturnValue(productId);
     const userMock = new ProductItem({
+      createdAt: "2021-08-01T00:00:00.000Z",
+      updatedAt: "2021-08-01T00:00:00.000Z",
       company: "company",
       description: "description",
       price: "price",
@@ -250,9 +273,11 @@ describe("deleteProduct", () => {
     expect(deletedProduct).toMatchInlineSnapshot(`
       {
         "company": "company",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "description": "description",
         "price": "price",
         "productId": "deleteProductId",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
       }
     `);
   });

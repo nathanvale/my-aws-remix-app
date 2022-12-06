@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import {
   createWarehouse,
   deleteWarehouse,
@@ -15,7 +14,7 @@ import {
   TEST_USER_ID,
   TEST_WAREHOUSE_ID,
 } from "dynamodb/db-test-helpers";
-import * as client from "../../../../dynamodb/client";
+import * as client from "dynamodb/client";
 import * as log from "../../log";
 import { createWarehouseSeed } from "dynamodb/seed-utils";
 import { Mock } from "vitest";
@@ -23,11 +22,14 @@ import { Mock } from "vitest";
 vi.mock("ulid");
 
 let mockedUlid = ulid as Mock;
+const createdNow = new Date("2022-12-01T00:00:00.000Z");
+const updatedNow = new Date("2022-12-05T00:00:00.000Z");
 
 beforeEach(() => {
   vi.restoreAllMocks();
   vi.spyOn(log, "logError").mockReturnValue("id");
-  vi.spyOn(bcrypt, "hash").mockReturnValue("hashed-password" as any);
+  vi.useFakeTimers();
+  vi.setSystemTime(createdNow);
 });
 
 describe("WarehouseItem", () => {
@@ -134,8 +136,8 @@ describe("createWarehouse", () => {
     expect(createdUser).toMatchInlineSnapshot(`
       {
         "city": "New York",
-        "createdAt": "2021-01-01T00:00:00.000Z",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "userId": "12345",
         "warehouseId": "newWarehouseId",
       }
@@ -206,6 +208,7 @@ describe("updateWarehouse", () => {
     }).toItem();
     const createdWarehouse = await createWarehouse(userMock);
     const updatedCity = "updatedCity";
+    vi.setSystemTime(updatedNow);
     const updatedWarehouse = await updateWarehouse({
       ...createdWarehouse,
       city: updatedCity,
@@ -214,8 +217,8 @@ describe("updateWarehouse", () => {
     expect(updatedWarehouse).toMatchInlineSnapshot(`
       {
         "city": "updatedCity",
-        "createdAt": "2021-01-01T00:00:00.000Z",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
+        "updatedAt": "2022-12-05T00:00:00.000Z",
         "userId": "12345",
         "warehouseId": "updateWarehouseId",
       }
@@ -292,8 +295,8 @@ describe("deleteWarehouse", () => {
     expect(deletedWarehouse).toMatchInlineSnapshot(`
       {
         "city": "New York",
-        "createdAt": "2021-01-01T00:00:00.000Z",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "userId": "12345",
         "warehouseId": "deleteWarehouseId",
       }

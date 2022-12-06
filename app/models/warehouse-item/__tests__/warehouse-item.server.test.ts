@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import {
   createWarehouseItem,
   deleteWarehouseItem,
@@ -14,7 +13,7 @@ import {
   TEST_PRODUCT_ID,
   TEST_WAREHOUSE_ITEM_ID,
 } from "dynamodb/db-test-helpers";
-import * as client from "../../../../dynamodb/client";
+import * as client from "dynamodb/client";
 import * as log from "../../log";
 import { createWarehouseItemSeed } from "dynamodb/seed-utils";
 import { Mock } from "vitest";
@@ -22,11 +21,14 @@ import { Mock } from "vitest";
 vi.mock("ulid");
 
 let mockedUlid = ulid as Mock;
+const createdNow = new Date("2022-12-01T00:00:00.000Z");
+const updatedNow = new Date("2022-12-05T00:00:00.000Z");
 
 beforeEach(() => {
   vi.restoreAllMocks();
   vi.spyOn(log, "logError").mockReturnValue("id");
-  vi.spyOn(bcrypt, "hash").mockReturnValue("hashed-password" as any);
+  vi.useFakeTimers();
+  vi.setSystemTime(createdNow);
 });
 
 describe("WarehouseItemItem", () => {
@@ -141,10 +143,10 @@ describe("createWarehouseItem", () => {
     await deleteWarehouseItem(warehouseItemId, TEST_PRODUCT_ID);
     expect(createdUser).toMatchInlineSnapshot(`
       {
-        "createdAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "productId": "12345",
         "quantity": "1",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "warehouseId": "warehouseId",
         "warehouseItemId": "newWarehouseItemId",
       }
@@ -220,6 +222,7 @@ describe("updateWarehouseItem", () => {
     }).toItem();
     const createdWarehouseItem = await createWarehouseItem(userMock);
     const quantity = "updatedQuantity";
+    vi.setSystemTime(updatedNow);
     const updatedWarehouseItem = await updateWarehouseItem({
       ...createdWarehouseItem,
       quantity,
@@ -227,10 +230,10 @@ describe("updateWarehouseItem", () => {
     await deleteWarehouseItem(warehouseItemId, TEST_PRODUCT_ID);
     expect(updatedWarehouseItem).toMatchInlineSnapshot(`
       {
-        "createdAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "productId": "12345",
         "quantity": "updatedQuantity",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "updatedAt": "2022-12-05T00:00:00.000Z",
         "warehouseId": "warehouseId",
         "warehouseItemId": "updateWarehouseItemId",
       }
@@ -308,10 +311,10 @@ describe("deleteWarehouseItem", () => {
     );
     expect(deletedWarehouseItem).toMatchInlineSnapshot(`
       {
-        "createdAt": "2021-01-01T00:00:00.000Z",
+        "createdAt": "2022-12-01T00:00:00.000Z",
         "productId": "12345",
         "quantity": "1",
-        "updatedAt": "2021-01-01T00:00:00.000Z",
+        "updatedAt": "2022-12-01T00:00:00.000Z",
         "warehouseId": "warehouseId",
         "warehouseItemId": "deleteWarehouseItemId",
       }

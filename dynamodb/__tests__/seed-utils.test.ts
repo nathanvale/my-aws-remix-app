@@ -5,7 +5,7 @@ import {
   createUserSeed,
   createWarehouseItemSeed,
   createWarehouseSeed,
-} from "./seed-utils";
+} from "../seed-utils";
 
 test("should output user seed", async () => {
   const result = createUserSeed();

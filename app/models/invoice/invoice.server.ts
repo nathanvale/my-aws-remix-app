@@ -150,10 +150,12 @@ export class InvoiceItem extends Item {
 }
 
 export const createInvoice = async (
-  invoice: Omit<Invoice, "invoiceId">
+  invoice: Omit<Invoice, "invoiceId" | "createdAt" | "updatedAt">
 ): Promise<Invoice> => {
   const invoiceItem = new InvoiceItem({
     ...invoice,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     invoiceId: ulid(),
   });
   await createItem(invoiceItem.toDynamoDBItem());
@@ -176,7 +178,10 @@ export const updateInvoice = async (invoice: Invoice): Promise<Invoice> => {
       invoice.invoiceId,
       invoice.orderId
     );
-    const invoiceItem = new InvoiceItem(invoice);
+    const invoiceItem = new InvoiceItem({
+      ...invoice,
+      updatedAt: new Date().toISOString(),
+    });
     const resp = await updateItem(key, invoiceItem.toDynamoDBItem().Attributes);
     if (resp?.Attributes)
       return InvoiceItem.fromItem(resp.Attributes).attributes;
