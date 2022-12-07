@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Nathan Vale",
     "DateCreated": "Oct 16, 2022, 05:12 PM",
-    "DateLastModified": "Oct 30, 2022, 08:11 AM",
+    "DateLastModified": "Dec 08, 2022, 10:11 AM",
     "Description": "",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -168,8 +168,12 @@
           },
           "Attributes": {
             "M": {
-              "createdAt": { "S": "2022-08-31T05:46:41.205Z" },
-              "updatedAt": { "S": "2022-11-25T13:45:46.999Z" },
+              "createdAt": {
+                "S": "2022-08-31T05:46:41.205Z"
+              },
+              "updatedAt": {
+                "S": "2022-11-25T13:45:46.999Z"
+              },
               "userId": {
                 "S": "12345"
               },
@@ -200,11 +204,21 @@
           },
           "Attributes": {
             "M": {
-              "createdAt": { "S": "2022-08-31T05:46:41.205Z" },
-              "updatedAt": { "S": "2022-11-25T13:45:46.999Z" },
-              "productId": { "S": "12345" },
-              "company": { "S": "Mann - Thiel" },
-              "price": { "S": "143.00" },
+              "createdAt": {
+                "S": "2022-08-31T05:46:41.205Z"
+              },
+              "updatedAt": {
+                "S": "2022-11-25T13:45:46.999Z"
+              },
+              "productId": {
+                "S": "12345"
+              },
+              "company": {
+                "S": "Mann - Thiel"
+              },
+              "price": {
+                "S": "143.00"
+              },
               "description": {
                 "S": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
               }
@@ -229,11 +243,21 @@
           },
           "Attributes": {
             "M": {
-              "warehouseId": { "S": "12345" },
-              "createdAt": { "S": "2022-08-31T05:46:41.205Z" },
-              "updatedAt": { "S": "2022-11-25T13:45:46.999Z" },
-              "userId": { "S": "12345" },
-              "city": { "S": "Fort Ellaboro" }
+              "warehouseId": {
+                "S": "12345"
+              },
+              "createdAt": {
+                "S": "2022-08-31T05:46:41.205Z"
+              },
+              "updatedAt": {
+                "S": "2022-11-25T13:45:46.999Z"
+              },
+              "userId": {
+                "S": "12345"
+              },
+              "city": {
+                "S": "Fort Ellaboro"
+              }
             }
           }
         },
@@ -247,7 +271,6 @@
           "EntityType": {
             "S": "warehouseItem"
           },
-
           "GS2PK": {
             "S": "WAREHOUSE#12345"
           },
@@ -287,20 +310,27 @@
           "EntityType": {
             "S": "order"
           },
-          "Date": {
-            "S": "2020-06-21"
-          },
-          "GS1PK": {
-            "S": "PRODUCT#12345"
-          },
-          "GS1SK": {
-            "S": "ORDER#2020-06-21"
-          },
           "GS2PK": {
             "S": "WAREHOUSE#12345"
           },
           "GS2SK": {
             "S": "ORDER#2020-06-21"
+          },
+          "Attributes": {
+            "M": {
+              "warehouseId": {
+                "S": "12345"
+              },
+              "createdAt": {
+                "S": "2022-08-31T05:46:41.205Z"
+              },
+              "updatedAt": {
+                "S": "2022-11-25T13:45:46.999Z"
+              },
+              "orderId": {
+                "S": "12345"
+              }
+            }
           }
         },
         {
@@ -353,12 +383,24 @@
           },
           "Attributes": {
             "M": {
-              "invoiceId": { "S": "12345" },
-              "createdAt": { "S": "2022-09-29T07:11:20.245Z" },
-              "userId": { "S": "12345" },
-              "updatedAt": { "S": "2022-11-07T19:23:28.342Z" },
-              "amount": { "S": "23" },
-              "orderId": { "S": "12345" }
+              "invoiceId": {
+                "S": "12345"
+              },
+              "createdAt": {
+                "S": "2022-09-29T07:11:20.245Z"
+              },
+              "userId": {
+                "S": "12345"
+              },
+              "updatedAt": {
+                "S": "2022-11-07T19:23:28.342Z"
+              },
+              "amount": {
+                "S": "23"
+              },
+              "orderId": {
+                "S": "12345"
+              }
             }
           }
         },
