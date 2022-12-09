@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Nathan Vale",
     "DateCreated": "Oct 16, 2022, 05:12 PM",
-    "DateLastModified": "Dec 08, 2022, 10:11 AM",
+    "DateLastModified": "Dec 09, 2022, 10:30 AM",
     "Description": "",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -271,10 +271,10 @@
           "EntityType": {
             "S": "warehouseItem"
           },
-          "GS2PK": {
+          "GS1PK": {
             "S": "WAREHOUSE#12345"
           },
-          "GS2SK": {
+          "GS1SK": {
             "S": "WAREHOUSE_ITEM#2020-06-21"
           },
           "Attributes": {
@@ -310,8 +310,14 @@
           "EntityType": {
             "S": "order"
           },
-          "GS2PK": {
+          "GS1PK": {
             "S": "WAREHOUSE#12345"
+          },
+          "GS1SK": {
+            "S": "ORDER#2020-06-21"
+          },
+          "GS2PK": {
+            "S": "USER#12345"
           },
           "GS2SK": {
             "S": "ORDER#2020-06-21"
@@ -329,6 +335,9 @@
               },
               "orderId": {
                 "S": "12345"
+              },
+              "userId": {
+                "S": "12345"
               }
             }
           }
@@ -338,25 +347,38 @@
             "S": "ORDER#12345"
           },
           "SK": {
-            "S": "PRODUCT#12345"
+            "S": "ORDER_ITEM#12345"
           },
           "EntityType": {
             "S": "orderItem"
-          },
-          "Quantity": {
-            "S": "2"
           },
           "GS1PK": {
             "S": "PRODUCT#12345"
           },
           "GS1SK": {
-            "S": "SHIPMENT#12345"
+            "S": "ORDER#12345"
           },
-          "GS2PK": {
-            "S": "USER#12345"
-          },
-          "GS2SK": {
-            "S": "ORDER_ITEM#2020-06-21"
+          "Attributes": {
+            "M": {
+              "createdAt": {
+                "S": "2021-01-01T00:00:00.000Z"
+              },
+              "orderId": {
+                "S": "12345"
+              },
+              "orderItemId": {
+                "S": "12345"
+              },
+              "productId": {
+                "S": "12345"
+              },
+              "quantity": {
+                "S": "1"
+              },
+              "updatedAt": {
+                "S": "2021-01-01T00:00:00.000Z"
+              }
+            }
           }
         },
         {
@@ -424,16 +446,16 @@
             "S": "WAREHOUSE#12345"
           },
           "GS1PK": {
-            "S": "SHIPMENT#12345"
-          },
-          "GS1SK": {
-            "S": "SHIPMENT#12345"
-          },
-          "GS2PK": {
             "S": "WAREHOUSE#12345"
           },
-          "GS2SK": {
+          "GS1SK": {
             "S": "SHIPMENT#2020-06-21"
+          },
+          "GS2PK": {
+            "S": "SHIPMENT#12345"
+          },
+          "GS2SK": {
+            "S": "SHIPMENT#12345"
           }
         },
         {
@@ -565,10 +587,10 @@
           "Quantity": {
             "S": "3"
           },
-          "GS1PK": {
+          "GS2PK": {
             "S": "SHIPMENT#12345"
           },
-          "GS1SK": {
+          "GS2SK": {
             "S": "PRODUCT#12345"
           }
         },

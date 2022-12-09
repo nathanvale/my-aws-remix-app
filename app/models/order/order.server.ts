@@ -21,6 +21,7 @@ import { OrderError } from "./errors";
 export interface Order extends Base {
   readonly orderId: string;
   warehouseId: string;
+  userId: string;
 }
 
 export class OrderItem extends Item {
@@ -42,6 +43,7 @@ export class OrderItem extends Item {
       updatedAt: "",
       orderId: "",
       warehouseId: "",
+      userId: "",
     });
     const itemAttributes = item.Attributes.M;
 
@@ -62,6 +64,7 @@ export class OrderItem extends Item {
       updatedAt: "",
       orderId: orderId,
       warehouseId: "",
+      userId: "",
     });
     return order.keys();
   }
@@ -78,16 +81,16 @@ export class OrderItem extends Item {
     return `ORDER#${this.attributes.orderId}`;
   }
 
-  get GS1PK() {
-    return "";
-  }
-
-  get GS1SK() {
-    return "";
-  }
-
-  get GS2PK(): `WAREHOUSE#${string}` {
+  get GS1PK(): `WAREHOUSE#${string}` {
     return `WAREHOUSE#${this.attributes.warehouseId}`;
+  }
+
+  get GS1SK(): `ORDER#${string}` {
+    return `ORDER#${this.attributes.createdAt}`;
+  }
+
+  get GS2PK(): `USER#${string}` {
+    return `USER#${this.attributes.userId}`;
   }
 
   get GS2SK(): `ORDER#${string}` {
@@ -108,6 +111,7 @@ export class OrderItem extends Item {
       updatedAt: this.attributes.updatedAt,
       orderId: this.attributes.orderId,
       warehouseId: this.attributes.warehouseId,
+      userId: this.attributes.userId,
     };
   }
 

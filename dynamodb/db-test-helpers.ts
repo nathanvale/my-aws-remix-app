@@ -2,6 +2,7 @@ export const TEST_USER_EMAIL = "test@test.com";
 export const TEST_USER_ID = "12345";
 export const TEST_INVOICE_ID = "12345";
 export const TEST_ORDER_ID = "12345";
+export const TEST_ORDER_ITEM_ID = "12345";
 export const TEST_PRODUCT_ID = "12345";
 export const TEST_WAREHOUSE_ITEM_ID = "12345";
 export const TEST_WAREHOUSE_ID = "12345";

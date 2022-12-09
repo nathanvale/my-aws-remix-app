@@ -11,6 +11,7 @@ import {
   clientApiMethodReject,
   clientApiMethodResolve,
   TEST_ORDER_ID,
+  TEST_USER_ID,
   TEST_WAREHOUSE_ID,
 } from "dynamodb/db-test-helpers";
 import * as client from "dynamodb/client";
@@ -38,6 +39,7 @@ describe("OrderItem", () => {
       updatedAt: "2021-08-01T00:00:00.000Z",
       orderId: TEST_ORDER_ID,
       warehouseId: TEST_WAREHOUSE_ID,
+      userId: TEST_USER_ID,
     }).toDynamoDBItem();
     expect(orderItem).toMatchInlineSnapshot(`
       {
@@ -52,6 +54,9 @@ describe("OrderItem", () => {
             "updatedAt": {
               "S": "2021-08-01T00:00:00.000Z",
             },
+            "userId": {
+              "S": "12345",
+            },
             "warehouseId": {
               "S": "12345",
             },
@@ -61,13 +66,13 @@ describe("OrderItem", () => {
           "S": "order",
         },
         "GS1PK": {
-          "S": "",
+          "S": "WAREHOUSE#12345",
         },
         "GS1SK": {
-          "S": "",
+          "S": "ORDER#2021-08-01T00:00:00.000Z",
         },
         "GS2PK": {
-          "S": "WAREHOUSE#12345",
+          "S": "USER#12345",
         },
         "GS2SK": {
           "S": "ORDER#2021-08-01T00:00:00.000Z",
@@ -98,6 +103,7 @@ describe("createOrder", () => {
       updatedAt: "2021-08-01T00:00:00.000Z",
       warehouseId: TEST_WAREHOUSE_ID,
       orderId: orderId,
+      userId: TEST_USER_ID,
     }).toItem();
     const createdUser = await createOrder(userMock);
     await deleteOrder(orderId);
@@ -106,6 +112,7 @@ describe("createOrder", () => {
         "createdAt": "2022-12-01T00:00:00.000Z",
         "orderId": "newOrderId",
         "updatedAt": "2022-12-01T00:00:00.000Z",
+        "userId": "12345",
         "warehouseId": "12345",
       }
     `);
@@ -130,6 +137,7 @@ describe("readOrder", () => {
         "createdAt": "2022-08-31T05:46:41.205Z",
         "orderId": "12345",
         "updatedAt": "2022-11-25T13:45:46.999Z",
+        "userId": "12345",
         "warehouseId": "12345",
       }
     `);
@@ -166,6 +174,7 @@ describe("updateOrder", () => {
       updatedAt: "2021-08-01T00:00:00.000Z",
       warehouseId: TEST_WAREHOUSE_ID,
       orderId: orderId,
+      userId: TEST_USER_ID,
     }).toItem();
     const createdOrder = await createOrder(userMock);
     const updatedWarehouseId = "updatedWarehouseId";
@@ -180,6 +189,7 @@ describe("updateOrder", () => {
         "createdAt": "2022-12-01T00:00:00.000Z",
         "orderId": "updateOrderId",
         "updatedAt": "2022-12-05T00:00:00.000Z",
+        "userId": "12345",
         "warehouseId": "updatedWarehouseId",
       }
     `);
@@ -246,6 +256,7 @@ describe("deleteOrder", () => {
       updatedAt: "2021-08-01T00:00:00.000Z",
       warehouseId: TEST_WAREHOUSE_ID,
       orderId: orderId,
+      userId: TEST_USER_ID,
     }).toItem();
     await createOrder(userMock);
     const deletedOrder = await deleteOrder(orderId);
@@ -254,6 +265,7 @@ describe("deleteOrder", () => {
         "createdAt": "2022-12-01T00:00:00.000Z",
         "orderId": "deleteOrderId",
         "updatedAt": "2022-12-01T00:00:00.000Z",
+        "userId": "12345",
         "warehouseId": "12345",
       }
     `);
