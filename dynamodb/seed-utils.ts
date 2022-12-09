@@ -6,6 +6,7 @@ import {
   TEST_WAREHOUSE_ID,
 } from "dynamodb/db-test-helpers";
 import type { Invoice } from "~/models/invoice/invoice.server";
+import type { OrderItem } from "~/models/order-item/order-item.server";
 import type { Order } from "~/models/order/order.server";
 import type { Product } from "~/models/product/product.server";
 import type { User } from "~/models/user/user.server";
@@ -82,9 +83,17 @@ export function createInvoiceSeed(): Omit<Invoice, "invoiceId"> {
   return { createdAt, userId, updatedAt, amount, orderId };
 }
 
-export function createOrderSeed(): Omit<Order, "invoiceId"> {
+export function createOrderItemSeed(): Omit<OrderItem, "orderItemId"> {
   const { createdAt, updatedAt } = getDates();
+  const productId = TEST_PRODUCT_ID;
   const orderId = TEST_ORDER_ID;
+  const quantity = faker.datatype.number({ min: 1, max: 100 }).toString();
+  return { createdAt, updatedAt, productId, quantity, orderId };
+}
+
+export function createOrderSeed(): Omit<Order, "orderId"> {
+  const { createdAt, updatedAt } = getDates();
+  const userId = TEST_USER_ID;
   const warehouseId = TEST_WAREHOUSE_ID;
-  return { createdAt, updatedAt, orderId, warehouseId };
+  return { createdAt, updatedAt, warehouseId, userId };
 }

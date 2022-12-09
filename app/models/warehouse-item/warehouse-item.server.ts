@@ -101,20 +101,20 @@ export class WarehouseItemItem extends Item {
     return `WAREHOUSE_ITEM#${this.attributes.warehouseItemId}`;
   }
 
-  get GS1PK() {
-    return "";
-  }
-
-  get GS1SK() {
-    return "";
-  }
-
-  get GS2PK(): `WAREHOUSE#${string}` {
+  get GS1PK(): `WAREHOUSE#${string}` {
     return `WAREHOUSE#${this.attributes.warehouseId}`;
   }
 
-  get GS2SK(): `WAREHOUSE_ITEM#${string}` {
+  get GS1SK(): `WAREHOUSE_ITEM#${string}` {
     return `WAREHOUSE_ITEM#${this.attributes.createdAt}`;
+  }
+
+  get GS2PK() {
+    return "";
+  }
+
+  get GS2SK() {
+    return "";
   }
 
   get GS3PK() {
