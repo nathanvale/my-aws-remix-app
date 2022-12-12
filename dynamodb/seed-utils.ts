@@ -9,6 +9,7 @@ import type { Invoice } from "~/models/invoice/invoice.server";
 import type { OrderItem } from "~/models/order-item/order-item.server";
 import type { Order } from "~/models/order/order.server";
 import type { Product } from "~/models/product/product.server";
+import type { Shipment } from "~/models/shipment/shipment.server";
 import type { User } from "~/models/user/user.server";
 import type { WarehouseItem } from "~/models/warehouse-item/warehouse-item.server";
 import type { Warehouse } from "~/models/warehouse/warehouse.server";
@@ -96,4 +97,12 @@ export function createOrderSeed(): Omit<Order, "orderId"> {
   const userId = TEST_USER_ID;
   const warehouseId = TEST_WAREHOUSE_ID;
   return { createdAt, updatedAt, warehouseId, userId };
+}
+
+export function createShipmentSeed(): Omit<Shipment, "shipmentId"> {
+  const { createdAt, updatedAt } = getDates();
+  const orderId = TEST_ORDER_ID;
+  const warehouseId = TEST_WAREHOUSE_ID;
+  const address = faker.address.streetAddress();
+  return { createdAt, updatedAt, orderId, warehouseId, address };
 }

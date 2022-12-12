@@ -6,6 +6,7 @@ export const TEST_ORDER_ITEM_ID = "12345";
 export const TEST_PRODUCT_ID = "12345";
 export const TEST_WAREHOUSE_ITEM_ID = "12345";
 export const TEST_WAREHOUSE_ID = "12345";
+export const TEST_SHIPMENT_ID = "12345";
 
 export const clientApiMethodReject = (
   apiMethod: "query" | "putItem" | "getItem" | "updateItem" | "deleteItem",

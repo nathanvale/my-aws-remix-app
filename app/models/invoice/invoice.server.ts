@@ -167,7 +167,7 @@ export const readInvoice = async (
   productId: string
 ): Promise<Invoice> => {
   const key = InvoiceItem.getPrimaryKeyAttributeValues(invoiceId, productId);
-  const resp = await readItem(key); //?
+  const resp = await readItem(key);
   if (resp.Item) return InvoiceItem.fromItem(resp.Item).attributes;
   else throw new InvoiceError("INVOICE_NOT_FOUND");
 };

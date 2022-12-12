@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Nathan Vale",
     "DateCreated": "Oct 16, 2022, 05:12 PM",
-    "DateLastModified": "Dec 09, 2022, 10:30 AM",
+    "DateLastModified": "Dec 10, 2022, 10:43 AM",
     "Description": "",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -436,15 +436,6 @@
           "EntityType": {
             "S": "shipment"
           },
-          "Price": {
-            "S": "{\"city\":{\"S\":\"Elsternwick\"}}"
-          },
-          "Date": {
-            "S": "2020-06-21"
-          },
-          "WarehouseId": {
-            "S": "WAREHOUSE#12345"
-          },
           "GS1PK": {
             "S": "WAREHOUSE#12345"
           },
@@ -456,6 +447,28 @@
           },
           "GS2SK": {
             "S": "SHIPMENT#12345"
+          },
+          "Attributes": {
+            "M": {
+              "shipmentId": {
+                "S": "12345"
+              },
+              "createdAt": {
+                "S": "2022-10-02T05:54:06.069Z"
+              },
+              "updatedAt": {
+                "S": "2022-12-03T01:24:47.781Z"
+              },
+              "orderId": {
+                "S": "12345"
+              },
+              "warehouseId": {
+                "S": "12345"
+              },
+              "address": {
+                "S": "596 Kuhlman Extensions"
+              }
+            }
           }
         },
         {

@@ -199,7 +199,7 @@ describe("updateUser", () => {
       password: "password",
       username: "username",
       userId: "newUserId",
-    }).toItem(); //?
+    }).toItem();
     const createdUser = await createUser(userMock);
     const updatedUserName = "updatedUserName";
     const updatedName = "updatedName";
