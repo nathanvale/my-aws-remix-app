@@ -78,7 +78,7 @@ export class OrderItemItem extends Item {
     productId: OrderItem["productId"],
     orderId: OrderItem["orderId"]
   ): GSIKeyAttributeValue {
-    const user = new OrderItemItem({
+    const orderItem = new OrderItemItem({
       createdAt: "",
       updatedAt: "",
       productId,
@@ -86,7 +86,7 @@ export class OrderItemItem extends Item {
       orderId,
       orderItemId: "",
     });
-    return user.gSIKeys();
+    return orderItem.gSIKeys();
   }
 
   get entityType(): string {

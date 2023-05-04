@@ -597,14 +597,36 @@
           "EntityType": {
             "S": "shipmentItem"
           },
-          "Quantity": {
-            "S": "3"
-          },
           "GS2PK": {
             "S": "SHIPMENT#12345"
           },
           "GS2SK": {
             "S": "PRODUCT#12345"
+          },
+          "Attributes": {
+            "M": {
+              "createdAt": {
+                "S": "2020-06-21"
+              },
+              "updatedAt": {
+                "S": "2020-06-21"
+              },
+              "orderId": {
+                "S": "12345"
+              },
+              "quantity": {
+                "S": "50"
+              },
+              "shipmentItemId": {
+                "S": "12345"
+              },
+              "productId": {
+                "S": "12345"
+              },
+              "shipmentId": {
+                "S": "12345"
+              }
+            }
           }
         },
         {
