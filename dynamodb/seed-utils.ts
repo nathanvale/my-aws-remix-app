@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import {
   TEST_ORDER_ID,
   TEST_PRODUCT_ID,
+  TEST_SHIPMENT_ID,
   TEST_USER_ID,
   TEST_WAREHOUSE_ID,
 } from "dynamodb/db-test-helpers";
@@ -9,6 +10,7 @@ import type { Invoice } from "~/models/invoice/invoice.server";
 import type { OrderItem } from "~/models/order-item/order-item.server";
 import type { Order } from "~/models/order/order.server";
 import type { Product } from "~/models/product/product.server";
+import { ShipmentItem } from "~/models/shipment-item/shipment-item.server";
 import type { Shipment } from "~/models/shipment/shipment.server";
 import type { User } from "~/models/user/user.server";
 import type { WarehouseItem } from "~/models/warehouse-item/warehouse-item.server";
@@ -105,4 +107,13 @@ export function createShipmentSeed(): Omit<Shipment, "shipmentId"> {
   const warehouseId = TEST_WAREHOUSE_ID;
   const address = faker.address.streetAddress();
   return { createdAt, updatedAt, orderId, warehouseId, address };
+}
+
+export function createShipmentItemSeed(): Omit<ShipmentItem, "shipmentItemId"> {
+  const { createdAt, updatedAt } = getDates();
+  const orderId = TEST_ORDER_ID;
+  const shipmentId = TEST_SHIPMENT_ID;
+  const productId = TEST_PRODUCT_ID;
+  const quantity = faker.datatype.number({ min: 1, max: 100 }).toString();
+  return { createdAt, updatedAt, orderId, quantity, shipmentId, productId };
 }
