@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Nathan Vale",
     "DateCreated": "Oct 16, 2022, 05:12 PM",
-    "DateLastModified": "Dec 10, 2022, 10:43 AM",
+    "DateLastModified": "May 10, 2023, 5:33 PM",
     "Description": "",
     "AWSService": "Amazon DynamoDB",
     "Version": "3.0"
@@ -24,50 +24,6 @@
       "NonKeyAttributes": [
         {
           "AttributeName": "EntityType",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "Email",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "FirstName",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "LastName",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "Detail",
-          "AttributeType": "M"
-        },
-        {
-          "AttributeName": "Price",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "Address",
-          "AttributeType": "M"
-        },
-        {
-          "AttributeName": "Quantity",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "Date",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "Amount",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "WarehouseId",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "Gift",
           "AttributeType": "S"
         },
         {
@@ -157,14 +113,26 @@
           "SK": {
             "S": "USER#12345"
           },
-          "EntityType": {
-            "S": "user"
-          },
           "GS1PK": {
             "S": "USER#test@test.com"
           },
           "GS1SK": {
             "S": "USER#test@test.com"
+          },
+          "GS2PK": {
+            "S": ""
+          },
+          "GS2SK": {
+            "S": ""
+          },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "user"
           },
           "Attributes": {
             "M": {
@@ -199,28 +167,46 @@
           "SK": {
             "S": "PRODUCT#12345"
           },
+          "GS1PK": {
+            "S": ""
+          },
+          "GS1SK": {
+            "S": ""
+          },
+          "GS2PK": {
+            "S": ""
+          },
+          "GS2SK": {
+            "S": ""
+          },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
           "EntityType": {
             "S": "product"
           },
           "Attributes": {
             "M": {
+              "company": {
+                "S": "Mann - Thiel"
+              },
               "createdAt": {
                 "S": "2022-08-31T05:46:41.205Z"
               },
-              "updatedAt": {
-                "S": "2022-11-25T13:45:46.999Z"
-              },
-              "productId": {
-                "S": "12345"
-              },
-              "company": {
-                "S": "Mann - Thiel"
+              "description": {
+                "S": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
               },
               "price": {
                 "S": "143.00"
               },
-              "description": {
-                "S": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
+              "productId": {
+                "S": "12345"
+              },
+              "updatedAt": {
+                "S": "2022-11-25T13:45:46.999Z"
               }
             }
           }
@@ -232,8 +218,11 @@
           "SK": {
             "S": "WAREHOUSE#12345"
           },
-          "EntityType": {
-            "S": "warehouse"
+          "GS1PK": {
+            "S": ""
+          },
+          "GS1SK": {
+            "S": ""
           },
           "GS2PK": {
             "S": "USER#12345"
@@ -241,10 +230,19 @@
           "GS2SK": {
             "S": "WAREHOUSE#12345"
           },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "warehouse"
+          },
           "Attributes": {
             "M": {
-              "warehouseId": {
-                "S": "12345"
+              "city": {
+                "S": "Fort Ellaboro"
               },
               "createdAt": {
                 "S": "2022-08-31T05:46:41.205Z"
@@ -255,8 +253,8 @@
               "userId": {
                 "S": "12345"
               },
-              "city": {
-                "S": "Fort Ellaboro"
+              "warehouseId": {
+                "S": "12345"
               }
             }
           }
@@ -268,21 +266,30 @@
           "SK": {
             "S": "WAREHOUSE_ITEM#12345"
           },
-          "EntityType": {
-            "S": "warehouseItem"
-          },
           "GS1PK": {
             "S": "WAREHOUSE#12345"
           },
           "GS1SK": {
             "S": "WAREHOUSE_ITEM#2020-06-21"
           },
+          "GS2PK": {
+            "S": ""
+          },
+          "GS2SK": {
+            "S": ""
+          },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "warehouseItem"
+          },
           "Attributes": {
             "M": {
               "createdAt": {
-                "S": "2020-06-21"
-              },
-              "updatedAt": {
                 "S": "2020-06-21"
               },
               "productId": {
@@ -291,10 +298,13 @@
               "quantity": {
                 "S": "50"
               },
-              "warehouseItemId": {
-                "S": "12345"
+              "updatedAt": {
+                "S": "2020-06-21"
               },
               "warehouseId": {
+                "S": "12345"
+              },
+              "warehouseItemId": {
                 "S": "12345"
               }
             }
@@ -307,36 +317,42 @@
           "SK": {
             "S": "ORDER#12345"
           },
-          "EntityType": {
-            "S": "order"
-          },
           "GS1PK": {
             "S": "WAREHOUSE#12345"
           },
           "GS1SK": {
-            "S": "ORDER#2020-06-21"
+            "S": "ORDER#2022-08-31T05:46:41.205Z"
           },
           "GS2PK": {
             "S": "USER#12345"
           },
           "GS2SK": {
-            "S": "ORDER#2020-06-21"
+            "S": "ORDER#2022-08-31T05:46:41.205Z"
+          },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "order"
           },
           "Attributes": {
             "M": {
-              "warehouseId": {
-                "S": "12345"
-              },
               "createdAt": {
                 "S": "2022-08-31T05:46:41.205Z"
-              },
-              "updatedAt": {
-                "S": "2022-11-25T13:45:46.999Z"
               },
               "orderId": {
                 "S": "12345"
               },
+              "updatedAt": {
+                "S": "2022-11-25T13:45:46.999Z"
+              },
               "userId": {
+                "S": "12345"
+              },
+              "warehouseId": {
                 "S": "12345"
               }
             }
@@ -349,14 +365,26 @@
           "SK": {
             "S": "ORDER_ITEM#12345"
           },
-          "EntityType": {
-            "S": "orderItem"
-          },
           "GS1PK": {
             "S": "PRODUCT#12345"
           },
           "GS1SK": {
             "S": "ORDER#12345"
+          },
+          "GS2PK": {
+            "S": ""
+          },
+          "GS2SK": {
+            "S": ""
+          },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "orderItem"
           },
           "Attributes": {
             "M": {
@@ -388,9 +416,6 @@
           "SK": {
             "S": "INVOICE#12345"
           },
-          "EntityType": {
-            "S": "invoice"
-          },
           "GS1PK": {
             "S": "INVOICE#12345"
           },
@@ -401,26 +426,35 @@
             "S": "USER#12345"
           },
           "GS2SK": {
-            "S": "INVOICE#2020-06-21"
+            "S": "INVOICE#2022-09-29T07:11:20.245Z"
+          },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "invoice"
           },
           "Attributes": {
             "M": {
-              "invoiceId": {
-                "S": "12345"
+              "amount": {
+                "S": "23"
               },
               "createdAt": {
                 "S": "2022-09-29T07:11:20.245Z"
               },
-              "userId": {
+              "invoiceId": {
+                "S": "12345"
+              },
+              "orderId": {
                 "S": "12345"
               },
               "updatedAt": {
                 "S": "2022-11-07T19:23:28.342Z"
               },
-              "amount": {
-                "S": "23"
-              },
-              "orderId": {
+              "userId": {
                 "S": "12345"
               }
             }
@@ -433,14 +467,11 @@
           "SK": {
             "S": "SHIPMENT#12345"
           },
-          "EntityType": {
-            "S": "shipment"
-          },
           "GS1PK": {
             "S": "WAREHOUSE#12345"
           },
           "GS1SK": {
-            "S": "SHIPMENT#2020-06-21"
+            "S": "SHIPMENT#2022-10-02T05:54:06.069Z"
           },
           "GS2PK": {
             "S": "SHIPMENT#12345"
@@ -448,143 +479,36 @@
           "GS2SK": {
             "S": "SHIPMENT#12345"
           },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "shipment"
+          },
           "Attributes": {
             "M": {
-              "shipmentId": {
-                "S": "12345"
+              "address": {
+                "S": "596 Kuhlman Extensions"
               },
               "createdAt": {
                 "S": "2022-10-02T05:54:06.069Z"
               },
-              "updatedAt": {
-                "S": "2022-12-03T01:24:47.781Z"
-              },
               "orderId": {
                 "S": "12345"
               },
-              "warehouseId": {
+              "shipmentId": {
                 "S": "12345"
               },
-              "address": {
-                "S": "596 Kuhlman Extensions"
+              "updatedAt": {
+                "S": "2022-12-03T01:24:47.781Z"
+              },
+              "warehouseId": {
+                "S": "12345"
               }
             }
-          }
-        },
-        {
-          "PK": {
-            "S": "CAMPAIGN#12345"
-          },
-          "SK": {
-            "S": "CAMPAIGN#12345"
-          },
-          "EntityType": {
-            "S": "campaign"
-          },
-          "Detail": {
-            "M": {
-              "name": {
-                "S": "Levi's Birthday"
-              }
-            }
-          },
-          "Date": {
-            "S": "2020-06-21"
-          },
-          "Gift": {
-            "S": "ORDER#12345"
-          },
-          "GS3PK": {
-            "S": "USER#12345"
-          },
-          "GS3SK": {
-            "S": "CAMPAIGN#12345"
-          }
-        },
-        {
-          "PK": {
-            "S": "CAMPAIGN#12345"
-          },
-          "SK": {
-            "S": "CONTRIBUTION#12345"
-          },
-          "EntityType": {
-            "S": "contribution"
-          },
-          "Date": {
-            "S": "2020-06-21"
-          },
-          "Amount": {
-            "S": "10"
-          },
-          "GS3PK": {
-            "S": "USER#12345"
-          },
-          "GS3SK": {
-            "S": "CONTRIBUTION#12345"
-          }
-        },
-        {
-          "PK": {
-            "S": "CAMPAIGN#12345"
-          },
-          "SK": {
-            "S": "CONTRIBUTION#54321"
-          },
-          "EntityType": {
-            "S": "contribution"
-          },
-          "Date": {
-            "S": "2020-06-21"
-          },
-          "Amount": {
-            "S": "20"
-          },
-          "GS3PK": {
-            "S": "USER#12345"
-          },
-          "GS3SK": {
-            "S": "CONTRIBUTION#54321"
-          }
-        },
-        {
-          "PK": {
-            "S": "CAMPAIGN#12345"
-          },
-          "SK": {
-            "S": "INVITEE#12345"
-          },
-          "EntityType": {
-            "S": "invitee"
-          },
-          "Email": {
-            "S": "USER#test@test.com"
-          },
-          "GS3PK": {
-            "S": "USER#12345"
-          },
-          "GS3SK": {
-            "S": "INVITEE#12345"
-          }
-        },
-        {
-          "PK": {
-            "S": "CAMPAIGN#12345"
-          },
-          "SK": {
-            "S": "ENTRY#12345"
-          },
-          "EntityType": {
-            "S": "entry"
-          },
-          "Date": {
-            "S": "2020-06-21"
-          },
-          "GS3PK": {
-            "S": "USER#12345"
-          },
-          "GS3SK": {
-            "S": "ENTRY#12345"
           }
         },
         {
@@ -594,8 +518,11 @@
           "SK": {
             "S": "SHIPMENT_ITEM#12345"
           },
-          "EntityType": {
-            "S": "shipmentItem"
+          "GS1PK": {
+            "S": ""
+          },
+          "GS1SK": {
+            "S": ""
           },
           "GS2PK": {
             "S": "SHIPMENT#12345"
@@ -603,28 +530,37 @@
           "GS2SK": {
             "S": "PRODUCT#12345"
           },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
+          },
+          "EntityType": {
+            "S": "shipmentItem"
+          },
           "Attributes": {
             "M": {
               "createdAt": {
                 "S": "2020-06-21"
               },
-              "updatedAt": {
-                "S": "2020-06-21"
-              },
               "orderId": {
-                "S": "12345"
-              },
-              "quantity": {
-                "S": "50"
-              },
-              "shipmentItemId": {
                 "S": "12345"
               },
               "productId": {
                 "S": "12345"
               },
+              "quantity": {
+                "S": "50"
+              },
               "shipmentId": {
                 "S": "12345"
+              },
+              "shipmentItemId": {
+                "S": "12345"
+              },
+              "updatedAt": {
+                "S": "2020-06-21"
               }
             }
           }
@@ -634,21 +570,39 @@
             "S": "USER#12345"
           },
           "SK": {
-            "S": "NOTE#1"
+            "S": "NOTE#12345"
+          },
+          "GS1PK": {
+            "S": ""
+          },
+          "GS1SK": {
+            "S": ""
+          },
+          "GS2PK": {
+            "S": ""
+          },
+          "GS2SK": {
+            "S": ""
+          },
+          "GS3PK": {
+            "S": ""
+          },
+          "GS3SK": {
+            "S": ""
           },
           "EntityType": {
             "S": "note"
           },
           "Attributes": {
             "M": {
-              "title": {
-                "S": "Title"
-              },
               "body": {
                 "S": "Body"
               },
               "noteId": {
-                "S": "1"
+                "S": "12345"
+              },
+              "title": {
+                "S": "Title"
               },
               "userId": {
                 "S": "12345"
