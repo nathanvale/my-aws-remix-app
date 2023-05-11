@@ -89,7 +89,7 @@ export function ErrorBoundary() {
           <Links />
         </head>
         <body>
-          <div>ERROR: {error.message}</div>;
+          <div>ERROR: {error.message}</div>
           <Scripts />
         </body>
       </html>

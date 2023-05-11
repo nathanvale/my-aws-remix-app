@@ -75,6 +75,11 @@ export const action: ActionFunction = async ({ request }) => {
     password,
     name: email,
     username: email,
+  }).catch((error: Error) => {
+    throw new Response(error.stack, {
+      status: 500,
+      statusText: error.message,
+    });
   });
 
   return createUserSession({
