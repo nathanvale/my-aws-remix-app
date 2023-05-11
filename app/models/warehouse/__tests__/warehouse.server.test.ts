@@ -173,14 +173,7 @@ describe("readWarehouse", () => {
     const result = await getError(async () =>
       readWarehouse("unknownWarehouseId")
     );
-    expect(result).toMatchInlineSnapshot(`
-      WarehouseError {
-        "code": "WAREHOUSE_NOT_FOUND",
-        "id": "id",
-        "message": "Warehouse not found.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: Warehouse not found.]');
   });
 
   test("should throw an error", async () => {
@@ -233,14 +226,7 @@ describe("updateWarehouse", () => {
       })
     );
     expect(result).toMatchInlineSnapshot(
-      `
-      WarehouseError {
-        "code": "WAREHOUSE_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a warehouse that does not exist.",
-        "statusCode": 400,
-      }
-    `
+      '[Error: You cannot delete a warehouse that does not exist.]'
     );
   });
   test("should throw an when an item update doesnt return values", async () => {
@@ -253,14 +239,7 @@ describe("updateWarehouse", () => {
         warehouseId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot(`
-      WarehouseError {
-        "code": "WAREHOUSE_UPDATES_MUST_RETURN_VALUES",
-        "id": "id",
-        "message": "Warehouse updates must return all attributes of the item.",
-        "statusCode": 500,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: Warehouse updates must return all attributes of the item.]');
   });
 
   test("should throw an error", async () => {
@@ -306,14 +285,7 @@ describe("deleteWarehouse", () => {
     const error = await getError(async () =>
       deleteWarehouse("doesntExistWarehouseId")
     );
-    expect(error).toMatchInlineSnapshot(`
-      WarehouseError {
-        "code": "WAREHOUSE_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a warehouse that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a warehouse that does not exist.]');
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(

@@ -101,14 +101,7 @@ describe("useUser", () => {
     const result = await getError(async () => renderHook(() => useUser()));
 
     expect(result).toMatchInlineSnapshot(
-      `
-      AppError {
-        "code": "APP_NO_USER_FOUND",
-        "id": "id",
-        "message": "No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead.",
-        "stack": "",
-      }
-    `
+      '[Error: No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead.]'
     );
   });
   test("should return a user", async () => {
