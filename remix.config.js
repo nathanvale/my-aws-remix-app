@@ -14,4 +14,7 @@ module.exports = {
       if (process.env.NODE_ENV === "production") return;
     });
   },
+  future: {
+    v2_errorBoundary: true
+  },
 };

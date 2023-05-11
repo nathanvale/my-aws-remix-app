@@ -181,14 +181,7 @@ describe("readOrderItem", () => {
     const result = await getError(async () =>
       readOrderItem("unknownOrderItemId", TEST_PRODUCT_ID)
     );
-    expect(result).toMatchInlineSnapshot(`
-      OrderItemError {
-        "code": "ORDER_ITEM_NOT_FOUND",
-        "id": "id",
-        "message": "Order item not found.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: Order item not found.]');
   });
 
   test("should throw an error", async () => {
@@ -242,14 +235,7 @@ describe("updateOrderItem", () => {
         orderItemId: "unknownOrderItemId",
       })
     );
-    expect(result).toMatchInlineSnapshot(`
-      OrderItemError {
-        "code": "ORDER_ITEM_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a order item that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a order item that does not exist.]');
   });
   test("should throw an when an item update doesnt return values", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -261,14 +247,7 @@ describe("updateOrderItem", () => {
         orderItemId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot(`
-      OrderItemError {
-        "code": "ORDER_ITEM_UPDATES_MUST_RETURN_VALUES",
-        "id": "id",
-        "message": "Order item updates must return all attributes of the item.",
-        "statusCode": 500,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: Order item updates must return all attributes of the item.]');
   });
 
   test("should throw an error", async () => {
@@ -316,14 +295,7 @@ describe("deleteOrderItem", () => {
     const error = await getError(async () =>
       deleteOrderItem(TEST_ORDER_ID, "doesntExistOrderItemId")
     );
-    expect(error).toMatchInlineSnapshot(`
-      OrderItemError {
-        "code": "ORDER_ITEM_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a order item that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a order item that does not exist.]');
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(

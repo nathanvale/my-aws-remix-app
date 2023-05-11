@@ -16,14 +16,13 @@ export const APP_ERROR_MESSAGES: ErrorMessage<AppErrorCodes> = {
   },
 };
 
-export class BaseError {
+export class BaseError extends Error {
   id: string;
   code: string;
-  message: string;
   constructor(code: string, message: string) {
+    super(message);
     this.id = logError();
     this.code = code;
-    this.message = message;
   }
 }
 export class AppError extends BaseError {

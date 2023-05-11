@@ -186,14 +186,7 @@ describe("readWarehouseItem", () => {
     const result = await getError(async () =>
       readWarehouseItem("unknownWarehouseItemId", TEST_PRODUCT_ID)
     );
-    expect(result).toMatchInlineSnapshot(`
-      WarehouseItemError {
-        "code": "WAREHOUSE_ITEM_NOT_FOUND",
-        "id": "id",
-        "message": "Warehouse item not found.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: Warehouse item not found.]');
   });
 
   test("should throw an error", async () => {
@@ -247,14 +240,7 @@ describe("updateWarehouseItem", () => {
         warehouseItemId: "unknownWarehouseItemId",
       })
     );
-    expect(result).toMatchInlineSnapshot(`
-      WarehouseItemError {
-        "code": "WAREHOUSE_ITEM_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a warehouse item that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a warehouse item that does not exist.]');
   });
   test("should throw an when an item update doesnt return values", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -266,14 +252,7 @@ describe("updateWarehouseItem", () => {
         warehouseItemId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot(`
-      WarehouseItemError {
-        "code": "WAREHOUSE_ITEM_UPDATES_MUST_RETURN_VALUES",
-        "id": "id",
-        "message": "Warehouse item updates must return all attributes of the item.",
-        "statusCode": 500,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: Warehouse item updates must return all attributes of the item.]');
   });
 
   test("should throw an error", async () => {
@@ -324,14 +303,7 @@ describe("deleteWarehouseItem", () => {
     const error = await getError(async () =>
       deleteWarehouseItem("doesntExistWarehouseItemId", TEST_PRODUCT_ID)
     );
-    expect(error).toMatchInlineSnapshot(`
-      WarehouseItemError {
-        "code": "WAREHOUSE_ITEM_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a warehouse item that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a warehouse item that does not exist.]');
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(

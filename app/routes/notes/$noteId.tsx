@@ -1,6 +1,12 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useLoaderData,
+  useRouteError,
+  isRouteErrorResponse,
+} from "@remix-run/react";
+
 import invariant from "tiny-invariant";
 
 import { deleteNote } from "~/models/note/note.server";
@@ -17,8 +23,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const note = await readNote(userId, params.noteId);
   if (!note) {
-    throw new Response("Not Found", { status: 404 });
+    throw new Response(null, {
+      status: 404,
+      statusText: "Note not found!",
+    });
   }
+
   return json<LoaderData>({ note });
 };
 
@@ -51,18 +61,27 @@ export default function NoteDetailsPage() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
-
-  return <div>An unexpected error occurred: {error.message}</div>;
-}
-
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  if (caught.status === 404) {
-    return <div>Note not found</div>;
+export function ErrorBoundary() {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{error.message}</p>
+        <p>The stack trace is:</p>
+        <pre>{error.stack}</pre>
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
   }
-
-  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }

@@ -11,6 +11,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
+  useRouteError,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -55,4 +57,44 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    return (
+      <html>
+        <head>
+          <title>Oh no!</title>
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          <div>
+            <h1>
+              {error.status} {error.statusText}
+            </h1>
+            <p>{error.data}</p>
+          </div>
+          <Scripts />
+        </body>
+      </html>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <html>
+        <head>
+          <title>Oh no!</title>
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          <div>ERROR: {error.message}</div>;
+          <Scripts />
+        </body>
+      </html>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
 }

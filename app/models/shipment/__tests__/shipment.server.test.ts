@@ -187,14 +187,7 @@ describe("readShipment", () => {
     const result = await getError(async () =>
       readShipment("unknownShipmentId", TEST_PRODUCT_ID)
     );
-    expect(result).toMatchInlineSnapshot(`
-      ShipmentError {
-        "code": "SHIPMENT_NOT_FOUND",
-        "id": "id",
-        "message": "Shipment item not found.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: Shipment item not found.]');
   });
 
   test("should throw an error", async () => {
@@ -248,14 +241,7 @@ describe("updateShipment", () => {
         shipmentId: "unknownShipmentId",
       })
     );
-    expect(result).toMatchInlineSnapshot(`
-      ShipmentError {
-        "code": "SHIPMENT_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a shipment that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a shipment that does not exist.]');
   });
   test("should throw an when an item update doesnt return values", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -267,14 +253,7 @@ describe("updateShipment", () => {
         shipmentId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot(`
-      ShipmentError {
-        "code": "SHIPMENT_UPDATES_MUST_RETURN_VALUES",
-        "id": "id",
-        "message": "Shipment item updates must return all attributes of the item.",
-        "statusCode": 500,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: Shipment item updates must return all attributes of the item.]');
   });
 
   test("should throw an error", async () => {
@@ -322,14 +301,7 @@ describe("deleteShipment", () => {
     const error = await getError(async () =>
       deleteShipment("doesntExistShipmentId", TEST_PRODUCT_ID)
     );
-    expect(error).toMatchInlineSnapshot(`
-      ShipmentError {
-        "code": "SHIPMENT_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a shipment that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a shipment that does not exist.]');
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(

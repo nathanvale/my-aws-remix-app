@@ -187,14 +187,7 @@ describe("readInvoice", () => {
     const result = await getError(async () =>
       readInvoice("unknownInvoiceId", TEST_PRODUCT_ID)
     );
-    expect(result).toMatchInlineSnapshot(`
-      InvoiceError {
-        "code": "INVOICE_NOT_FOUND",
-        "id": "id",
-        "message": "Invoice item not found.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: Invoice item not found.]');
   });
 
   test("should throw an error", async () => {
@@ -248,14 +241,7 @@ describe("updateInvoice", () => {
         invoiceId: "unknownInvoiceId",
       })
     );
-    expect(result).toMatchInlineSnapshot(`
-      InvoiceError {
-        "code": "INVOICE_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a invoice that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a invoice that does not exist.]');
   });
   test("should throw an when an item update doesnt return values", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -267,14 +253,7 @@ describe("updateInvoice", () => {
         invoiceId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot(`
-      InvoiceError {
-        "code": "INVOICE_UPDATES_MUST_RETURN_VALUES",
-        "id": "id",
-        "message": "Invoice item updates must return all attributes of the item.",
-        "statusCode": 500,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: Invoice item updates must return all attributes of the item.]');
   });
 
   test("should throw an error", async () => {
@@ -322,14 +301,7 @@ describe("deleteInvoice", () => {
     const error = await getError(async () =>
       deleteInvoice("doesntExistInvoiceId", TEST_PRODUCT_ID)
     );
-    expect(error).toMatchInlineSnapshot(`
-      InvoiceError {
-        "code": "INVOICE_DOES_NOT_EXIST",
-        "id": "id",
-        "message": "You cannot delete a invoice that does not exist.",
-        "statusCode": 400,
-      }
-    `);
+    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a invoice that does not exist.]');
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(

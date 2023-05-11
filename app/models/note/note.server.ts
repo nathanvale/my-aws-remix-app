@@ -138,7 +138,7 @@ export const createNote = async (
 export const readNote = async (
   userId: Note["userId"],
   noteId: Note["noteId"]
-): Promise<NoteItem> => {
+): Promise<NoteItem | undefined> => {
   const { client, TableName } = await getClient();
   const Key = NoteItem.getPrimaryKeyAttributeValues(userId, noteId);
   try {
@@ -148,7 +148,8 @@ export const readNote = async (
         Key,
       })
       .promise();
-    return NoteItem.fromItem(resp.Item);
+
+    return resp.Item ? NoteItem.fromItem(resp.Item) : undefined;
   } catch (error) {
     throw error;
   }
