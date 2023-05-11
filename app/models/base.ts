@@ -10,12 +10,12 @@ export interface Base {
 export abstract class Item {
   abstract get PK(): string;
   abstract get SK(): string;
-  abstract get GS1PK(): string;
-  abstract get GS1SK(): string;
-  abstract get GS2PK(): string;
-  abstract get GS2SK(): string;
-  abstract get GS3PK(): string;
-  abstract get GS3SK(): string;
+  abstract get GS1PK(): string | undefined;
+  abstract get GS1SK(): string | undefined;
+  abstract get GS2PK(): string | undefined;
+  abstract get GS2SK(): string | undefined;
+  abstract get GS3PK(): string | undefined;
+  abstract get GS3SK(): string | undefined;
   abstract get entityType(): string;
   abstract toDynamoDBItem(): Record<string, unknown>;
   abstract toItem(): Record<string, any>;

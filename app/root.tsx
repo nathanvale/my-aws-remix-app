@@ -59,6 +59,30 @@ export default function App() {
   );
 }
 
+const Generate500Page = ({
+  message = "We are already working to solve the problem.",
+}: {
+  message: string;
+}) => {
+  return (
+    <section className="bg-white dark:bg-gray-900">
+      <div className="mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6">
+        <div className="mx-auto max-w-screen-sm text-center">
+          <h1 className="text-primary-600 dark:text-primary-500 mb-4 text-7xl font-extrabold tracking-tight lg:text-9xl">
+            500
+          </h1>
+          <p className="mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
+            Internal Server Error.
+          </p>
+          <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
+            {message}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export function ErrorBoundary() {
   const error = useRouteError();
   if (isRouteErrorResponse(error)) {
@@ -70,12 +94,7 @@ export function ErrorBoundary() {
           <Links />
         </head>
         <body>
-          <div>
-            <h1>
-              {error.status} {error.statusText}
-            </h1>
-            <p>{error.data}</p>
-          </div>
+          <Generate500Page message={error.statusText} />
           <Scripts />
         </body>
       </html>
