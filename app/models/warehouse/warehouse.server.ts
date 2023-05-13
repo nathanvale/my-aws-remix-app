@@ -97,11 +97,11 @@ export class WarehouseItem extends Item {
   }
 
   get GS1PK() {
-    return "";
+    return undefined;
   }
 
   get GS1SK() {
-    return "";
+    return undefined;
   }
 
   get GS2PK(): `USER#${string}` {
@@ -113,11 +113,11 @@ export class WarehouseItem extends Item {
   }
 
   get GS3PK() {
-    return "";
+    return undefined;
   }
 
   get GS3SK() {
-    return "";
+    return undefined;
   }
 
   toItem(): Warehouse {

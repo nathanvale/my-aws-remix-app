@@ -67,24 +67,6 @@ describe("ProductItem", () => {
         "EntityType": {
           "S": "product",
         },
-        "GS1PK": {
-          "S": "",
-        },
-        "GS1SK": {
-          "S": "",
-        },
-        "GS2PK": {
-          "S": "",
-        },
-        "GS2SK": {
-          "S": "",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
-        },
         "PK": {
           "S": "PRODUCT#12345",
         },

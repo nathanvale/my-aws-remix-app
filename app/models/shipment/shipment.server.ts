@@ -119,11 +119,11 @@ export class ShipmentItem extends Item {
   }
 
   get GS3PK() {
-    return "";
+    return undefined;
   }
 
   get GS3SK() {
-    return "";
+    return undefined;
   }
 
   toItem(): Shipment {

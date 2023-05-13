@@ -84,12 +84,6 @@ describe("InvoiceItem", () => {
         "GS2SK": {
           "S": "INVOICE#2021-01-01T00:00:00.000Z",
         },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
-        },
         "PK": {
           "S": "ORDER#12345",
         },
@@ -119,12 +113,6 @@ describe("InvoiceItem", () => {
         },
         "GS2SK": {
           "S": "INVOICE#2021-01-01T00:00:00.000Z",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
       }
     `);

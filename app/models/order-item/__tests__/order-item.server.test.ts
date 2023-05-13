@@ -76,18 +76,6 @@ describe("OrderItemItem", () => {
         "GS1SK": {
           "S": "ORDER#12345",
         },
-        "GS2PK": {
-          "S": "",
-        },
-        "GS2SK": {
-          "S": "",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
-        },
         "PK": {
           "S": "ORDER#12345",
         },
@@ -107,18 +95,6 @@ describe("OrderItemItem", () => {
         },
         "GS1SK": {
           "S": "ORDER#orderId",
-        },
-        "GS2PK": {
-          "S": "",
-        },
-        "GS2SK": {
-          "S": "",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
       }
     `);

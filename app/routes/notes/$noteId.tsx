@@ -8,6 +8,7 @@ import {
 } from "@remix-run/react";
 
 import invariant from "tiny-invariant";
+import { GeneralErrorBoundary } from "~/components/error-boundary";
 
 import { deleteNote } from "~/models/note/note.server";
 import { readNote } from "~/models/note/note.server";
@@ -60,28 +61,12 @@ export default function NoteDetailsPage() {
     </div>
   );
 }
-
 export function ErrorBoundary() {
-  const error = useRouteError();
-  if (isRouteErrorResponse(error)) {
-    return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
-    );
-  } else if (error instanceof Error) {
-    return (
-      <div>
-        <h1>Error</h1>
-        <p>{error.message}</p>
-        <p>The stack trace is:</p>
-        <pre>{error.stack}</pre>
-      </div>
-    );
-  } else {
-    return <h1>Unknown Error</h1>;
-  }
+  return (
+    <GeneralErrorBoundary
+      statusHandlers={{
+        404: () => <p>Note not found.</p>,
+      }}
+    />
+  );
 }

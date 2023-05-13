@@ -76,23 +76,11 @@ describe("ShipmentItem", () => {
         "EntityType": {
           "S": "shipmentItem",
         },
-        "GS1PK": {
-          "S": "",
-        },
-        "GS1SK": {
-          "S": "",
-        },
         "GS2PK": {
           "S": "SHIPMENT#12345",
         },
         "GS2SK": {
           "S": "PRODUCT#12345",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
         "PK": {
           "S": "ORDER#12345",
@@ -111,23 +99,11 @@ describe("ShipmentItem", () => {
     );
     expect(result).toMatchInlineSnapshot(`
       {
-        "GS1PK": {
-          "S": "",
-        },
-        "GS1SK": {
-          "S": "",
-        },
         "GS2PK": {
           "S": "SHIPMENT#shipmentId",
         },
         "GS2SK": {
           "S": "PRODUCT#productId",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
       }
     `);

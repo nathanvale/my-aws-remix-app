@@ -115,19 +115,19 @@ export class UserItem extends Item {
   }
 
   get GS2PK() {
-    return "";
+    return undefined;
   }
 
   get GS2SK() {
-    return "";
+    return undefined;
   }
 
   get GS3PK() {
-    return "";
+    return undefined;
   }
 
   get GS3SK() {
-    return "";
+    return undefined;
   }
 
   toItem(): User {
@@ -208,6 +208,8 @@ export const getUserByEmail = async function (
 ): Promise<User> {
   const { client, TableName } = await getClient();
   const gSIKeys = UserItem.getGSIAttributeValues("", email);
+  invariant(gSIKeys.GS1PK, "Missing GS1PK!");
+  invariant(gSIKeys.GS1SK, "Missing GlS1SK!");
   try {
     const resp = await client
       .query({

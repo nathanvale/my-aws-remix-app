@@ -23,12 +23,11 @@ export interface ShipmentItem extends Base {
   readonly orderId: string;
   readonly shipmentItemId: string;
   quantity: string;
-  readonly shipmentId : string;
+  readonly shipmentId: string;
   readonly productId: string;
 }
 
 export class ShipmentItemItem extends Item {
-
   readonly attributes: ShipmentItem;
 
   constructor(attributes: ShipmentItem) {
@@ -47,9 +46,9 @@ export class ShipmentItemItem extends Item {
       orderId: "",
       createdAt: "",
       updatedAt: "",
-      quantity:"3",
-      productId:"",
-      shipmentId:""
+      quantity: "3",
+      productId: "",
+      shipmentId: "",
     });
     const itemAttributes = item.Attributes.M;
 
@@ -71,25 +70,25 @@ export class ShipmentItemItem extends Item {
       shipmentItemId,
       orderId,
       updatedAt: "",
-      quantity:"3",
-      productId:"",
-      shipmentId:""
+      quantity: "3",
+      productId: "",
+      shipmentId: "",
     });
     return shipmentItem.keys();
   }
 
   static getGSIAttributeValues(
     shipmentId: ShipmentItem["shipmentId"],
-    productId: ShipmentItem["productId"],
+    productId: ShipmentItem["productId"]
   ): GSIKeyAttributeValue {
     const user = new ShipmentItemItem({
       orderId: "",
       createdAt: "",
       updatedAt: "",
-      shipmentItemId :"",
+      shipmentItemId: "",
       shipmentId,
-      quantity:"3",
-      productId
+      quantity: "3",
+      productId,
     });
     return user.gSIKeys();
   }
@@ -107,13 +106,12 @@ export class ShipmentItemItem extends Item {
   }
 
   get GS1PK() {
-    return "";
+    return undefined;
   }
 
   get GS1SK() {
-    return "";
+    return undefined;
   }
-
 
   get GS2PK(): `SHIPMENT#${string}` {
     return `SHIPMENT#${this.attributes.shipmentId}`;
@@ -124,11 +122,11 @@ export class ShipmentItemItem extends Item {
   }
 
   get GS3PK() {
-    return "";
+    return undefined;
   }
 
   get GS3SK() {
-    return "";
+    return undefined;
   }
 
   toItem(): ShipmentItem {
@@ -138,8 +136,8 @@ export class ShipmentItemItem extends Item {
       shipmentItemId: this.attributes.shipmentItemId,
       orderId: this.attributes.orderId,
       quantity: this.attributes.quantity,
-      productId:  this.attributes.productId,
-      shipmentId: this.attributes.shipmentId
+      productId: this.attributes.productId,
+      shipmentId: this.attributes.shipmentId,
     };
   }
 
@@ -172,13 +170,18 @@ export const readShipmentItem = async (
   shipmentItemId: string,
   productId: string
 ): Promise<ShipmentItem> => {
-  const key = ShipmentItemItem.getPrimaryKeyAttributeValues(shipmentItemId, productId);
+  const key = ShipmentItemItem.getPrimaryKeyAttributeValues(
+    shipmentItemId,
+    productId
+  );
   const resp = await readItem(key);
   if (resp.Item) return ShipmentItemItem.fromItem(resp.Item).attributes;
   else throw new ShipmentItemError("SHIPMENT_ITEM_NOT_FOUND");
 };
 
-export const updateShipmentItem = async (shipment: ShipmentItem): Promise<ShipmentItem> => {
+export const updateShipmentItem = async (
+  shipment: ShipmentItem
+): Promise<ShipmentItem> => {
   try {
     const key = ShipmentItemItem.getPrimaryKeyAttributeValues(
       shipment.shipmentItemId,
@@ -194,7 +197,8 @@ export const updateShipmentItem = async (shipment: ShipmentItem): Promise<Shipme
     );
     if (resp?.Attributes)
       return ShipmentItemItem.fromItem(resp.Attributes).attributes;
-    else throw new ShipmentItemError("SHIPMENT_ITEM_UPDATES_MUST_RETURN_VALUES");
+    else
+      throw new ShipmentItemError("SHIPMENT_ITEM_UPDATES_MUST_RETURN_VALUES");
   } catch (error) {
     if (
       (error as AWSError).code ===
@@ -209,8 +213,12 @@ export const deleteShipmentItem = async (
   shipmentItemId: ShipmentItem["shipmentItemId"],
   orderId: ShipmentItem["orderId"]
 ): Promise<ShipmentItem> => {
-  const key = ShipmentItemItem.getPrimaryKeyAttributeValues(shipmentItemId, orderId);
+  const key = ShipmentItemItem.getPrimaryKeyAttributeValues(
+    shipmentItemId,
+    orderId
+  );
   const resp = await deleteItem(key);
-  if (resp.Attributes) return ShipmentItemItem.fromItem(resp.Attributes).attributes;
+  if (resp.Attributes)
+    return ShipmentItemItem.fromItem(resp.Attributes).attributes;
   else throw new ShipmentItemError("SHIPMENT_ITEM_DOES_NOT_EXIST");
 };
