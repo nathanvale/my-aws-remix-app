@@ -65,23 +65,11 @@ describe("WarehouseItem", () => {
         "EntityType": {
           "S": "warehouse",
         },
-        "GS1PK": {
-          "S": "",
-        },
-        "GS1SK": {
-          "S": "",
-        },
         "GS2PK": {
           "S": "USER#12345",
         },
         "GS2SK": {
           "S": "WAREHOUSE#12345",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
         "PK": {
           "S": "WAREHOUSE#12345",
@@ -97,23 +85,11 @@ describe("WarehouseItem", () => {
     const result = WarehouseItem.getGSIAttributeValues("userId", "warehouseId");
     expect(result).toMatchInlineSnapshot(`
       {
-        "GS1PK": {
-          "S": "",
-        },
-        "GS1SK": {
-          "S": "",
-        },
         "GS2PK": {
           "S": "USER#userId",
         },
         "GS2SK": {
           "S": "WAREHOUSE#warehouseId",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
       }
     `);

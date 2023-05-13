@@ -71,27 +71,27 @@ export class NoteItem extends Item {
   }
 
   get GS1PK() {
-    return "";
+    return undefined;
   }
 
   get GS1SK() {
-    return "";
+    return undefined;
   }
 
   get GS2PK() {
-    return "";
+    return undefined;
   }
 
   get GS2SK() {
-    return "";
+    return undefined;
   }
 
   get GS3PK() {
-    return "";
+    return undefined;
   }
 
   get GS3SK() {
-    return "";
+    return undefined;
   }
 
   toItem(): Note {

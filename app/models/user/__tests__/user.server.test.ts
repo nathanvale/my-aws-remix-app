@@ -85,18 +85,6 @@ describe("UserItem", () => {
         "GS1SK": {
           "S": "USER#test@test.com",
         },
-        "GS2PK": {
-          "S": "",
-        },
-        "GS2SK": {
-          "S": "",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
-        },
         "PK": {
           "S": "USER#12345",
         },

@@ -110,19 +110,19 @@ export class WarehouseItemItem extends Item {
   }
 
   get GS2PK() {
-    return "";
+    return undefined;
   }
 
   get GS2SK() {
-    return "";
+    return undefined;
   }
 
   get GS3PK() {
-    return "";
+    return undefined;
   }
 
   get GS3SK() {
-    return "";
+    return undefined;
   }
 
   toItem(): WarehouseItem {

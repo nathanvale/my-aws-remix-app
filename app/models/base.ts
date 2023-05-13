@@ -10,12 +10,12 @@ export interface Base {
 export abstract class Item {
   abstract get PK(): string;
   abstract get SK(): string;
-  abstract get GS1PK(): string;
-  abstract get GS1SK(): string;
-  abstract get GS2PK(): string;
-  abstract get GS2SK(): string;
-  abstract get GS3PK(): string;
-  abstract get GS3SK(): string;
+  abstract get GS1PK(): string | undefined;
+  abstract get GS1SK(): string | undefined;
+  abstract get GS2PK(): string | undefined;
+  abstract get GS2SK(): string | undefined;
+  abstract get GS3PK(): string | undefined;
+  abstract get GS3SK(): string | undefined;
   abstract get entityType(): string;
   abstract toDynamoDBItem(): Record<string, unknown>;
   abstract toItem(): Record<string, any>;
@@ -28,13 +28,27 @@ export abstract class Item {
   }
 
   public gSIKeys(): GSIKeyAttributeValue {
-    return {
-      GS1PK: { S: this.GS1PK },
-      GS1SK: { S: this.GS1SK },
-      GS2PK: { S: this.GS2PK },
-      GS2SK: { S: this.GS2SK },
-      GS3PK: { S: this.GS3PK },
-      GS3SK: { S: this.GS3SK },
-    };
+    const gsiKeys: GSIKeyAttributeValue = {};
+
+    if (this.GS1PK) {
+      gsiKeys.GS1PK = { S: this.GS1PK };
+    }
+    if (this.GS1SK) {
+      gsiKeys.GS1SK = { S: this.GS1SK };
+    }
+    if (this.GS2PK) {
+      gsiKeys.GS2PK = { S: this.GS2PK };
+    }
+    if (this.GS2SK) {
+      gsiKeys.GS2SK = { S: this.GS2SK };
+    }
+    if (this.GS3PK) {
+      gsiKeys.GS3PK = { S: this.GS3PK };
+    }
+    if (this.GS3SK) {
+      gsiKeys.GS3SK = { S: this.GS3SK };
+    }
+
+    return gsiKeys;
   }
 }

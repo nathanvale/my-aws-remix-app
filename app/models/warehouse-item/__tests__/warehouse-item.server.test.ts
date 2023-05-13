@@ -75,18 +75,6 @@ describe("WarehouseItemItem", () => {
         "GS1SK": {
           "S": "WAREHOUSE_ITEM#2021-01-01T00:00:00.000Z",
         },
-        "GS2PK": {
-          "S": "",
-        },
-        "GS2SK": {
-          "S": "",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
-        },
         "PK": {
           "S": "PRODUCT#12345",
         },
@@ -109,18 +97,6 @@ describe("WarehouseItemItem", () => {
         },
         "GS1SK": {
           "S": "WAREHOUSE_ITEM#2021-01-01T00:00:00.000Z",
-        },
-        "GS2PK": {
-          "S": "",
-        },
-        "GS2SK": {
-          "S": "",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
       }
     `);

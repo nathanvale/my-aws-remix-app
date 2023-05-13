@@ -84,12 +84,6 @@ describe("ShipmentItem", () => {
         "GS2SK": {
           "S": "SHIPMENT#12345",
         },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
-        },
         "PK": {
           "S": "ORDER#12345",
         },
@@ -119,12 +113,6 @@ describe("ShipmentItem", () => {
         },
         "GS2SK": {
           "S": "SHIPMENT#shipmentId",
-        },
-        "GS3PK": {
-          "S": "",
-        },
-        "GS3SK": {
-          "S": "",
         },
       }
     `);

@@ -11,15 +11,18 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  isRouteErrorResponse,
-  useRouteError,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUserFromSession } from "./session/session.server";
+import { GeneralErrorBoundary } from "./components/error-boundary";
 
 export const links: LinksFunction = () => {
   return [
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
+    },
     { rel: "stylesheet", href: tailwindStylesheetUrl },
     // NOTE: Architect deploys the public directory to /_static/
     { rel: "icon", href: "/_static/favicon.ico" },
@@ -42,7 +45,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
-export default function App() {
+interface AppShellProps {
+  children: React.ReactNode;
+}
+
+const AppShell = ({ children }: AppShellProps) => {
   return (
     <html lang="en" className="h-full">
       <head>
@@ -50,51 +57,44 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Outlet />
+        {children}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
     </html>
   );
+};
+
+export default function App() {
+  return (
+    <AppShell>
+      <Outlet></Outlet>
+    </AppShell>
+  );
 }
 
 export function ErrorBoundary() {
-  const error = useRouteError();
-  if (isRouteErrorResponse(error)) {
-    return (
-      <html>
-        <head>
-          <title>Oh no!</title>
-          <Meta />
-          <Links />
-        </head>
-        <body>
-          <div>
-            <h1>
-              {error.status} {error.statusText}
-            </h1>
-            <p>{error.data}</p>
-          </div>
-          <Scripts />
-        </body>
-      </html>
-    );
-  } else if (error instanceof Error) {
-    return (
-      <html>
-        <head>
-          <title>Oh no!</title>
-          <Meta />
-          <Links />
-        </head>
-        <body>
-          <div>ERROR: {error.message}</div>
-          <Scripts />
-        </body>
-      </html>
-    );
-  } else {
-    return <h1>Unknown Error</h1>;
-  }
+  return (
+    <GeneralErrorBoundary
+      defaultStatusHandler={({ error }) => {
+        console.error(error);
+        if (!error.internal) error.statusText = "Internal Server Error";
+        return (
+          <AppShell>
+            <div className="flex h-full items-center justify-center">
+              <div className="mx-auto max-w-screen-sm text-center">
+                <h1 className="text-primary-600 dark:text-primary-500 mb-4 text-7xl font-extrabold tracking-tight lg:text-9xl">
+                  {error.status}
+                </h1>
+                <p className="mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl">
+                  {error.statusText}
+                </p>
+              </div>
+            </div>
+          </AppShell>
+        );
+      }}
+    />
+  );
 }
