@@ -155,7 +155,7 @@ describe("readUser", () => {
     const result = await getError(async () =>
       readUser("unknown.user@test.com")
     );
-    expect(result).toMatchInlineSnapshot('[Error: User not found.]');
+    expect(result).toMatchInlineSnapshot("[Error: User not found.]");
   });
 
   test("should throw an error", async () => {
@@ -211,7 +211,9 @@ describe("updateUser", () => {
         userId: "unknownUserId",
       })
     );
-    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a user that does not exist.]');
+    expect(result).toMatchInlineSnapshot(
+      "[Error: You cannot delete a user that does not exist.]"
+    );
   });
 
   test("should throw an when an item update doesnt return values", async () => {
@@ -224,7 +226,9 @@ describe("updateUser", () => {
         userId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot('[Error: User updates must return all attributes of the item.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: User updates must return all attributes of the item.]"
+    );
   });
 
   test("should throw an error", async () => {
@@ -272,7 +276,9 @@ describe("deleteUser", () => {
   });
   test("should return an error when trying to delete a user that does not exist", async () => {
     const error = await getError(async () => deleteUser("doesntExistUserId"));
-    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a user that does not exist.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: You cannot delete a user that does not exist.]"
+    );
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -323,7 +329,9 @@ describe("verifyEmailNotExist", () => {
     const error = await getError<UserError>(async () =>
       verifyEmailNotExist(TEST_USER_EMAIL)
     );
-    expect(error).toMatchInlineSnapshot('[Error: There is already an existing user with this email address.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: There is already an existing user with this email address.]"
+    );
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -358,7 +366,7 @@ describe("verifyLogin", () => {
     const error = await getError(async () =>
       verifyLogin("doesnt.exist@test.com", "password")
     );
-    expect(error).toMatchInlineSnapshot('[Error: User not found.]');
+    expect(error).toMatchInlineSnapshot("[Error: User not found.]");
   });
 
   test("should return an error when verifying a user with an invalid password", async () => {
@@ -366,7 +374,7 @@ describe("verifyLogin", () => {
     const error = await getError(async () =>
       verifyLogin(TEST_USER_EMAIL, "password")
     );
-    expect(error).toMatchInlineSnapshot('[Error: Invalid pasword.]');
+    expect(error).toMatchInlineSnapshot("[Error: Invalid pasword.]");
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(

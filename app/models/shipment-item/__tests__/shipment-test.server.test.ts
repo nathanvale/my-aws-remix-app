@@ -43,7 +43,7 @@ describe("ShipmentItem", () => {
       updatedAt: "2021-01-01T00:00:00.000Z",
       shipmentId: TEST_SHIPMENT_ID,
       productId: TEST_PRODUCT_ID,
-      shipmentItemId: TEST_SHIPMENT_ITEM_ID
+      shipmentItemId: TEST_SHIPMENT_ITEM_ID,
     }).toDynamoDBItem();
 
     expect(shipmentItem).toMatchInlineSnapshot(`
@@ -119,9 +119,9 @@ describe("createShipment", () => {
       updatedAt: "2021-01-01T00:00:00.000Z",
       quantity: "3",
       shipmentItemId,
-      shipmentId : TEST_SHIPMENT_ID,
+      shipmentId: TEST_SHIPMENT_ID,
       orderId: TEST_ORDER_ID,
-      productId: TEST_PRODUCT_ID
+      productId: TEST_PRODUCT_ID,
     }).toItem();
     const createdUser = await createShipmentItem(userMock);
     await deleteShipmentItem(shipmentItemId, TEST_ORDER_ID);
@@ -145,7 +145,7 @@ describe("createShipment", () => {
       createShipmentItem(createShipmentItemSeed())
     );
     delete result.stack;
-    expect(result).toMatchInlineSnapshot('[Error: Unknown error]');
+    expect(result).toMatchInlineSnapshot("[Error: Unknown error]");
   });
 });
 
@@ -169,7 +169,7 @@ describe("readShipment", () => {
     const result = await getError(async () =>
       readShipmentItem("unknownShipmentId", TEST_PRODUCT_ID)
     );
-    expect(result).toMatchInlineSnapshot('[Error: Shipment item not found.]');
+    expect(result).toMatchInlineSnapshot("[Error: Shipment item not found.]");
   });
 
   test("should throw an error", async () => {
@@ -180,7 +180,7 @@ describe("readShipment", () => {
       readShipmentItem(TEST_SHIPMENT_ID, TEST_PRODUCT_ID)
     );
     delete result.stack;
-    expect(result).toMatchInlineSnapshot('[Error: Unknown error]');
+    expect(result).toMatchInlineSnapshot("[Error: Unknown error]");
   });
 });
 
@@ -195,7 +195,7 @@ describe("updateShipment", () => {
       orderId: TEST_ORDER_ID,
       quantity: "3",
       productId: TEST_PRODUCT_ID,
-      shipmentId: TEST_SHIPMENT_ID
+      shipmentId: TEST_SHIPMENT_ID,
     }).toItem();
     const createdShipment = await createShipmentItem(userMock);
     const quantity = "4";
@@ -225,7 +225,9 @@ describe("updateShipment", () => {
         shipmentItemId: "unknownShipmentItemId",
       })
     );
-    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a shipment item that does not exist.]');
+    expect(result).toMatchInlineSnapshot(
+      "[Error: You cannot delete a shipment item that does not exist.]"
+    );
   });
   test("should throw an when an item update doesnt return values", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -237,7 +239,9 @@ describe("updateShipment", () => {
         shipmentItemId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot('[Error: Shipment item updates must return all attributes of the item.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: Shipment item updates must return all attributes of the item.]"
+    );
   });
 
   test("should throw an error", async () => {
@@ -252,7 +256,7 @@ describe("updateShipment", () => {
     );
 
     delete error.stack;
-    expect(error).toMatchInlineSnapshot('[Error: Unknown error]');
+    expect(error).toMatchInlineSnapshot("[Error: Unknown error]");
   });
 });
 
@@ -264,13 +268,16 @@ describe("deleteShipment", () => {
       createdAt: "2021-01-01T00:00:00.000Z",
       updatedAt: "2021-01-01T00:00:00.000Z",
       shipmentItemId,
-      shipmentId:TEST_SHIPMENT_ID,
+      shipmentId: TEST_SHIPMENT_ID,
       orderId: TEST_ORDER_ID,
       quantity: "3",
       productId: TEST_PRODUCT_ID,
     }).toItem();
     await createShipmentItem(userMock);
-    const deletedShipment = await deleteShipmentItem(shipmentItemId, TEST_ORDER_ID);
+    const deletedShipment = await deleteShipmentItem(
+      shipmentItemId,
+      TEST_ORDER_ID
+    );
     expect(deletedShipment).toMatchInlineSnapshot(`
       {
         "createdAt": "2022-12-01T00:00:00.000Z",
@@ -287,16 +294,18 @@ describe("deleteShipment", () => {
     const error = await getError(async () =>
       deleteShipmentItem("doesntExistShipmentId", TEST_ORDER_ID)
     );
-    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a shipment item that does not exist.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: You cannot delete a shipment item that does not exist.]"
+    );
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
       clientApiMethodReject("deleteItem", new Error("Unknown error"))
     );
     const error = await getError<Error>(async () =>
-    deleteShipmentItem("doesntExistShipmentId", TEST_ORDER_ID)
+      deleteShipmentItem("doesntExistShipmentId", TEST_ORDER_ID)
     );
     delete error.stack;
-    expect(error).toMatchInlineSnapshot('[Error: Unknown error]');
+    expect(error).toMatchInlineSnapshot("[Error: Unknown error]");
   });
 });

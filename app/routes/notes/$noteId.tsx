@@ -1,17 +1,11 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import {
-  Form,
-  useLoaderData,
-  useRouteError,
-  isRouteErrorResponse,
-} from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 
 import invariant from "tiny-invariant";
 import { GeneralErrorBoundary } from "~/components/error-boundary";
 
-import { deleteNote } from "~/models/note/note.server";
-import { readNote } from "~/models/note/note.server";
+import { deleteNote, readNote } from "~/models/note/note.server";
 import { requireUserId } from "~/session/session.server";
 
 type LoaderData = {

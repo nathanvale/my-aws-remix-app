@@ -10,7 +10,7 @@ import type { Invoice } from "~/models/invoice/invoice.server";
 import type { OrderItem } from "~/models/order-item/order-item.server";
 import type { Order } from "~/models/order/order.server";
 import type { Product } from "~/models/product/product.server";
-import { ShipmentItem } from "~/models/shipment-item/shipment-item.server";
+import type { ShipmentItem } from "~/models/shipment-item/shipment-item.server";
 import type { Shipment } from "~/models/shipment/shipment.server";
 import type { User } from "~/models/user/user.server";
 import type { WarehouseItem } from "~/models/warehouse-item/warehouse-item.server";

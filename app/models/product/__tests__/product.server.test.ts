@@ -132,7 +132,7 @@ describe("readProduct", () => {
 
   test("should return an error when getting a product that does not exist", async () => {
     const result = await getError(async () => readProduct("unknownProductId"));
-    expect(result).toMatchInlineSnapshot('[Error: Product not found.]');
+    expect(result).toMatchInlineSnapshot("[Error: Product not found.]");
   });
 
   test("should throw an error", async () => {
@@ -186,7 +186,9 @@ describe("updateProduct", () => {
         productId: "unknownProductId",
       })
     );
-    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a product that does not exist.]');
+    expect(result).toMatchInlineSnapshot(
+      "[Error: You cannot delete a product that does not exist.]"
+    );
   });
   test("should throw an when an item update doesnt return values", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
@@ -198,7 +200,9 @@ describe("updateProduct", () => {
         productId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot('[Error: Product updates must return all attributes of the item.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: Product updates must return all attributes of the item.]"
+    );
   });
 
   test("should throw an error", async () => {
@@ -246,7 +250,9 @@ describe("deleteProduct", () => {
     const error = await getError(async () =>
       deleteProduct("doesntExistProductId")
     );
-    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a product that does not exist.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: You cannot delete a product that does not exist.]"
+    );
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(

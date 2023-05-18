@@ -1,5 +1,4 @@
-import { ServerError } from "../../errors";
-import { ErrorMessage } from "../../errors";
+import { ServerError, ErrorMessage } from "../../errors";
 
 export type ProductErrorCodes =
   | "PRODUCT_ALREADY_EXISTS"

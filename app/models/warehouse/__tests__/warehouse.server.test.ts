@@ -149,7 +149,7 @@ describe("readWarehouse", () => {
     const result = await getError(async () =>
       readWarehouse("unknownWarehouseId")
     );
-    expect(result).toMatchInlineSnapshot('[Error: Warehouse not found.]');
+    expect(result).toMatchInlineSnapshot("[Error: Warehouse not found.]");
   });
 
   test("should throw an error", async () => {
@@ -202,7 +202,7 @@ describe("updateWarehouse", () => {
       })
     );
     expect(result).toMatchInlineSnapshot(
-      '[Error: You cannot delete a warehouse that does not exist.]'
+      "[Error: You cannot delete a warehouse that does not exist.]"
     );
   });
   test("should throw an when an item update doesnt return values", async () => {
@@ -215,7 +215,9 @@ describe("updateWarehouse", () => {
         warehouseId: "",
       })
     );
-    expect(error).toMatchInlineSnapshot('[Error: Warehouse updates must return all attributes of the item.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: Warehouse updates must return all attributes of the item.]"
+    );
   });
 
   test("should throw an error", async () => {
@@ -261,7 +263,9 @@ describe("deleteWarehouse", () => {
     const error = await getError(async () =>
       deleteWarehouse("doesntExistWarehouseId")
     );
-    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a warehouse that does not exist.]');
+    expect(error).toMatchInlineSnapshot(
+      "[Error: You cannot delete a warehouse that does not exist.]"
+    );
   });
   test("should throw an error", async () => {
     vi.spyOn(client, "getClient").mockResolvedValue(
