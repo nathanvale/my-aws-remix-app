@@ -10,4 +10,5 @@ coverage
 playwright-report
 server
 
-/app/styles/tailwind.css
+package.json
+package-lock.json

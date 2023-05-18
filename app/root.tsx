@@ -1,3 +1,4 @@
+import { cssBundleHref } from "@remix-run/css-bundle";
 import type {
   LinksFunction,
   LoaderFunction,
@@ -26,7 +27,8 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: tailwindStylesheetUrl },
     // NOTE: Architect deploys the public directory to /_static/
     { rel: "icon", href: "/_static/favicon.ico" },
-  ];
+    cssBundleHref ? { rel: "stylesheet", href: cssBundleHref } : null,
+  ].filter(Boolean);
 };
 
 export const meta: MetaFunction = () => ({
