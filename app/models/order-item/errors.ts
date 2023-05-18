@@ -1,5 +1,4 @@
-import { ServerError } from "../../errors";
-import { ErrorMessage } from "../../errors";
+import { ServerError, ErrorMessage } from "../../errors";
 
 export type OrderItemErrorCodes =
   | "ORDER_ITEM_ALREADY_EXISTS"
@@ -11,8 +10,7 @@ export const ORDER_ITEM_ERROR_MESSAGES: ErrorMessage<OrderItemErrorCodes> = {
   ORDER_ITEM_ALREADY_EXISTS: {
     code: "ORDER_ITEM_ALREADY_EXISTS",
     stausCode: 400,
-    message:
-      "There is already an existing order item with this orderItemId.",
+    message: "There is already an existing order item with this orderItemId.",
   },
   ORDER_ITEM_DOES_NOT_EXIST: {
     code: "ORDER_ITEM_DOES_NOT_EXIST",

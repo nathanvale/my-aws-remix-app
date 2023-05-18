@@ -1,17 +1,11 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import {
-  Form,
-  useLoaderData,
-  useRouteError,
-  isRouteErrorResponse,
-} from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 
 import invariant from "tiny-invariant";
 import { GeneralErrorBoundary } from "~/components/error-boundary";
 
-import { deleteNote } from "~/models/note/note.server";
-import { readNote } from "~/models/note/note.server";
+import { deleteNote, readNote } from "~/models/note/note.server";
 import { requireUserId } from "~/session/session.server";
 
 type LoaderData = {
@@ -53,7 +47,7 @@ export default function NoteDetailsPage() {
       <Form method="post">
         <button
           type="submit"
-          className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+          className="rounded bg-blue-500  px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
         >
           Delete
         </button>

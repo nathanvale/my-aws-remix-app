@@ -2,19 +2,21 @@
  * @type {import('@remix-run/dev').AppConfig}
  */
 module.exports = {
-  appDirectory: "app",
   cacheDirectory: "./node_modules/.cache/remix",
-  assetsBuildDirectory: "public/build",
+  future: {
+    v2_errorBoundary: true,
+  },
+  ignoredRouteFiles: ["**/.*", "**/*.test.{js,jsx,ts,tsx}"],
   publicPath: "/_static/build/",
-  serverBuildTarget: "arc",
+  postcss: true,
   server: "./server.ts",
-  ignoredRouteFiles: ["**/.*", "**/*.css", "**/*.test.{js,jsx,ts,tsx}"],
+  serverBuildTarget: "arc",
+  tailwind: true,
+  appDirectory: "app",
+  assetsBuildDirectory: "public/build",
   routes(defineRoutes) {
     return defineRoutes((route) => {
       if (process.env.NODE_ENV === "production") return;
     });
-  },
-  future: {
-    v2_errorBoundary: true
   },
 };
