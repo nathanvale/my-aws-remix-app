@@ -1,18 +1,18 @@
-import { vi } from "vitest";
+import { vi } from 'vitest'
 
-vi.mock("@remix-run/node", () => {
-  return {
-    createCookieSessionStorage: vi.fn().mockImplementation((value) => value),
-    getSession: vi.fn(),
-    commitSession: vi.fn(),
-    destroySession: vi.fn(),
-  };
-});
+vi.mock('@remix-run/node', () => {
+	return {
+		createCookieSessionStorage: vi.fn().mockImplementation(value => value),
+		getSession: vi.fn(),
+		commitSession: vi.fn(),
+		destroySession: vi.fn(),
+	}
+})
 
-describe("sessionStorage", () => {
-  test("should get a session", async () => {
-    const { sessionStorage } = await import("../session-storage");
-    expect(sessionStorage).toMatchInlineSnapshot(`
+describe('sessionStorage', () => {
+	test('should get a session', async () => {
+		const { sessionStorage } = await import('../session-storage')
+		expect(sessionStorage).toMatchInlineSnapshot(`
       {
         "cookie": {
           "httpOnly": true,
@@ -25,6 +25,6 @@ describe("sessionStorage", () => {
           "secure": false,
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})

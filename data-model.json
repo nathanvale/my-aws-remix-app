@@ -1,646 +1,646 @@
 {
-  "ModelName": "campaign processing",
-  "ModelMetadata": {
-    "Author": "Nathan Vale",
-    "DateCreated": "Oct 16, 2022, 05:12 PM",
-    "DateLastModified": "May 10, 2023, 5:33 PM",
-    "Description": "",
-    "AWSService": "Amazon DynamoDB",
-    "Version": "3.0"
-  },
-  "DataModel": [
-    {
-      "TableName": "campaign_processing",
-      "KeyAttributes": {
-        "PartitionKey": {
-          "AttributeName": "PK",
-          "AttributeType": "S"
-        },
-        "SortKey": {
-          "AttributeName": "SK",
-          "AttributeType": "S"
-        }
-      },
-      "NonKeyAttributes": [
-        {
-          "AttributeName": "EntityType",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "GS1PK",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "GS1SK",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "GS2PK",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "GS2SK",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "GS3PK",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "GS3SK",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "Attributes",
-          "AttributeType": "M"
-        }
-      ],
-      "GlobalSecondaryIndexes": [
-        {
-          "IndexName": "GSI1",
-          "KeyAttributes": {
-            "PartitionKey": {
-              "AttributeName": "GS1PK",
-              "AttributeType": "S"
-            },
-            "SortKey": {
-              "AttributeName": "GS1SK",
-              "AttributeType": "S"
-            }
-          },
-          "Projection": {
-            "ProjectionType": "ALL"
-          }
-        },
-        {
-          "IndexName": "GSI2",
-          "KeyAttributes": {
-            "PartitionKey": {
-              "AttributeName": "GS2PK",
-              "AttributeType": "S"
-            },
-            "SortKey": {
-              "AttributeName": "GS2SK",
-              "AttributeType": "S"
-            }
-          },
-          "Projection": {
-            "ProjectionType": "ALL"
-          }
-        },
-        {
-          "IndexName": "GS3",
-          "KeyAttributes": {
-            "PartitionKey": {
-              "AttributeName": "GS3PK",
-              "AttributeType": "S"
-            },
-            "SortKey": {
-              "AttributeName": "GS3SK",
-              "AttributeType": "S"
-            }
-          },
-          "Projection": {
-            "ProjectionType": "KEYS_ONLY"
-          }
-        }
-      ],
-      "TableData": [
-        {
-          "PK": {
-            "S": "USER#12345"
-          },
-          "SK": {
-            "S": "USER#12345"
-          },
-          "GS1PK": {
-            "S": "USER#test@test.com"
-          },
-          "GS1SK": {
-            "S": "USER#test@test.com"
-          },
-          "GS2PK": {
-            "S": ""
-          },
-          "GS2SK": {
-            "S": ""
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "user"
-          },
-          "Attributes": {
-            "M": {
-              "createdAt": {
-                "S": "2022-08-31T05:46:41.205Z"
-              },
-              "updatedAt": {
-                "S": "2022-11-25T13:45:46.999Z"
-              },
-              "userId": {
-                "S": "12345"
-              },
-              "email": {
-                "S": "test@test.com"
-              },
-              "password": {
-                "S": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq"
-              },
-              "name": {
-                "S": "Test User"
-              },
-              "username": {
-                "S": "test_user"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "PRODUCT#12345"
-          },
-          "SK": {
-            "S": "PRODUCT#12345"
-          },
-          "GS1PK": {
-            "S": ""
-          },
-          "GS1SK": {
-            "S": ""
-          },
-          "GS2PK": {
-            "S": ""
-          },
-          "GS2SK": {
-            "S": ""
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "product"
-          },
-          "Attributes": {
-            "M": {
-              "company": {
-                "S": "Mann - Thiel"
-              },
-              "createdAt": {
-                "S": "2022-08-31T05:46:41.205Z"
-              },
-              "description": {
-                "S": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
-              },
-              "price": {
-                "S": "143.00"
-              },
-              "productId": {
-                "S": "12345"
-              },
-              "updatedAt": {
-                "S": "2022-11-25T13:45:46.999Z"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "WAREHOUSE#12345"
-          },
-          "SK": {
-            "S": "WAREHOUSE#12345"
-          },
-          "GS1PK": {
-            "S": ""
-          },
-          "GS1SK": {
-            "S": ""
-          },
-          "GS2PK": {
-            "S": "USER#12345"
-          },
-          "GS2SK": {
-            "S": "WAREHOUSE#12345"
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "warehouse"
-          },
-          "Attributes": {
-            "M": {
-              "city": {
-                "S": "Fort Ellaboro"
-              },
-              "createdAt": {
-                "S": "2022-08-31T05:46:41.205Z"
-              },
-              "updatedAt": {
-                "S": "2022-11-25T13:45:46.999Z"
-              },
-              "userId": {
-                "S": "12345"
-              },
-              "warehouseId": {
-                "S": "12345"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "PRODUCT#12345"
-          },
-          "SK": {
-            "S": "WAREHOUSE_ITEM#12345"
-          },
-          "GS1PK": {
-            "S": "WAREHOUSE#12345"
-          },
-          "GS1SK": {
-            "S": "WAREHOUSE_ITEM#2020-06-21"
-          },
-          "GS2PK": {
-            "S": ""
-          },
-          "GS2SK": {
-            "S": ""
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "warehouseItem"
-          },
-          "Attributes": {
-            "M": {
-              "createdAt": {
-                "S": "2020-06-21"
-              },
-              "productId": {
-                "S": "12345"
-              },
-              "quantity": {
-                "S": "50"
-              },
-              "updatedAt": {
-                "S": "2020-06-21"
-              },
-              "warehouseId": {
-                "S": "12345"
-              },
-              "warehouseItemId": {
-                "S": "12345"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "ORDER#12345"
-          },
-          "SK": {
-            "S": "ORDER#12345"
-          },
-          "GS1PK": {
-            "S": "WAREHOUSE#12345"
-          },
-          "GS1SK": {
-            "S": "ORDER#2022-08-31T05:46:41.205Z"
-          },
-          "GS2PK": {
-            "S": "USER#12345"
-          },
-          "GS2SK": {
-            "S": "ORDER#2022-08-31T05:46:41.205Z"
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "order"
-          },
-          "Attributes": {
-            "M": {
-              "createdAt": {
-                "S": "2022-08-31T05:46:41.205Z"
-              },
-              "orderId": {
-                "S": "12345"
-              },
-              "updatedAt": {
-                "S": "2022-11-25T13:45:46.999Z"
-              },
-              "userId": {
-                "S": "12345"
-              },
-              "warehouseId": {
-                "S": "12345"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "ORDER#12345"
-          },
-          "SK": {
-            "S": "ORDER_ITEM#12345"
-          },
-          "GS1PK": {
-            "S": "PRODUCT#12345"
-          },
-          "GS1SK": {
-            "S": "ORDER#12345"
-          },
-          "GS2PK": {
-            "S": ""
-          },
-          "GS2SK": {
-            "S": ""
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "orderItem"
-          },
-          "Attributes": {
-            "M": {
-              "createdAt": {
-                "S": "2021-01-01T00:00:00.000Z"
-              },
-              "orderId": {
-                "S": "12345"
-              },
-              "orderItemId": {
-                "S": "12345"
-              },
-              "productId": {
-                "S": "12345"
-              },
-              "quantity": {
-                "S": "1"
-              },
-              "updatedAt": {
-                "S": "2021-01-01T00:00:00.000Z"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "ORDER#12345"
-          },
-          "SK": {
-            "S": "INVOICE#12345"
-          },
-          "GS1PK": {
-            "S": "INVOICE#12345"
-          },
-          "GS1SK": {
-            "S": "INVOICE#12345"
-          },
-          "GS2PK": {
-            "S": "USER#12345"
-          },
-          "GS2SK": {
-            "S": "INVOICE#2022-09-29T07:11:20.245Z"
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "invoice"
-          },
-          "Attributes": {
-            "M": {
-              "amount": {
-                "S": "23"
-              },
-              "createdAt": {
-                "S": "2022-09-29T07:11:20.245Z"
-              },
-              "invoiceId": {
-                "S": "12345"
-              },
-              "orderId": {
-                "S": "12345"
-              },
-              "updatedAt": {
-                "S": "2022-11-07T19:23:28.342Z"
-              },
-              "userId": {
-                "S": "12345"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "ORDER#12345"
-          },
-          "SK": {
-            "S": "SHIPMENT#12345"
-          },
-          "GS1PK": {
-            "S": "WAREHOUSE#12345"
-          },
-          "GS1SK": {
-            "S": "SHIPMENT#2022-10-02T05:54:06.069Z"
-          },
-          "GS2PK": {
-            "S": "SHIPMENT#12345"
-          },
-          "GS2SK": {
-            "S": "SHIPMENT#12345"
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "shipment"
-          },
-          "Attributes": {
-            "M": {
-              "address": {
-                "S": "596 Kuhlman Extensions"
-              },
-              "createdAt": {
-                "S": "2022-10-02T05:54:06.069Z"
-              },
-              "orderId": {
-                "S": "12345"
-              },
-              "shipmentId": {
-                "S": "12345"
-              },
-              "updatedAt": {
-                "S": "2022-12-03T01:24:47.781Z"
-              },
-              "warehouseId": {
-                "S": "12345"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "ORDER#12345"
-          },
-          "SK": {
-            "S": "SHIPMENT_ITEM#12345"
-          },
-          "GS1PK": {
-            "S": ""
-          },
-          "GS1SK": {
-            "S": ""
-          },
-          "GS2PK": {
-            "S": "SHIPMENT#12345"
-          },
-          "GS2SK": {
-            "S": "PRODUCT#12345"
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "shipmentItem"
-          },
-          "Attributes": {
-            "M": {
-              "createdAt": {
-                "S": "2020-06-21"
-              },
-              "orderId": {
-                "S": "12345"
-              },
-              "productId": {
-                "S": "12345"
-              },
-              "quantity": {
-                "S": "50"
-              },
-              "shipmentId": {
-                "S": "12345"
-              },
-              "shipmentItemId": {
-                "S": "12345"
-              },
-              "updatedAt": {
-                "S": "2020-06-21"
-              }
-            }
-          }
-        },
-        {
-          "PK": {
-            "S": "USER#12345"
-          },
-          "SK": {
-            "S": "NOTE#12345"
-          },
-          "GS1PK": {
-            "S": ""
-          },
-          "GS1SK": {
-            "S": ""
-          },
-          "GS2PK": {
-            "S": ""
-          },
-          "GS2SK": {
-            "S": ""
-          },
-          "GS3PK": {
-            "S": ""
-          },
-          "GS3SK": {
-            "S": ""
-          },
-          "EntityType": {
-            "S": "note"
-          },
-          "Attributes": {
-            "M": {
-              "body": {
-                "S": "Body"
-              },
-              "noteId": {
-                "S": "12345"
-              },
-              "title": {
-                "S": "Title"
-              },
-              "userId": {
-                "S": "12345"
-              }
-            }
-          }
-        }
-      ],
-      "DataAccess": {
-        "MySql": {}
-      },
-      "BillingMode": "PROVISIONED",
-      "ProvisionedCapacitySettings": {
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": 5,
-          "WriteCapacityUnits": 5
-        },
-        "AutoScalingRead": {
-          "ScalableTargetRequest": {
-            "MinCapacity": 1,
-            "MaxCapacity": 10,
-            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
-          },
-          "ScalingPolicyConfiguration": {
-            "TargetValue": 70
-          }
-        },
-        "AutoScalingWrite": {
-          "ScalableTargetRequest": {
-            "MinCapacity": 1,
-            "MaxCapacity": 10,
-            "ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
-          },
-          "ScalingPolicyConfiguration": {
-            "TargetValue": 70
-          }
-        }
-      }
-    }
-  ]
+	"ModelName": "campaign processing",
+	"ModelMetadata": {
+		"Author": "Nathan Vale",
+		"DateCreated": "Oct 16, 2022, 05:12 PM",
+		"DateLastModified": "May 10, 2023, 5:33 PM",
+		"Description": "",
+		"AWSService": "Amazon DynamoDB",
+		"Version": "3.0"
+	},
+	"DataModel": [
+		{
+			"TableName": "campaign_processing",
+			"KeyAttributes": {
+				"PartitionKey": {
+					"AttributeName": "PK",
+					"AttributeType": "S"
+				},
+				"SortKey": {
+					"AttributeName": "SK",
+					"AttributeType": "S"
+				}
+			},
+			"NonKeyAttributes": [
+				{
+					"AttributeName": "EntityType",
+					"AttributeType": "S"
+				},
+				{
+					"AttributeName": "GS1PK",
+					"AttributeType": "S"
+				},
+				{
+					"AttributeName": "GS1SK",
+					"AttributeType": "S"
+				},
+				{
+					"AttributeName": "GS2PK",
+					"AttributeType": "S"
+				},
+				{
+					"AttributeName": "GS2SK",
+					"AttributeType": "S"
+				},
+				{
+					"AttributeName": "GS3PK",
+					"AttributeType": "S"
+				},
+				{
+					"AttributeName": "GS3SK",
+					"AttributeType": "S"
+				},
+				{
+					"AttributeName": "Attributes",
+					"AttributeType": "M"
+				}
+			],
+			"GlobalSecondaryIndexes": [
+				{
+					"IndexName": "GSI1",
+					"KeyAttributes": {
+						"PartitionKey": {
+							"AttributeName": "GS1PK",
+							"AttributeType": "S"
+						},
+						"SortKey": {
+							"AttributeName": "GS1SK",
+							"AttributeType": "S"
+						}
+					},
+					"Projection": {
+						"ProjectionType": "ALL"
+					}
+				},
+				{
+					"IndexName": "GSI2",
+					"KeyAttributes": {
+						"PartitionKey": {
+							"AttributeName": "GS2PK",
+							"AttributeType": "S"
+						},
+						"SortKey": {
+							"AttributeName": "GS2SK",
+							"AttributeType": "S"
+						}
+					},
+					"Projection": {
+						"ProjectionType": "ALL"
+					}
+				},
+				{
+					"IndexName": "GS3",
+					"KeyAttributes": {
+						"PartitionKey": {
+							"AttributeName": "GS3PK",
+							"AttributeType": "S"
+						},
+						"SortKey": {
+							"AttributeName": "GS3SK",
+							"AttributeType": "S"
+						}
+					},
+					"Projection": {
+						"ProjectionType": "KEYS_ONLY"
+					}
+				}
+			],
+			"TableData": [
+				{
+					"PK": {
+						"S": "USER#12345"
+					},
+					"SK": {
+						"S": "USER#12345"
+					},
+					"GS1PK": {
+						"S": "USER#test@test.com"
+					},
+					"GS1SK": {
+						"S": "USER#test@test.com"
+					},
+					"GS2PK": {
+						"S": ""
+					},
+					"GS2SK": {
+						"S": ""
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "user"
+					},
+					"Attributes": {
+						"M": {
+							"createdAt": {
+								"S": "2022-08-31T05:46:41.205Z"
+							},
+							"updatedAt": {
+								"S": "2022-11-25T13:45:46.999Z"
+							},
+							"userId": {
+								"S": "12345"
+							},
+							"email": {
+								"S": "test@test.com"
+							},
+							"password": {
+								"S": "$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq"
+							},
+							"name": {
+								"S": "Test User"
+							},
+							"username": {
+								"S": "test_user"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "PRODUCT#12345"
+					},
+					"SK": {
+						"S": "PRODUCT#12345"
+					},
+					"GS1PK": {
+						"S": ""
+					},
+					"GS1SK": {
+						"S": ""
+					},
+					"GS2PK": {
+						"S": ""
+					},
+					"GS2SK": {
+						"S": ""
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "product"
+					},
+					"Attributes": {
+						"M": {
+							"company": {
+								"S": "Mann - Thiel"
+							},
+							"createdAt": {
+								"S": "2022-08-31T05:46:41.205Z"
+							},
+							"description": {
+								"S": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
+							},
+							"price": {
+								"S": "143.00"
+							},
+							"productId": {
+								"S": "12345"
+							},
+							"updatedAt": {
+								"S": "2022-11-25T13:45:46.999Z"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "WAREHOUSE#12345"
+					},
+					"SK": {
+						"S": "WAREHOUSE#12345"
+					},
+					"GS1PK": {
+						"S": ""
+					},
+					"GS1SK": {
+						"S": ""
+					},
+					"GS2PK": {
+						"S": "USER#12345"
+					},
+					"GS2SK": {
+						"S": "WAREHOUSE#12345"
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "warehouse"
+					},
+					"Attributes": {
+						"M": {
+							"city": {
+								"S": "Fort Ellaboro"
+							},
+							"createdAt": {
+								"S": "2022-08-31T05:46:41.205Z"
+							},
+							"updatedAt": {
+								"S": "2022-11-25T13:45:46.999Z"
+							},
+							"userId": {
+								"S": "12345"
+							},
+							"warehouseId": {
+								"S": "12345"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "PRODUCT#12345"
+					},
+					"SK": {
+						"S": "WAREHOUSE_ITEM#12345"
+					},
+					"GS1PK": {
+						"S": "WAREHOUSE#12345"
+					},
+					"GS1SK": {
+						"S": "WAREHOUSE_ITEM#2020-06-21"
+					},
+					"GS2PK": {
+						"S": ""
+					},
+					"GS2SK": {
+						"S": ""
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "warehouseItem"
+					},
+					"Attributes": {
+						"M": {
+							"createdAt": {
+								"S": "2020-06-21"
+							},
+							"productId": {
+								"S": "12345"
+							},
+							"quantity": {
+								"S": "50"
+							},
+							"updatedAt": {
+								"S": "2020-06-21"
+							},
+							"warehouseId": {
+								"S": "12345"
+							},
+							"warehouseItemId": {
+								"S": "12345"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "ORDER#12345"
+					},
+					"SK": {
+						"S": "ORDER#12345"
+					},
+					"GS1PK": {
+						"S": "WAREHOUSE#12345"
+					},
+					"GS1SK": {
+						"S": "ORDER#2022-08-31T05:46:41.205Z"
+					},
+					"GS2PK": {
+						"S": "USER#12345"
+					},
+					"GS2SK": {
+						"S": "ORDER#2022-08-31T05:46:41.205Z"
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "order"
+					},
+					"Attributes": {
+						"M": {
+							"createdAt": {
+								"S": "2022-08-31T05:46:41.205Z"
+							},
+							"orderId": {
+								"S": "12345"
+							},
+							"updatedAt": {
+								"S": "2022-11-25T13:45:46.999Z"
+							},
+							"userId": {
+								"S": "12345"
+							},
+							"warehouseId": {
+								"S": "12345"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "ORDER#12345"
+					},
+					"SK": {
+						"S": "ORDER_ITEM#12345"
+					},
+					"GS1PK": {
+						"S": "PRODUCT#12345"
+					},
+					"GS1SK": {
+						"S": "ORDER#12345"
+					},
+					"GS2PK": {
+						"S": ""
+					},
+					"GS2SK": {
+						"S": ""
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "orderItem"
+					},
+					"Attributes": {
+						"M": {
+							"createdAt": {
+								"S": "2021-01-01T00:00:00.000Z"
+							},
+							"orderId": {
+								"S": "12345"
+							},
+							"orderItemId": {
+								"S": "12345"
+							},
+							"productId": {
+								"S": "12345"
+							},
+							"quantity": {
+								"S": "1"
+							},
+							"updatedAt": {
+								"S": "2021-01-01T00:00:00.000Z"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "ORDER#12345"
+					},
+					"SK": {
+						"S": "INVOICE#12345"
+					},
+					"GS1PK": {
+						"S": "INVOICE#12345"
+					},
+					"GS1SK": {
+						"S": "INVOICE#12345"
+					},
+					"GS2PK": {
+						"S": "USER#12345"
+					},
+					"GS2SK": {
+						"S": "INVOICE#2022-09-29T07:11:20.245Z"
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "invoice"
+					},
+					"Attributes": {
+						"M": {
+							"amount": {
+								"S": "23"
+							},
+							"createdAt": {
+								"S": "2022-09-29T07:11:20.245Z"
+							},
+							"invoiceId": {
+								"S": "12345"
+							},
+							"orderId": {
+								"S": "12345"
+							},
+							"updatedAt": {
+								"S": "2022-11-07T19:23:28.342Z"
+							},
+							"userId": {
+								"S": "12345"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "ORDER#12345"
+					},
+					"SK": {
+						"S": "SHIPMENT#12345"
+					},
+					"GS1PK": {
+						"S": "WAREHOUSE#12345"
+					},
+					"GS1SK": {
+						"S": "SHIPMENT#2022-10-02T05:54:06.069Z"
+					},
+					"GS2PK": {
+						"S": "SHIPMENT#12345"
+					},
+					"GS2SK": {
+						"S": "SHIPMENT#12345"
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "shipment"
+					},
+					"Attributes": {
+						"M": {
+							"address": {
+								"S": "596 Kuhlman Extensions"
+							},
+							"createdAt": {
+								"S": "2022-10-02T05:54:06.069Z"
+							},
+							"orderId": {
+								"S": "12345"
+							},
+							"shipmentId": {
+								"S": "12345"
+							},
+							"updatedAt": {
+								"S": "2022-12-03T01:24:47.781Z"
+							},
+							"warehouseId": {
+								"S": "12345"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "ORDER#12345"
+					},
+					"SK": {
+						"S": "SHIPMENT_ITEM#12345"
+					},
+					"GS1PK": {
+						"S": ""
+					},
+					"GS1SK": {
+						"S": ""
+					},
+					"GS2PK": {
+						"S": "SHIPMENT#12345"
+					},
+					"GS2SK": {
+						"S": "PRODUCT#12345"
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "shipmentItem"
+					},
+					"Attributes": {
+						"M": {
+							"createdAt": {
+								"S": "2020-06-21"
+							},
+							"orderId": {
+								"S": "12345"
+							},
+							"productId": {
+								"S": "12345"
+							},
+							"quantity": {
+								"S": "50"
+							},
+							"shipmentId": {
+								"S": "12345"
+							},
+							"shipmentItemId": {
+								"S": "12345"
+							},
+							"updatedAt": {
+								"S": "2020-06-21"
+							}
+						}
+					}
+				},
+				{
+					"PK": {
+						"S": "USER#12345"
+					},
+					"SK": {
+						"S": "NOTE#12345"
+					},
+					"GS1PK": {
+						"S": ""
+					},
+					"GS1SK": {
+						"S": ""
+					},
+					"GS2PK": {
+						"S": ""
+					},
+					"GS2SK": {
+						"S": ""
+					},
+					"GS3PK": {
+						"S": ""
+					},
+					"GS3SK": {
+						"S": ""
+					},
+					"EntityType": {
+						"S": "note"
+					},
+					"Attributes": {
+						"M": {
+							"body": {
+								"S": "Body"
+							},
+							"noteId": {
+								"S": "12345"
+							},
+							"title": {
+								"S": "Title"
+							},
+							"userId": {
+								"S": "12345"
+							}
+						}
+					}
+				}
+			],
+			"DataAccess": {
+				"MySql": {}
+			},
+			"BillingMode": "PROVISIONED",
+			"ProvisionedCapacitySettings": {
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": 5,
+					"WriteCapacityUnits": 5
+				},
+				"AutoScalingRead": {
+					"ScalableTargetRequest": {
+						"MinCapacity": 1,
+						"MaxCapacity": 10,
+						"ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+					},
+					"ScalingPolicyConfiguration": {
+						"TargetValue": 70
+					}
+				},
+				"AutoScalingWrite": {
+					"ScalableTargetRequest": {
+						"MinCapacity": 1,
+						"MaxCapacity": 10,
+						"ServiceRole": "AWSServiceRoleForApplicationAutoScaling_DynamoDBTable"
+					},
+					"ScalingPolicyConfiguration": {
+						"TargetValue": 70
+					}
+				}
+			}
+		}
+	]
 }

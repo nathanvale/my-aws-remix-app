@@ -1,10 +1,10 @@
-import { getSession } from "../get-session";
+import { getSession } from '../get-session'
 
-describe("getStorage", () => {
-  test("should get a session", async () => {
-    const request = new Request("https://localhost:3000");
-    const result = await getSession(request);
-    expect(result).toMatchInlineSnapshot(`
+describe('getStorage', () => {
+	test('should get a session', async () => {
+		const request = new Request('https://localhost:3000')
+		const result = await getSession(request)
+		expect(result).toMatchInlineSnapshot(`
       {
         "data": {},
         "flash": [Function],
@@ -14,6 +14,6 @@ describe("getStorage", () => {
         "set": [Function],
         "unset": [Function],
       }
-    `);
-  });
-});
+    `)
+	})
+})

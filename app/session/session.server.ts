@@ -1,12 +1,12 @@
-import { sessionStorage } from "./session-storage";
-import type { User } from "~/models/user/user.server";
-import { readUser } from "~/models/user/user.server";
-import { logout } from "./logout";
-import { redirect } from "@remix-run/server-runtime";
-import { getSession } from "./get-session";
-import { UserError } from "~/models/user/errors";
+import { sessionStorage } from './session-storage'
+import type { User } from '~/models/user/user.server'
+import { readUser } from '~/models/user/user.server'
+import { logout } from './logout'
+import { redirect } from '@remix-run/server-runtime'
+import { getSession } from './get-session'
+import { UserError } from '~/models/user/errors'
 
-export const USER_SESSION_KEY = "userId";
+export const USER_SESSION_KEY = 'userId'
 
 /**
  * Get the userId stored in the session cookie.
@@ -14,11 +14,11 @@ export const USER_SESSION_KEY = "userId";
  * @returns
  */
 export async function getUserIdFromSession(
-  request: Request
-): Promise<User["userId"] | null> {
-  const session = await getSession(request);
-  const userId = session.get(USER_SESSION_KEY) as User["userId"];
-  return userId;
+	request: Request,
+): Promise<User['userId'] | null> {
+	const session = await getSession(request)
+	const userId = session.get(USER_SESSION_KEY) as User['userId']
+	return userId
 }
 
 /**
@@ -28,20 +28,20 @@ export async function getUserIdFromSession(
  * @returns
  */
 export async function getUserFromSession(
-  request: Request
+	request: Request,
 ): Promise<User | null> {
-  const userId = await getUserIdFromSession(request);
-  if (!userId) return null;
+	const userId = await getUserIdFromSession(request)
+	if (!userId) return null
 
-  try {
-    const user = await readUser(userId);
-    return user;
-  } catch (error) {
-    if (error instanceof UserError) {
-      throw await logout(request);
-    }
-    throw error;
-  }
+	try {
+		const user = await readUser(userId)
+		return user
+	} catch (error) {
+		if (error instanceof UserError) {
+			throw await logout(request)
+		}
+		throw error
+	}
 }
 
 /**
@@ -52,15 +52,15 @@ export async function getUserFromSession(
  * @returns
  */
 export async function requireUserId(
-  request: Request,
-  redirectTo: string = new URL(request.url).pathname
-): Promise<User["userId"]> {
-  const userId = await getUserIdFromSession(request);
-  if (!userId) {
-    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/login?${searchParams}`);
-  }
-  return userId;
+	request: Request,
+	redirectTo: string = new URL(request.url).pathname,
+): Promise<User['userId']> {
+	const userId = await getUserIdFromSession(request)
+	if (!userId) {
+		const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
+		throw redirect(`/login?${searchParams}`)
+	}
+	return userId
 }
 
 /**
@@ -74,17 +74,17 @@ export async function requireUserId(
  * @returns
  */
 export async function requireUser(
-  request: Request,
-  redirectTo: string = new URL(request.url).pathname
+	request: Request,
+	redirectTo: string = new URL(request.url).pathname,
 ): Promise<User> {
-  const userId = await requireUserId(request, redirectTo);
-  try {
-    const user = await readUser(userId);
-    return user;
-  } catch (error) {
-    if (error instanceof UserError) throw await logout(request);
-    else throw error;
-  }
+	const userId = await requireUserId(request, redirectTo)
+	try {
+		const user = await readUser(userId)
+		return user
+	} catch (error) {
+		if (error instanceof UserError) throw await logout(request)
+		else throw error
+	}
 }
 
 /**
@@ -94,25 +94,25 @@ export async function requireUser(
  * @returns
  */
 export async function createUserSession({
-  request,
-  userId,
-  remember,
-  redirectTo,
+	request,
+	userId,
+	remember,
+	redirectTo,
 }: {
-  request: Request;
-  userId: User["userId"];
-  remember: boolean;
-  redirectTo: string;
+	request: Request
+	userId: User['userId']
+	remember: boolean
+	redirectTo: string
 }) {
-  const session = await getSession(request);
-  session.set(USER_SESSION_KEY, userId);
-  return redirect(redirectTo, {
-    headers: {
-      "Set-Cookie": await sessionStorage.commitSession(session, {
-        maxAge: remember
-          ? 60 * 60 * 24 * 7 // 7 days
-          : undefined,
-      }),
-    },
-  });
+	const session = await getSession(request)
+	session.set(USER_SESSION_KEY, userId)
+	return redirect(redirectTo, {
+		headers: {
+			'Set-Cookie': await sessionStorage.commitSession(session, {
+				maxAge: remember
+					? 60 * 60 * 24 * 7 // 7 days
+					: undefined,
+			}),
+		},
+	})
 }

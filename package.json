@@ -18,12 +18,33 @@
 		"test:e2e": "playwright test",
 		"test:e2e:run": "cross-env CI=true PORT=3333 playwright test",
 		"typecheck": "tsc -b",
-		"validate": "run-p lint typecheck test:run && npm run test:e2e:run"
+		"validate": "run-p lint typecheck test:run && npm run test:e2e:run",
+		"prepare": "husky install"
 	},
 	"husky": {
 		"hooks": {
 			"pre-commit": "sort-package-json && git add package.json"
 		}
+	},
+	"prettier": {
+		"arrowParens": "avoid",
+		"bracketSameLine": false,
+		"bracketSpacing": true,
+		"embeddedLanguageFormatting": "auto",
+		"endOfLine": "lf",
+		"htmlWhitespaceSensitivity": "css",
+		"insertPragma": false,
+		"jsxSingleQuote": false,
+		"printWidth": 80,
+		"proseWrap": "always",
+		"quoteProps": "as-needed",
+		"requirePragma": false,
+		"semi": false,
+		"singleAttributePerLine": false,
+		"singleQuote": true,
+		"tabWidth": 2,
+		"trailingComma": "all",
+		"useTabs": true
 	},
 	"eslintIgnore": [
 		"/node_modules",

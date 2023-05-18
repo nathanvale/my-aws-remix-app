@@ -1,8 +1,8 @@
-import { PRODUCT_ERROR_MESSAGES } from "../errors";
+import { PRODUCT_ERROR_MESSAGES } from '../errors'
 
-describe("USER_ERROR_MESSAGES", () => {
-  test("should match inline snapshot", () => {
-    expect(PRODUCT_ERROR_MESSAGES).toMatchInlineSnapshot(`
+describe('USER_ERROR_MESSAGES', () => {
+	test('should match inline snapshot', () => {
+		expect(PRODUCT_ERROR_MESSAGES).toMatchInlineSnapshot(`
       {
         "PRODUCT_ALREADY_EXISTS": {
           "code": "PRODUCT_ALREADY_EXISTS",
@@ -25,6 +25,6 @@ describe("USER_ERROR_MESSAGES", () => {
           "stausCode": 500,
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})

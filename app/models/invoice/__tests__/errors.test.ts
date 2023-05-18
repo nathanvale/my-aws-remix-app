@@ -1,8 +1,8 @@
-import { INVOICE_ERROR_MESSAGES } from "../errors";
+import { INVOICE_ERROR_MESSAGES } from '../errors'
 
-describe("USER_ERROR_MESSAGES", () => {
-  test("should match inline snapshot", () => {
-    expect(INVOICE_ERROR_MESSAGES).toMatchInlineSnapshot(`
+describe('USER_ERROR_MESSAGES', () => {
+	test('should match inline snapshot', () => {
+		expect(INVOICE_ERROR_MESSAGES).toMatchInlineSnapshot(`
       {
         "INVOICE_ALREADY_EXISTS": {
           "code": "INVOICE_ALREADY_EXISTS",
@@ -25,6 +25,6 @@ describe("USER_ERROR_MESSAGES", () => {
           "stausCode": 500,
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})

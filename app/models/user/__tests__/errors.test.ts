@@ -1,8 +1,8 @@
-import { USER_ERROR_MESSAGES } from "../errors";
+import { USER_ERROR_MESSAGES } from '../errors'
 
-describe("USER_ERROR_MESSAGES", () => {
-  test("should match inline snapshot", () => {
-    expect(USER_ERROR_MESSAGES).toMatchInlineSnapshot(`
+describe('USER_ERROR_MESSAGES', () => {
+	test('should match inline snapshot', () => {
+		expect(USER_ERROR_MESSAGES).toMatchInlineSnapshot(`
       {
         "USER_ALREADY_EXISTS": {
           "code": "USER_ALREADY_EXISTS",
@@ -30,6 +30,6 @@ describe("USER_ERROR_MESSAGES", () => {
           "stausCode": 500,
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})
