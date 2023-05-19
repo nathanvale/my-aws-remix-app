@@ -1,5 +1,5 @@
-import { FullConfig } from "@playwright/test";
+import { FullConfig } from '@playwright/test'
 
 async function globalSetup(config: FullConfig) {}
 
-export default globalSetup;
+export default globalSetup

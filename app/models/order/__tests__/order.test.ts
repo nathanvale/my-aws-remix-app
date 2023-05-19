@@ -1,8 +1,8 @@
-import { ORDER_ERROR_MESSAGES } from "../errors";
+import { ORDER_ERROR_MESSAGES } from '../errors'
 
-describe("USER_ERROR_MESSAGES", () => {
-  test("should match inline snapshot", () => {
-    expect(ORDER_ERROR_MESSAGES).toMatchInlineSnapshot(`
+describe('USER_ERROR_MESSAGES', () => {
+	test('should match inline snapshot', () => {
+		expect(ORDER_ERROR_MESSAGES).toMatchInlineSnapshot(`
       {
         "ORDER_ALREADY_EXISTS": {
           "code": "ORDER_ALREADY_EXISTS",
@@ -25,6 +25,6 @@ describe("USER_ERROR_MESSAGES", () => {
           "stausCode": 500,
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})

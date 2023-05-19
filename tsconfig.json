@@ -1,27 +1,28 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
-  "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["vitest/globals"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "target": "ES2019",
-    "strict": true,
-    "allowJs": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./app/*"],
-      "playwright/*": ["./playwright/*"],
-      "dynamodb/*": ["./dynamodb/*"]
-    },
-    "skipLibCheck": true,
+	"include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+	"compilerOptions": {
+		"lib": ["DOM", "DOM.Iterable", "ES2021"],
+		"types": ["vitest/globals"],
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"target": "ES2019",
+		"strict": true,
+		"noImplicitAny": true,
+		"allowJs": true,
+		"forceConsistentCasingInFileNames": true,
+		"baseUrl": ".",
+		"paths": {
+			"~/*": ["./app/*"],
+			"playwright/*": ["./playwright/*"],
+			"dynamodb/*": ["./dynamodb/*"]
+		},
+		"skipLibCheck": true,
 
-    // Remix takes care of building everything in `remix build`.
-    "noEmit": true
-  }
+		// Remix takes care of building everything in `remix build`.
+		"noEmit": true
+	}
 }

@@ -1,8 +1,8 @@
-import { WAREHOUSE_ITEM_ERROR_MESSAGES } from "../errors";
+import { WAREHOUSE_ITEM_ERROR_MESSAGES } from '../errors'
 
-describe("USER_ERROR_MESSAGES", () => {
-  test("should match inline snapshot", () => {
-    expect(WAREHOUSE_ITEM_ERROR_MESSAGES).toMatchInlineSnapshot(`
+describe('USER_ERROR_MESSAGES', () => {
+	test('should match inline snapshot', () => {
+		expect(WAREHOUSE_ITEM_ERROR_MESSAGES).toMatchInlineSnapshot(`
       {
         "WAREHOUSE_ITEM_ALREADY_EXISTS": {
           "code": "WAREHOUSE_ITEM_ALREADY_EXISTS",
@@ -25,6 +25,6 @@ describe("USER_ERROR_MESSAGES", () => {
           "stausCode": 500,
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})

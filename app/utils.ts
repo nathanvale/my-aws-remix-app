@@ -1,10 +1,10 @@
-import { useMatches } from "@remix-run/react";
-import { useMemo } from "react";
+import { useMatches } from '@remix-run/react'
+import { useMemo } from 'react'
 
-import type { User } from "~/models/user/user.server";
-import { AppError, APP_ERROR_MESSAGES } from "./errors";
+import type { User } from '~/models/user/user.server'
+import { AppError, APP_ERROR_MESSAGES } from './errors'
 
-export const DEFAULT_REDIRECT = "/";
+export const DEFAULT_REDIRECT = '/'
 
 /**
  * This should be used any time the redirect path is user-provided
@@ -14,18 +14,18 @@ export const DEFAULT_REDIRECT = "/";
  * @param {string} defaultRedirect The redirect to use if the to is unsafe.
  */
 export function safeRedirect(
-  to: FormDataEntryValue | string | null | undefined,
-  defaultRedirect: string = DEFAULT_REDIRECT
+	to: FormDataEntryValue | string | null | undefined,
+	defaultRedirect: string = DEFAULT_REDIRECT,
 ) {
-  if (!to || typeof to !== "string") {
-    return defaultRedirect;
-  }
+	if (!to || typeof to !== 'string') {
+		return defaultRedirect
+	}
 
-  if (!to.startsWith("/") || to.startsWith("//")) {
-    return defaultRedirect;
-  }
+	if (!to.startsWith('/') || to.startsWith('//')) {
+		return defaultRedirect
+	}
 
-  return to;
+	return to
 }
 
 /**
@@ -35,18 +35,18 @@ export function safeRedirect(
  * @returns {JSON|undefined} The router data or undefined if not found
  */
 export function useMatchesData(
-  id: string
+	id: string,
 ): Record<string, unknown> | undefined {
-  const matchingRoutes = useMatches();
-  const route = useMemo(
-    () => matchingRoutes.find((route) => route.id === id),
-    [matchingRoutes, id]
-  );
-  return route?.data;
+	const matchingRoutes = useMatches()
+	const route = useMemo(
+		() => matchingRoutes.find(route => route.id === id),
+		[matchingRoutes, id],
+	)
+	return route?.data
 }
 
 export function isUser(user: any): user is User {
-  return user && typeof user === "object" && typeof user.email === "string";
+	return user && typeof user === 'object' && typeof user.email === 'string'
 }
 
 /**
@@ -54,11 +54,11 @@ export function isUser(user: any): user is User {
  * @returns
  */
 export function useOptionalUser(): User | undefined {
-  const data = useMatchesData("root");
-  if (!data || !isUser(data.user)) {
-    return undefined;
-  }
-  return data.user;
+	const data = useMatchesData('root')
+	if (!data || !isUser(data.user)) {
+		return undefined
+	}
+	return data.user
 }
 
 /**
@@ -66,15 +66,15 @@ export function useOptionalUser(): User | undefined {
  * @returns Userful for when you need to show user information on a page for users only.
  */
 export function useUser(): User {
-  const maybeUser = useOptionalUser();
+	const maybeUser = useOptionalUser()
 
-  if (!maybeUser) {
-    const { code, message } = APP_ERROR_MESSAGES.APP_NO_USER_FOUND;
-    throw new AppError(code, message);
-  }
-  return maybeUser;
+	if (!maybeUser) {
+		const { code, message } = APP_ERROR_MESSAGES.APP_NO_USER_FOUND
+		throw new AppError(code, message)
+	}
+	return maybeUser
 }
 
 export function validateEmail(email: unknown): email is string {
-  return typeof email === "string" && email.length > 3 && email.includes("@");
+	return typeof email === 'string' && email.length > 3 && email.includes('@')
 }

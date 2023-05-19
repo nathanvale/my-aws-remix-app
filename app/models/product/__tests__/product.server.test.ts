@@ -1,46 +1,46 @@
 import {
-  createProduct,
-  deleteProduct,
-  readProduct,
-  updateProduct,
-  ProductItem,
-} from "../product.server";
-import { ulid } from "ulid";
-import { ProductError } from "../errors";
+	createProduct,
+	deleteProduct,
+	readProduct,
+	updateProduct,
+	ProductItem,
+} from '../product.server'
+import { ulid } from 'ulid'
+import { ProductError } from '../errors'
 import {
-  clientApiMethodReject,
-  clientApiMethodResolve,
-  TEST_PRODUCT_ID,
-} from "dynamodb/db-test-helpers";
-import * as client from "dynamodb/client";
-import * as log from "../../log";
-import { createProductSeed } from "dynamodb/seed-utils";
-import { Mock } from "vitest";
+	clientApiMethodReject,
+	clientApiMethodResolve,
+	TEST_PRODUCT_ID,
+} from 'dynamodb/db-test-helpers'
+import * as client from 'dynamodb/client'
+import * as log from '../../log'
+import { createProductSeed } from 'dynamodb/seed-utils'
+import { Mock } from 'vitest'
 
-vi.mock("ulid");
+vi.mock('ulid')
 
-let mockedUlid = ulid as Mock;
-const createdNow = new Date("2022-12-01T00:00:00.000Z");
-const updatedNow = new Date("2022-12-05T00:00:00.000Z");
+let mockedUlid = ulid as Mock
+const createdNow = new Date('2022-12-01T00:00:00.000Z')
+const updatedNow = new Date('2022-12-05T00:00:00.000Z')
 
 beforeEach(() => {
-  vi.restoreAllMocks();
-  vi.spyOn(log, "logError").mockReturnValue("id");
-  vi.useFakeTimers();
-  vi.setSystemTime(createdNow);
-});
+	vi.restoreAllMocks()
+	vi.spyOn(log, 'logError').mockReturnValue('id')
+	vi.useFakeTimers()
+	vi.setSystemTime(createdNow)
+})
 
-describe("ProductItem", () => {
-  test("should get a DynamoDB attribute map of a product", async () => {
-    const productItem = new ProductItem({
-      createdAt: "2021-08-01T00:00:00.000Z",
-      updatedAt: "2021-08-01T00:00:00.000Z",
-      productId: TEST_PRODUCT_ID,
-      description: "description",
-      company: "company",
-      price: "price",
-    }).toDynamoDBItem();
-    expect(productItem).toMatchInlineSnapshot(`
+describe('ProductItem', () => {
+	test('should get a DynamoDB attribute map of a product', async () => {
+		const productItem = new ProductItem({
+			createdAt: '2021-08-01T00:00:00.000Z',
+			updatedAt: '2021-08-01T00:00:00.000Z',
+			productId: TEST_PRODUCT_ID,
+			description: 'description',
+			company: 'company',
+			price: 'price',
+		}).toDynamoDBItem()
+		expect(productItem).toMatchInlineSnapshot(`
       {
         "Attributes": {
           "M": {
@@ -74,25 +74,25 @@ describe("ProductItem", () => {
           "S": "PRODUCT#12345",
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})
 
-describe("createProduct", () => {
-  test("should create a product", async () => {
-    const productId = "newProductId";
-    mockedUlid.mockReturnValue(productId);
-    const userMock = new ProductItem({
-      createdAt: "2021-08-01T00:00:00.000Z",
-      updatedAt: "2021-08-01T00:00:00.000Z",
-      company: "company",
-      description: "description",
-      price: "price",
-      productId: productId,
-    }).toItem();
-    const createdUser = await createProduct(userMock);
-    await deleteProduct(productId);
-    expect(createdUser).toMatchInlineSnapshot(`
+describe('createProduct', () => {
+	test('should create a product', async () => {
+		const productId = 'newProductId'
+		mockedUlid.mockReturnValue(productId)
+		const userMock = new ProductItem({
+			createdAt: '2021-08-01T00:00:00.000Z',
+			updatedAt: '2021-08-01T00:00:00.000Z',
+			company: 'company',
+			description: 'description',
+			price: 'price',
+			productId: productId,
+		}).toItem()
+		const createdUser = await createProduct(userMock)
+		await deleteProduct(productId)
+		expect(createdUser).toMatchInlineSnapshot(`
       {
         "company": "company",
         "createdAt": "2022-12-01T00:00:00.000Z",
@@ -101,24 +101,24 @@ describe("createProduct", () => {
         "productId": "newProductId",
         "updatedAt": "2022-12-01T00:00:00.000Z",
       }
-    `);
-  });
-  test("should throw an error", async () => {
-    vi.spyOn(client, "getClient").mockResolvedValue(
-      clientApiMethodReject("putItem", new Error("Unknown error"))
-    );
-    const result = await getError<Error>(async () =>
-      createProduct(createProductSeed())
-    );
-    delete result.stack;
-    expect(result).toMatchInlineSnapshot("[Error: Unknown error]");
-  });
-});
+    `)
+	})
+	test('should throw an error', async () => {
+		vi.spyOn(client, 'getClient').mockResolvedValue(
+			clientApiMethodReject('putItem', new Error('Unknown error')),
+		)
+		const result = await getError<Error>(async () =>
+			createProduct(createProductSeed()),
+		)
+		delete result.stack
+		expect(result).toMatchInlineSnapshot('[Error: Unknown error]')
+	})
+})
 
-describe("readProduct", () => {
-  test("should read a product", async () => {
-    const result = await readProduct(TEST_PRODUCT_ID);
-    expect(result).toMatchInlineSnapshot(`
+describe('readProduct', () => {
+	test('should read a product', async () => {
+		const result = await readProduct(TEST_PRODUCT_ID)
+		expect(result).toMatchInlineSnapshot(`
       {
         "company": "Mann - Thiel",
         "createdAt": "2022-08-31T05:46:41.205Z",
@@ -127,47 +127,47 @@ describe("readProduct", () => {
         "productId": "12345",
         "updatedAt": "2022-11-25T13:45:46.999Z",
       }
-    `);
-  });
+    `)
+	})
 
-  test("should return an error when getting a product that does not exist", async () => {
-    const result = await getError(async () => readProduct("unknownProductId"));
-    expect(result).toMatchInlineSnapshot('[Error: Product not found.]');
-  });
+	test('should return an error when getting a product that does not exist', async () => {
+		const result = await getError(async () => readProduct('unknownProductId'))
+		expect(result).toMatchInlineSnapshot('[Error: Product not found.]')
+	})
 
-  test("should throw an error", async () => {
-    vi.spyOn(client, "getClient").mockResolvedValue(
-      clientApiMethodReject("getItem", new Error("Unknown error"))
-    );
-    const result = await getError<Error>(async () =>
-      readProduct(TEST_PRODUCT_ID)
-    );
-    delete result.stack;
-    expect(result).toMatchInlineSnapshot("[Error: Unknown error]");
-  });
-});
+	test('should throw an error', async () => {
+		vi.spyOn(client, 'getClient').mockResolvedValue(
+			clientApiMethodReject('getItem', new Error('Unknown error')),
+		)
+		const result = await getError<Error>(async () =>
+			readProduct(TEST_PRODUCT_ID),
+		)
+		delete result.stack
+		expect(result).toMatchInlineSnapshot('[Error: Unknown error]')
+	})
+})
 
-describe("updateProduct", () => {
-  test("should update a product", async () => {
-    const productId = "updateProductId";
-    mockedUlid.mockReturnValue(productId);
-    const userMock = new ProductItem({
-      createdAt: "2021-08-01T00:00:00.000Z",
-      updatedAt: "2021-08-01T00:00:00.000Z",
-      company: "company",
-      description: "description",
-      price: "price",
-      productId: productId,
-    }).toItem();
-    const createdProduct = await createProduct(userMock);
-    const updatedCompany = "updatedCompany";
-    vi.setSystemTime(updatedNow);
-    const updatedProduct = await updateProduct({
-      ...createdProduct,
-      company: updatedCompany,
-    });
-    await deleteProduct(productId);
-    expect(updatedProduct).toMatchInlineSnapshot(`
+describe('updateProduct', () => {
+	test('should update a product', async () => {
+		const productId = 'updateProductId'
+		mockedUlid.mockReturnValue(productId)
+		const userMock = new ProductItem({
+			createdAt: '2021-08-01T00:00:00.000Z',
+			updatedAt: '2021-08-01T00:00:00.000Z',
+			company: 'company',
+			description: 'description',
+			price: 'price',
+			productId: productId,
+		}).toItem()
+		const createdProduct = await createProduct(userMock)
+		const updatedCompany = 'updatedCompany'
+		vi.setSystemTime(updatedNow)
+		const updatedProduct = await updateProduct({
+			...createdProduct,
+			company: updatedCompany,
+		})
+		await deleteProduct(productId)
+		expect(updatedProduct).toMatchInlineSnapshot(`
       {
         "company": "updatedCompany",
         "createdAt": "2022-12-01T00:00:00.000Z",
@@ -176,62 +176,66 @@ describe("updateProduct", () => {
         "productId": "updateProductId",
         "updatedAt": "2022-12-05T00:00:00.000Z",
       }
-    `);
-  });
+    `)
+	})
 
-  test("should throw an error is a product does not exist", async () => {
-    const result = await getError(async () =>
-      updateProduct({
-        ...createProductSeed(),
-        productId: "unknownProductId",
-      })
-    );
-    expect(result).toMatchInlineSnapshot('[Error: You cannot delete a product that does not exist.]');
-  });
-  test("should throw an when an item update doesnt return values", async () => {
-    vi.spyOn(client, "getClient").mockResolvedValue(
-      clientApiMethodResolve("updateItem", {})
-    );
-    const error = await getError<ProductError>(async () =>
-      updateProduct({
-        ...createProductSeed(),
-        productId: "",
-      })
-    );
-    expect(error).toMatchInlineSnapshot('[Error: Product updates must return all attributes of the item.]');
-  });
+	test('should throw an error is a product does not exist', async () => {
+		const result = await getError(async () =>
+			updateProduct({
+				...createProductSeed(),
+				productId: 'unknownProductId',
+			}),
+		)
+		expect(result).toMatchInlineSnapshot(
+			'[Error: You cannot delete a product that does not exist.]',
+		)
+	})
+	test('should throw an when an item update doesnt return values', async () => {
+		vi.spyOn(client, 'getClient').mockResolvedValue(
+			clientApiMethodResolve('updateItem', {}),
+		)
+		const error = await getError<ProductError>(async () =>
+			updateProduct({
+				...createProductSeed(),
+				productId: '',
+			}),
+		)
+		expect(error).toMatchInlineSnapshot(
+			'[Error: Product updates must return all attributes of the item.]',
+		)
+	})
 
-  test("should throw an error", async () => {
-    vi.spyOn(client, "getClient").mockResolvedValue(
-      clientApiMethodReject("updateItem", new Error("Unknown error"))
-    );
-    const error = await getError<Error>(async () =>
-      updateProduct({
-        ...createProductSeed(),
-        productId: "",
-      })
-    );
+	test('should throw an error', async () => {
+		vi.spyOn(client, 'getClient').mockResolvedValue(
+			clientApiMethodReject('updateItem', new Error('Unknown error')),
+		)
+		const error = await getError<Error>(async () =>
+			updateProduct({
+				...createProductSeed(),
+				productId: '',
+			}),
+		)
 
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot("[Error: Unknown error]");
-  });
-});
+		delete error.stack
+		expect(error).toMatchInlineSnapshot('[Error: Unknown error]')
+	})
+})
 
-describe("deleteProduct", () => {
-  test("should delete a product", async () => {
-    const productId = "deleteProductId";
-    mockedUlid.mockReturnValue(productId);
-    const userMock = new ProductItem({
-      createdAt: "2021-08-01T00:00:00.000Z",
-      updatedAt: "2021-08-01T00:00:00.000Z",
-      company: "company",
-      description: "description",
-      price: "price",
-      productId: productId,
-    }).toItem();
-    await createProduct(userMock);
-    const deletedProduct = await deleteProduct(productId);
-    expect(deletedProduct).toMatchInlineSnapshot(`
+describe('deleteProduct', () => {
+	test('should delete a product', async () => {
+		const productId = 'deleteProductId'
+		mockedUlid.mockReturnValue(productId)
+		const userMock = new ProductItem({
+			createdAt: '2021-08-01T00:00:00.000Z',
+			updatedAt: '2021-08-01T00:00:00.000Z',
+			company: 'company',
+			description: 'description',
+			price: 'price',
+			productId: productId,
+		}).toItem()
+		await createProduct(userMock)
+		const deletedProduct = await deleteProduct(productId)
+		expect(deletedProduct).toMatchInlineSnapshot(`
       {
         "company": "company",
         "createdAt": "2022-12-01T00:00:00.000Z",
@@ -240,22 +244,24 @@ describe("deleteProduct", () => {
         "productId": "deleteProductId",
         "updatedAt": "2022-12-01T00:00:00.000Z",
       }
-    `);
-  });
-  test("should return an error when trying to delete a product that does not exist", async () => {
-    const error = await getError(async () =>
-      deleteProduct("doesntExistProductId")
-    );
-    expect(error).toMatchInlineSnapshot('[Error: You cannot delete a product that does not exist.]');
-  });
-  test("should throw an error", async () => {
-    vi.spyOn(client, "getClient").mockResolvedValue(
-      clientApiMethodReject("deleteItem", new Error("Unknown error"))
-    );
-    const error = await getError<Error>(async () =>
-      deleteProduct("doesntExistProductId")
-    );
-    delete error.stack;
-    expect(error).toMatchInlineSnapshot("[Error: Unknown error]");
-  });
-});
+    `)
+	})
+	test('should return an error when trying to delete a product that does not exist', async () => {
+		const error = await getError(async () =>
+			deleteProduct('doesntExistProductId'),
+		)
+		expect(error).toMatchInlineSnapshot(
+			'[Error: You cannot delete a product that does not exist.]',
+		)
+	})
+	test('should throw an error', async () => {
+		vi.spyOn(client, 'getClient').mockResolvedValue(
+			clientApiMethodReject('deleteItem', new Error('Unknown error')),
+		)
+		const error = await getError<Error>(async () =>
+			deleteProduct('doesntExistProductId'),
+		)
+		delete error.stack
+		expect(error).toMatchInlineSnapshot('[Error: Unknown error]')
+	})
+})

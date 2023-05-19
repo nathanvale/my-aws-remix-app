@@ -1,8 +1,8 @@
-import { SHIPMENT_ERROR_MESSAGES } from "../errors";
+import { SHIPMENT_ERROR_MESSAGES } from '../errors'
 
-describe("USER_ERROR_MESSAGES", () => {
-  test("should match inline snapshot", () => {
-    expect(SHIPMENT_ERROR_MESSAGES).toMatchInlineSnapshot(`
+describe('USER_ERROR_MESSAGES', () => {
+	test('should match inline snapshot', () => {
+		expect(SHIPMENT_ERROR_MESSAGES).toMatchInlineSnapshot(`
       {
         "SHIPMENT_ALREADY_EXISTS": {
           "code": "SHIPMENT_ALREADY_EXISTS",
@@ -25,6 +25,6 @@ describe("USER_ERROR_MESSAGES", () => {
           "stausCode": 500,
         },
       }
-    `);
-  });
-});
+    `)
+	})
+})

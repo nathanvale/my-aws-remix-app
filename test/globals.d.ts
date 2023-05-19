@@ -1,1 +1,1 @@
-declare var getError: <TError>(call: () => unknown) => Promise<TError>;
+declare var getError: <TError>(call: () => unknown) => Promise<TError>
