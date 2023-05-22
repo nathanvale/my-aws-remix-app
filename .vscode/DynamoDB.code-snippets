@@ -51,7 +51,6 @@
 			"        Key,",
 			"        ReturnValues: \"ALL_OLD\",",
 			"      })",
-			"      .promise();",
 			"    if (resp.Attributes) return new Ok(${1:Entity}.fromItem(resp.Attributes));",
 			"    else return Err(new ${1:Entity}Error(\"${2:ENTITY}_DOES_NOT_EXIST\"));",
 			"  } catch (error) {",

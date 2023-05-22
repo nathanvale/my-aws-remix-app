@@ -1,8 +1,7 @@
-import { DynamoDB, AWSError } from 'aws-sdk'
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import {
-	AWSErrorCodes,
+	AttributeMap,
 	createItem,
 	deleteItem,
 	GSIKeyAttributeValue,
@@ -37,7 +36,7 @@ export class ShipmentItemItem extends Item {
 		}
 	}
 
-	static fromItem(item?: DynamoDB.AttributeMap): ShipmentItemItem {
+	static fromItem(item?: AttributeMap): ShipmentItemItem {
 		invariant(item, 'No item!')
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.Attributes.M, 'No attributes!')
@@ -182,27 +181,18 @@ export const readShipmentItem = async (
 export const updateShipmentItem = async (
 	shipment: ShipmentItem,
 ): Promise<ShipmentItem> => {
-	try {
-		const key = ShipmentItemItem.getPrimaryKeyAttributeValues(
-			shipment.shipmentItemId,
-			shipment.orderId,
-		)
-		const shipmentItem = new ShipmentItemItem({
-			...shipment,
-			updatedAt: new Date().toISOString(),
-		})
-		const resp = await updateItem(key, shipmentItem.toDynamoDBItem().Attributes)
-		if (resp?.Attributes)
-			return ShipmentItemItem.fromItem(resp.Attributes).attributes
-		else throw new ShipmentItemError('SHIPMENT_ITEM_UPDATES_MUST_RETURN_VALUES')
-	} catch (error) {
-		if (
-			(error as AWSError).code ===
-			AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
-		)
-			throw new ShipmentItemError('SHIPMENT_ITEM_DOES_NOT_EXIST')
-		else throw error
-	}
+	const key = ShipmentItemItem.getPrimaryKeyAttributeValues(
+		shipment.shipmentItemId,
+		shipment.orderId,
+	)
+	const shipmentItem = new ShipmentItemItem({
+		...shipment,
+		updatedAt: new Date().toISOString(),
+	})
+	const resp = await updateItem(key, shipmentItem.toDynamoDBItem().Attributes)
+	if (resp?.Attributes)
+		return ShipmentItemItem.fromItem(resp.Attributes).attributes
+	else throw new ShipmentItemError('SHIPMENT_ITEM_UPDATES_MUST_RETURN_VALUES')
 }
 
 export const deleteShipmentItem = async (

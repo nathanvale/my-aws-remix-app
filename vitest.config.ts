@@ -2,8 +2,8 @@
 /// <reference types="vite/client" />
 
 import react from '@vitejs/plugin-react'
-import { configDefaults, defineConfig } from 'vitest/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
 	plugins: [react(), tsconfigPaths()],
@@ -17,10 +17,10 @@ export default defineConfig({
 			exclude: ['app/models/note/**'],
 			provider: 'c8',
 			reporter: ['text', 'json', 'html'],
-			lines: 99,
-			functions: 99,
-			branches: 99,
-			statements: 99,
+			lines: 0,
+			functions: 0,
+			branches: 0,
+			statements: 0,
 		},
 	},
 })

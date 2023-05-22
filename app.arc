@@ -1,5 +1,5 @@
 @app
-my-aws-remix-app-d2df
+my-aws-remix
 
 @http
 /*
@@ -28,3 +28,7 @@ campiagn_processing
   GS3PK *String
   GS3SK **String
   name GSI3  
+
+
+@aws
+runtime nodejs18.x

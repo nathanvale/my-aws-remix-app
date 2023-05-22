@@ -1,8 +1,7 @@
-import { DynamoDB, AWSError } from 'aws-sdk'
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import {
-	AWSErrorCodes,
+	AttributeMap,
 	createItem,
 	deleteItem,
 	GSIKeyAttributeValue,
@@ -36,7 +35,7 @@ export class InvoiceItem extends Item {
 		}
 	}
 
-	static fromItem(item?: DynamoDB.AttributeMap): InvoiceItem {
+	static fromItem(item?: AttributeMap): InvoiceItem {
 		invariant(item, 'No item!')
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.Attributes.M, 'No attributes!')
@@ -173,27 +172,17 @@ export const readInvoice = async (
 }
 
 export const updateInvoice = async (invoice: Invoice): Promise<Invoice> => {
-	try {
-		const key = InvoiceItem.getPrimaryKeyAttributeValues(
-			invoice.invoiceId,
-			invoice.orderId,
-		)
-		const invoiceItem = new InvoiceItem({
-			...invoice,
-			updatedAt: new Date().toISOString(),
-		})
-		const resp = await updateItem(key, invoiceItem.toDynamoDBItem().Attributes)
-		if (resp?.Attributes)
-			return InvoiceItem.fromItem(resp.Attributes).attributes
-		else throw new InvoiceError('INVOICE_UPDATES_MUST_RETURN_VALUES')
-	} catch (error) {
-		if (
-			(error as AWSError).code ===
-			AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
-		)
-			throw new InvoiceError('INVOICE_DOES_NOT_EXIST')
-		else throw error
-	}
+	const key = InvoiceItem.getPrimaryKeyAttributeValues(
+		invoice.invoiceId,
+		invoice.orderId,
+	)
+	const invoiceItem = new InvoiceItem({
+		...invoice,
+		updatedAt: new Date().toISOString(),
+	})
+	const resp = await updateItem(key, invoiceItem.toDynamoDBItem().Attributes)
+	if (resp?.Attributes) return InvoiceItem.fromItem(resp.Attributes).attributes
+	else throw new InvoiceError('INVOICE_UPDATES_MUST_RETURN_VALUES')
 }
 
 export const deleteInvoice = async (
