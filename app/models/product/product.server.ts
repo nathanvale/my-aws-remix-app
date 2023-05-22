@@ -1,8 +1,7 @@
-import { DynamoDB, AWSError } from 'aws-sdk'
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import {
-	AWSErrorCodes,
+	AttributeMap,
 	createItem,
 	deleteItem,
 	PrimaryKeyAttributeValues,
@@ -35,7 +34,7 @@ export class ProductItem extends Item {
 		}
 	}
 
-	static fromItem(item?: DynamoDB.AttributeMap): ProductItem {
+	static fromItem(item?: AttributeMap): ProductItem {
 		invariant(item, 'No item!')
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.Attributes.M, 'No attributes!')
@@ -152,24 +151,14 @@ export const readProduct = async (productId: string): Promise<Product> => {
 }
 
 export const updateProduct = async (product: Product): Promise<Product> => {
-	try {
-		const key = ProductItem.getPrimaryKeyAttributeValues(product.productId)
-		const productItem = new ProductItem({
-			...product,
-			updatedAt: new Date().toISOString(),
-		})
-		const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes)
-		if (resp?.Attributes)
-			return ProductItem.fromItem(resp.Attributes).attributes
-		else throw new ProductError('PRODUCT_UPDATES_MUST_RETURN_VALUES')
-	} catch (error) {
-		if (
-			(error as AWSError).code ===
-			AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
-		)
-			throw new ProductError('PRODUCT_DOES_NOT_EXIST')
-		else throw error
-	}
+	const key = ProductItem.getPrimaryKeyAttributeValues(product.productId)
+	const productItem = new ProductItem({
+		...product,
+		updatedAt: new Date().toISOString(),
+	})
+	const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes)
+	if (resp?.Attributes) return ProductItem.fromItem(resp.Attributes).attributes
+	else throw new ProductError('PRODUCT_UPDATES_MUST_RETURN_VALUES')
 }
 
 export const deleteProduct = async (

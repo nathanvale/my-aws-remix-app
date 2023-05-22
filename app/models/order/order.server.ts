@@ -1,8 +1,7 @@
-import { DynamoDB, AWSError } from 'aws-sdk'
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import {
-	AWSErrorCodes,
+	AttributeMap,
 	createItem,
 	deleteItem,
 	PrimaryKeyAttributeValues,
@@ -34,7 +33,7 @@ export class OrderItem extends Item {
 		}
 	}
 
-	static fromItem(item?: DynamoDB.AttributeMap): OrderItem {
+	static fromItem(item?: AttributeMap): OrderItem {
 		invariant(item, 'No item!')
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.Attributes.M, 'No attributes!')
@@ -148,23 +147,14 @@ export const readOrder = async (orderId: string): Promise<Order> => {
 }
 
 export const updateOrder = async (order: Order): Promise<Order> => {
-	try {
-		const key = OrderItem.getPrimaryKeyAttributeValues(order.orderId)
-		const orderItem = new OrderItem({
-			...order,
-			updatedAt: new Date().toISOString(),
-		})
-		const resp = await updateItem(key, orderItem.toDynamoDBItem().Attributes)
-		if (resp?.Attributes) return OrderItem.fromItem(resp.Attributes).attributes
-		else throw new OrderError('ORDER_UPDATES_MUST_RETURN_VALUES')
-	} catch (error) {
-		if (
-			(error as AWSError).code ===
-			AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
-		)
-			throw new OrderError('ORDER_DOES_NOT_EXIST')
-		else throw error
-	}
+	const key = OrderItem.getPrimaryKeyAttributeValues(order.orderId)
+	const orderItem = new OrderItem({
+		...order,
+		updatedAt: new Date().toISOString(),
+	})
+	const resp = await updateItem(key, orderItem.toDynamoDBItem().Attributes)
+	if (resp?.Attributes) return OrderItem.fromItem(resp.Attributes).attributes
+	else throw new OrderError('ORDER_UPDATES_MUST_RETURN_VALUES')
 }
 
 export const deleteOrder = async (

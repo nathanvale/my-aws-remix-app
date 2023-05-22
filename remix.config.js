@@ -10,10 +10,9 @@ module.exports = {
 	publicPath: '/_static/build/',
 	postcss: true,
 	server: './server.ts',
-	serverBuildTarget: 'arc',
+	serverBuildPath: 'server/index.js',
+	serverModuleFormat: 'cjs',
 	tailwind: true,
-	appDirectory: 'app',
-	assetsBuildDirectory: 'public/build',
 	routes(defineRoutes) {
 		return defineRoutes(route => {
 			if (process.env.NODE_ENV === 'production') return

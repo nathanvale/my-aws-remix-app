@@ -1,8 +1,7 @@
-import { DynamoDB, AWSError } from 'aws-sdk'
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import {
-	AWSErrorCodes,
+	AttributeMap,
 	createItem,
 	deleteItem,
 	GSIKeyAttributeValue,
@@ -36,7 +35,7 @@ export class WarehouseItemItem extends Item {
 		}
 	}
 
-	static fromItem(item?: DynamoDB.AttributeMap): WarehouseItemItem {
+	static fromItem(item?: AttributeMap): WarehouseItemItem {
 		invariant(item, 'No item!')
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.Attributes.M, 'No attributes!')
@@ -180,31 +179,21 @@ export const readWarehouseItem = async (
 export const updateWarehouseItem = async (
 	warehouseItem: WarehouseItem,
 ): Promise<WarehouseItem> => {
-	try {
-		const key = WarehouseItemItem.getPrimaryKeyAttributeValues(
-			warehouseItem.warehouseItemId,
-			warehouseItem.productId,
-		)
-		const warehouseItemItem = new WarehouseItemItem({
-			...warehouseItem,
-			updatedAt: new Date().toISOString(),
-		})
-		const resp = await updateItem(
-			key,
-			warehouseItemItem.toDynamoDBItem().Attributes,
-		)
-		if (resp?.Attributes)
-			return WarehouseItemItem.fromItem(resp.Attributes).attributes
-		else
-			throw new WarehouseItemError('WAREHOUSE_ITEM_UPDATES_MUST_RETURN_VALUES')
-	} catch (error) {
-		if (
-			(error as AWSError).code ===
-			AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
-		)
-			throw new WarehouseItemError('WAREHOUSE_ITEM_DOES_NOT_EXIST')
-		else throw error
-	}
+	const key = WarehouseItemItem.getPrimaryKeyAttributeValues(
+		warehouseItem.warehouseItemId,
+		warehouseItem.productId,
+	)
+	const warehouseItemItem = new WarehouseItemItem({
+		...warehouseItem,
+		updatedAt: new Date().toISOString(),
+	})
+	const resp = await updateItem(
+		key,
+		warehouseItemItem.toDynamoDBItem().Attributes,
+	)
+	if (resp?.Attributes)
+		return WarehouseItemItem.fromItem(resp.Attributes).attributes
+	else throw new WarehouseItemError('WAREHOUSE_ITEM_UPDATES_MUST_RETURN_VALUES')
 }
 
 export const deleteWarehouseItem = async (

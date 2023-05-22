@@ -1,11 +1,10 @@
-import { DynamoDB, AWSError } from 'aws-sdk'
 import bcrypt from 'bcryptjs'
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import { getClient } from 'dynamodb/client'
 import invariant from 'tiny-invariant'
 import {
-	AWSErrorCodes,
+	AttributeMap,
 	checkForDBAttributes,
 	createItem,
 	deleteItem,
@@ -18,6 +17,7 @@ import {
 	updateItem,
 } from 'dynamodb/utils'
 import { UserError } from './errors'
+import { QueryCommand } from '@aws-sdk/client-dynamodb'
 
 export interface User extends Base {
 	readonly userId: string
@@ -39,7 +39,7 @@ export class UserItem extends Item {
 		}
 	}
 
-	static fromItem(item?: DynamoDB.AttributeMap): UserItem {
+	static fromItem(item?: AttributeMap): UserItem {
 		invariant(item, 'No item!')
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.Attributes.M, 'No attributes!')
@@ -177,23 +177,14 @@ export const readUser = async (userId: string): Promise<User> => {
 }
 
 export const updateUser = async (user: User): Promise<User> => {
-	try {
-		const key = UserItem.getPrimaryKeyAttributeValues(user.userId)
-		const productItem = new UserItem({
-			...user,
-			updatedAt: new Date().toISOString(),
-		})
-		const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes)
-		if (resp?.Attributes) return UserItem.fromItem(resp.Attributes).attributes
-		else throw new UserError('USER_UPDATES_MUST_RETURN_VALUES')
-	} catch (error) {
-		if (
-			(error as AWSError).code ===
-			AWSErrorCodes.CONDITIONAL_CHECK_FAILED_EXCEPTION
-		)
-			throw new UserError('USER_DOES_NOT_EXIST')
-		else throw error
-	}
+	const key = UserItem.getPrimaryKeyAttributeValues(user.userId)
+	const productItem = new UserItem({
+		...user,
+		updatedAt: new Date().toISOString(),
+	})
+	const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes)
+	if (resp?.Attributes) return UserItem.fromItem(resp.Attributes).attributes
+	else throw new UserError('USER_UPDATES_MUST_RETURN_VALUES')
 }
 
 export const deleteUser = async (userId: User['userId']): Promise<User> => {
@@ -210,25 +201,20 @@ export const getUserByEmail = async function (
 	const gSIKeys = UserItem.getGSIAttributeValues('', email)
 	invariant(gSIKeys.GS1PK, 'Missing GS1PK!')
 	invariant(gSIKeys.GS1SK, 'Missing GlS1SK!')
-	try {
-		const resp = await client
-			.query({
-				TableName,
-				IndexName: 'GSI1',
-				KeyConditionExpression: 'GS1PK = :GS1PK AND GS1SK = :GS1SK',
-				ExpressionAttributeValues: {
-					':GS1PK': gSIKeys.GS1PK,
-					':GS1SK': gSIKeys.GS1SK,
-				},
-			})
-			.promise()
-		if (resp.Items && resp.Count && resp.Count > 0)
-			return resp.Items.map(item => UserItem.fromItem(item))[0].attributes
-		else throw new UserError('USER_NOT_FOUND')
-	} catch (error) {
-		if (error instanceof UserError) throw error
-		throw error
+	const params = {
+		TableName,
+		IndexName: 'GSI1',
+		KeyConditionExpression: 'GS1PK = :GS1PK AND GS1SK = :GS1SK',
+		ExpressionAttributeValues: {
+			':GS1PK': gSIKeys.GS1PK,
+			':GS1SK': gSIKeys.GS1SK,
+		},
 	}
+	const command = new QueryCommand(params)
+	const resp = await client.send(command)
+	if (resp.Items && resp.Count && resp.Count > 0)
+		return resp.Items.map(item => UserItem.fromItem(item))[0].attributes
+	else throw new UserError('USER_NOT_FOUND')
 }
 
 export const verifyEmailNotExist = async (

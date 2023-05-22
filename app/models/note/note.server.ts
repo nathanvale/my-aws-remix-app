@@ -1,18 +1,22 @@
 /* ignore file coverage */
 import { ulid } from 'ulid'
-import { DynamoDB } from 'aws-sdk'
 import { Item } from '../base'
 
 import invariant from 'tiny-invariant'
 import { getClient } from 'dynamodb/client'
 import { UserItem } from '../user/user.server'
 import {
+	AttributeMap,
 	checkForDBAttributes,
+	createItem,
+	deleteItem,
 	DynamoDBItem,
 	marshall,
 	PrimaryKeyAttributeValues,
+	readItem,
 	unmarshall,
 } from 'dynamodb/utils'
+import { QueryCommand } from '@aws-sdk/client-dynamodb'
 interface NoteWithOptional {
 	userId: string
 	noteId: string
@@ -33,7 +37,7 @@ export class NoteItem extends Item {
 		}
 	}
 
-	static fromItem(item?: DynamoDB.AttributeMap): NoteItem {
+	static fromItem(item?: AttributeMap): NoteItem {
 		invariant(item, 'No item!')
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.Attributes.M, 'No attributes!')
@@ -118,63 +122,28 @@ export class NoteItem extends Item {
 export const createNote = async (
 	note: Omit<NoteWithOptional, 'noteId'>,
 ): Promise<Note> => {
-	const { client, TableName } = await getClient()
 	const newNoteItem = new NoteItem({ ...note, noteId: ulid() })
-	try {
-		await client
-			.putItem({
-				TableName,
-				Item: newNoteItem.toDynamoDBItem(),
-				ConditionExpression: 'attribute_not_exists(pk)',
-			})
-			.promise()
-		return newNoteItem.attributes
-	} catch (error) {
-		console.log('NoteMotel:createNote', error)
-		throw error
-	}
+	await createItem(newNoteItem.toDynamoDBItem())
+	return newNoteItem.attributes
 }
 
 export const readNote = async (
 	userId: Note['userId'],
 	noteId: Note['noteId'],
 ): Promise<NoteItem | undefined> => {
-	const { client, TableName } = await getClient()
 	const Key = NoteItem.getPrimaryKeyAttributeValues(userId, noteId)
-	try {
-		const resp = await client
-			.getItem({
-				TableName,
-				Key,
-			})
-			.promise()
-
-		return resp.Item ? NoteItem.fromItem(resp.Item) : undefined
-	} catch (error) {
-		throw error
-	}
+	const resp = await readItem(Key)
+	return resp.Item ? NoteItem.fromItem(resp.Item) : undefined
 }
 
 export const deleteNote = async (
 	userId: Note['userId'],
 	noteId: Note['noteId'],
 ): Promise<Note> => {
-	const { client, TableName } = await getClient()
 	const Key = NoteItem.getPrimaryKeyAttributeValues(userId, noteId)
-	try {
-		const resp = await client
-			.deleteItem({
-				TableName,
-				Key,
-				ReturnValues: 'ALL_OLD',
-			})
-			.promise()
-		if (resp.Attributes) return NoteItem.fromItem(resp.Attributes).attributes
-		else throw new Error(`Cant delete note with keys ${JSON.stringify(Key)}`)
-	} catch (error) {
-		console.log('NoteMotel:deleteNote', error)
-		throw error
-	}
+	const resp = await deleteItem(Key)
+	if (resp.Attributes) return NoteItem.fromItem(resp.Attributes).attributes
+	else throw new Error(`Cant delete note with keys ${JSON.stringify(Key)}`)
 }
 
 export async function getNoteListItems(
@@ -183,17 +152,17 @@ export async function getNoteListItems(
 	const { client, TableName } = await getClient()
 	const PK = UserItem.getPrimaryKeyAttributeValues(userId).PK
 	try {
-		const resp = await client
-			.query({
-				TableName,
-				KeyConditionExpression: 'PK = :pk AND begins_with(SK, :note)',
-				ExpressionAttributeValues: {
-					':pk': PK,
-					':note': { S: 'NOTE#' },
-				},
-				ScanIndexForward: false,
-			})
-			.promise()
+		const params = {
+			TableName,
+			KeyConditionExpression: 'PK = :pk AND begins_with(SK, :note)',
+			ExpressionAttributeValues: {
+				':pk': PK,
+				':note': { S: 'NOTE#' },
+			},
+			ScanIndexForward: false,
+		}
+		const command = new QueryCommand(params)
+		const resp = await client.send(command)
 		return resp.Items?.map(item => NoteItem.fromItem(item).attributes) || []
 	} catch (error) {
 		console.log('NoteMotel:getNoteListItems', error)
