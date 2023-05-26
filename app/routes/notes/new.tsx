@@ -3,8 +3,8 @@ import { json, redirect } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
 import * as React from 'react'
 
-import { createNote } from '~/models/note/note.server'
-import { requireUserId } from '~/session/session.server'
+import { createNote } from '~/models/note/note.server.ts'
+import { requireUserId } from '~/session/session.server.ts'
 
 type ActionData = {
 	errors?: {

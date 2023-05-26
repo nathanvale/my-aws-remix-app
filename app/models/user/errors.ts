@@ -1,4 +1,4 @@
-import { ServerError, ErrorMessage } from '../../errors'
+import { ServerError, ErrorMessage } from '../../errors.ts'
 
 export type UserErrorCodes =
 	| 'USER_ALREADY_EXISTS'

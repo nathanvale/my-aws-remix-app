@@ -3,10 +3,10 @@ import { json, redirect } from '@remix-run/node'
 import { Form, useLoaderData } from '@remix-run/react'
 
 import invariant from 'tiny-invariant'
-import { GeneralErrorBoundary } from '~/components/error-boundary'
+import { GeneralErrorBoundary } from '~/components/error-boundary.tsx'
 
-import { deleteNote, readNote } from '~/models/note/note.server'
-import { requireUserId } from '~/session/session.server'
+import { deleteNote, readNote } from '~/models/note/note.server.ts'
+import { requireUserId } from '~/session/session.server.ts'
 
 type LoaderData = {
 	note: NonNullable<Awaited<ReturnType<typeof readNote>>>

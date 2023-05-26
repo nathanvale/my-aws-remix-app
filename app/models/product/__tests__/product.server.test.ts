@@ -5,17 +5,17 @@ import {
 	readProduct,
 	updateProduct,
 	ProductItem,
-} from '../product.server'
+} from '../product.server.ts'
 import ulid from 'ulid'
-import { ProductError } from '../errors'
+import { ProductError } from '../errors.ts'
 import {
 	clientApiMethodReject,
 	clientApiMethodResolve,
 	TEST_PRODUCT_ID,
-} from 'dynamodb/db-test-helpers'
-import * as client from 'dynamodb/client'
-import * as log from '../../log'
-import { createProductSeed } from 'dynamodb/seed-utils'
+} from 'dynamodb/db-test-helpers.ts'
+import * as client from 'dynamodb/client.ts'
+import * as log from '../../log.ts'
+import { createProductSeed } from 'dynamodb/seed-utils.ts'
 
 const createdNow = new Date('2022-12-01T00:00:00.000Z')
 const updatedNow = new Date('2022-12-05T00:00:00.000Z')

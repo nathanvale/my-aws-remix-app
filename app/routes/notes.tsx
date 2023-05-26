@@ -2,9 +2,9 @@ import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, Link, NavLink, Outlet, useLoaderData } from '@remix-run/react'
 
-import { requireUserId } from '~/session/session.server'
-import { useUser } from '~/utils'
-import { getNoteListItems } from '~/models/note/note.server'
+import { requireUserId } from '~/session/session.server.ts'
+import { useUser } from '~/utils.ts'
+import { getNoteListItems } from '~/models/note/note.server.ts'
 
 type LoaderData = {
 	noteListItems: Awaited<ReturnType<typeof getNoteListItems>>

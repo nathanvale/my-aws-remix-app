@@ -11,7 +11,7 @@ import {
 } from '@aws-sdk/util-dynamodb'
 
 import invariant from 'tiny-invariant'
-import { getClient } from './client'
+import { getClient } from './client.ts'
 
 /**
  * https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html

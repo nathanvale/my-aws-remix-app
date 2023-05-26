@@ -1,4 +1,4 @@
-import { WAREHOUSE_ITEM_ERROR_MESSAGES } from '../errors'
+import { WAREHOUSE_ITEM_ERROR_MESSAGES } from '../errors.ts'
 
 describe('USER_ERROR_MESSAGES', () => {
 	test('should match inline snapshot', () => {

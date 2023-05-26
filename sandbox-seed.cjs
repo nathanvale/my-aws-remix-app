@@ -1,3 +1,4 @@
+/* eslint-disable import/no-commonjs */
 const fs = require('fs')
 const { unmarshall } = require('@aws-sdk/util-dynamodb')
 

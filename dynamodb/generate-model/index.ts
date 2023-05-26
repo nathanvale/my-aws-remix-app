@@ -1,7 +1,7 @@
 import fs from 'fs'
-import { UserItem } from '~/models/user/user.server'
-import type { TableData } from './types'
-import { getEmptyDataModel } from './utils'
+import { UserItem } from '~/models/user/user.server.ts'
+import type { TableData } from './types.ts'
+import { getEmptyDataModel } from './utils.ts'
 
 import {
 	TEST_ORDER_ID,
@@ -14,17 +14,17 @@ import {
 	TEST_INVOICE_ID,
 	TEST_NOTE_ID,
 	TEST_SHIPMENT_ID,
-} from 'dynamodb/db-test-helpers'
+} from 'dynamodb/db-test-helpers.ts'
 
-import { ProductItem } from '~/models/product/product.server'
-import { WarehouseItem } from '~/models/warehouse/warehouse.server'
-import { WarehouseItemItem } from '~/models/warehouse-item/warehouse-item.server'
-import { OrderItem } from '~/models/order/order.server'
-import { OrderItemItem } from '~/models/order-item/order-item.server'
-import { InvoiceItem } from '~/models/invoice/invoice.server'
-import { ShipmentItem } from '~/models/shipment/shipment.server'
-import { ShipmentItemItem } from '~/models/shipment-item/shipment-item.server'
-import { NoteItem } from '~/models/note/note.server'
+import { ProductItem } from '~/models/product/product.server.ts'
+import { WarehouseItem } from '~/models/warehouse/warehouse.server.ts'
+import { WarehouseItemItem } from '~/models/warehouse-item/warehouse-item.server.ts'
+import { OrderItem } from '~/models/order/order.server.ts'
+import { OrderItemItem } from '~/models/order-item/order-item.server.ts'
+import { InvoiceItem } from '~/models/invoice/invoice.server.ts'
+import { ShipmentItem } from '~/models/shipment/shipment.server.ts'
+import { ShipmentItemItem } from '~/models/shipment-item/shipment-item.server.ts'
+import { NoteItem } from '~/models/note/note.server.ts'
 
 export async function main() {
 	const testUser = new UserItem({
@@ -34,7 +34,7 @@ export async function main() {
 		email: 'test@test.com',
 		password: '$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq',
 		name: 'Test User',
-		username: 'test_user',
+		username: 'test_user', 
 	})
 
 	const testProduct = new ProductItem({

@@ -5,9 +5,9 @@ import {
 	readInvoice,
 	updateInvoice,
 	InvoiceItem,
-} from '../invoice.server'
+} from '../invoice.server.ts'
 import ulid from 'ulid'
-import { InvoiceError } from '../errors'
+import { InvoiceError } from '../errors.ts'
 import {
 	clientApiMethodReject,
 	clientApiMethodResolve,
@@ -15,11 +15,11 @@ import {
 	TEST_ORDER_ID,
 	TEST_PRODUCT_ID,
 	TEST_USER_ID,
-} from 'dynamodb/db-test-helpers'
-import * as client from '../../../../dynamodb/client'
-import * as log from '../../log'
+} from 'dynamodb/db-test-helpers.ts'
+import * as client from '../../../../dynamodb/client.ts'
+import * as log from '../../log.ts'
 
-import { createInvoiceSeed } from 'dynamodb/seed-utils'
+import { createInvoiceSeed } from 'dynamodb/seed-utils.ts'
 
 const createdNow = new Date('2022-12-01T00:00:00.000Z')
 const updatedNow = new Date('2022-12-05T00:00:00.000Z')

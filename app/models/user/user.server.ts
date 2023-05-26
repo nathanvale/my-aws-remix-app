@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { ulid } from 'ulid'
-import { Base, Item } from '../base'
-import { getClient } from 'dynamodb/client'
+import { Base, Item } from '../base.ts'
+import { getClient } from 'dynamodb/client.ts'
 import invariant from 'tiny-invariant'
 import {
 	AttributeMap,
@@ -15,8 +15,8 @@ import {
 	readItem,
 	unmarshall,
 	updateItem,
-} from 'dynamodb/utils'
-import { UserError } from './errors'
+} from 'dynamodb/utils.ts'
+import { UserError } from './errors.ts'
 import { QueryCommand } from '@aws-sdk/client-dynamodb'
 
 export interface User extends Base {

@@ -1,4 +1,4 @@
-import { ServerError, ErrorMessage } from '../../errors'
+import { ServerError, ErrorMessage } from '../../errors.ts'
 
 export type WarehouseErrorCodes =
 	| 'WAREHOUSE_ALREADY_EXISTS'

@@ -1,4 +1,4 @@
-import { ServerError, ErrorMessage } from '../../errors'
+import { ServerError, ErrorMessage } from '../../errors.ts'
 
 export type ShipmentErrorCodes =
 	| 'SHIPMENT_ALREADY_EXISTS'

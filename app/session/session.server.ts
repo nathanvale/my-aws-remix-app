@@ -1,10 +1,10 @@
-import { sessionStorage } from './session-storage'
-import type { User } from '~/models/user/user.server'
-import { readUser } from '~/models/user/user.server'
-import { logout } from './logout'
+import { sessionStorage } from './session-storage.ts'
+import type { User } from '~/models/user/user.server.ts'
+import { readUser } from '~/models/user/user.server.ts'
+import { logout } from './logout.ts'
 import { redirect } from '@remix-run/server-runtime'
-import { getSession } from './get-session'
-import { UserError } from '~/models/user/errors'
+import { getSession } from './get-session.ts'
+import { UserError } from '~/models/user/errors.ts'
 
 export const USER_SESSION_KEY = 'userId'
 

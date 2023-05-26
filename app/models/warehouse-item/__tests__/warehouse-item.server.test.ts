@@ -5,18 +5,18 @@ import {
 	readWarehouseItem,
 	updateWarehouseItem,
 	WarehouseItemItem,
-} from '../warehouse-item.server'
+} from '../warehouse-item.server.ts'
 import ulid from 'ulid'
-import { WarehouseItemError } from '../errors'
+import { WarehouseItemError } from '../errors.ts'
 import {
 	clientApiMethodReject,
 	clientApiMethodResolve,
 	TEST_PRODUCT_ID,
 	TEST_WAREHOUSE_ITEM_ID,
-} from 'dynamodb/db-test-helpers'
-import * as client from 'dynamodb/client'
-import * as log from '../../log'
-import { createWarehouseItemSeed } from 'dynamodb/seed-utils'
+} from 'dynamodb/db-test-helpers.ts'
+import * as client from 'dynamodb/client.ts'
+import * as log from '../../log.ts'
+import { createWarehouseItemSeed } from 'dynamodb/seed-utils.ts'
 
 const createdNow = new Date('2022-12-01T00:00:00.000Z')
 const updatedNow = new Date('2022-12-05T00:00:00.000Z')

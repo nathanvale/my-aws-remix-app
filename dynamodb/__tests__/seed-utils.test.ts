@@ -1,4 +1,4 @@
-import { marshall } from 'dynamodb/utils'
+import { marshall } from 'dynamodb/utils.ts'
 import {
 	createInvoiceSeed,
 	createOrderItemSeed,
@@ -8,7 +8,7 @@ import {
 	createUserSeed,
 	createWarehouseItemSeed,
 	createWarehouseSeed,
-} from '../seed-utils'
+} from '../seed-utils.ts'
 
 test('should output user seed', async () => {
 	const result = createUserSeed()

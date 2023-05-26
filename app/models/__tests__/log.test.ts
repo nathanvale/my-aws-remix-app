@@ -1,4 +1,4 @@
-import { logError } from '../log'
+import { logError } from '../log.ts'
 import { ulid } from 'ulid'
 import { Mock } from 'vitest'
 

@@ -1,5 +1,5 @@
 import { ulid } from 'ulid'
-import { Base, Item } from '../base'
+import { Base, Item } from '../base.ts'
 import {
 	AttributeMap,
 	createItem,
@@ -8,15 +8,15 @@ import {
 	PrimaryKeyAttributeValues,
 	readItem,
 	updateItem,
-} from 'dynamodb/utils'
+} from 'dynamodb/utils.ts'
 import invariant from 'tiny-invariant'
 import {
 	checkForDBAttributes,
 	DynamoDBItem,
 	marshall,
 	unmarshall,
-} from '../../../dynamodb/utils'
-import { InvoiceError } from './errors'
+} from '../../../dynamodb/utils.ts'
+import { InvoiceError } from './errors.ts'
 
 export interface Invoice extends Base {
 	readonly invoiceId: string

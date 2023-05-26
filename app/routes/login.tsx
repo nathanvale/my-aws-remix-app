@@ -10,10 +10,10 @@ import * as React from 'react'
 import {
 	createUserSession,
 	getUserIdFromSession,
-} from '~/session/session.server'
-import { verifyLogin } from '~/models/user/user.server'
-import { safeRedirect, validateEmail } from '~/utils'
-import { UserError, USER_ERROR_MESSAGES } from '~/models/user/errors'
+} from '~/session/session.server.ts'
+import { verifyLogin } from '~/models/user/user.server.ts'
+import { safeRedirect, validateEmail } from '~/utils.ts'
+import { UserError, USER_ERROR_MESSAGES } from '~/models/user/errors.ts'
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const userId = await getUserIdFromSession(request)

@@ -1,4 +1,4 @@
-import { ORDER_ITEM_ERROR_MESSAGES } from '../errors'
+import { ORDER_ITEM_ERROR_MESSAGES } from '../errors.ts'
 
 describe('ORDER_ITEM_ERROR_MESSAGES', () => {
 	test('should match inline snapshot', () => {

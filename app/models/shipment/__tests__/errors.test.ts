@@ -1,4 +1,4 @@
-import { SHIPMENT_ERROR_MESSAGES } from '../errors'
+import { SHIPMENT_ERROR_MESSAGES } from '../errors.ts'
 
 describe('USER_ERROR_MESSAGES', () => {
 	test('should match inline snapshot', () => {

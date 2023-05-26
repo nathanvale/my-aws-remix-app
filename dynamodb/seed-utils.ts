@@ -5,16 +5,16 @@ import {
 	TEST_SHIPMENT_ID,
 	TEST_USER_ID,
 	TEST_WAREHOUSE_ID,
-} from 'dynamodb/db-test-helpers'
-import type { Invoice } from '~/models/invoice/invoice.server'
-import type { OrderItem } from '~/models/order-item/order-item.server'
-import type { Order } from '~/models/order/order.server'
-import type { Product } from '~/models/product/product.server'
-import type { ShipmentItem } from '~/models/shipment-item/shipment-item.server'
-import type { Shipment } from '~/models/shipment/shipment.server'
-import type { User } from '~/models/user/user.server'
-import type { WarehouseItem } from '~/models/warehouse-item/warehouse-item.server'
-import type { Warehouse } from '~/models/warehouse/warehouse.server'
+} from 'dynamodb/db-test-helpers.ts'
+import type { Invoice } from '~/models/invoice/invoice.server.ts'
+import type { OrderItem } from '~/models/order-item/order-item.server.ts'
+import type { Order } from '~/models/order/order.server.ts'
+import type { Product } from '~/models/product/product.server.ts'
+import type { ShipmentItem } from '~/models/shipment-item/shipment-item.server.ts'
+import type { Shipment } from '~/models/shipment/shipment.server.ts'
+import type { User } from '~/models/user/user.server.ts'
+import type { WarehouseItem } from '~/models/warehouse-item/warehouse-item.server.ts'
+import type { Warehouse } from '~/models/warehouse/warehouse.server.ts'
 
 function getDates() {
 	const today = new Date()

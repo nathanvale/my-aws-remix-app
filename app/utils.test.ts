@@ -1,8 +1,8 @@
-import * as log from '../app/models/log'
+import * as log from '../app/models/log.ts'
 import { useMatches } from '@remix-run/react'
 import { renderHook } from '@testing-library/react'
 import type { Mock } from 'vitest'
-import { TEST_USER_EMAIL, TEST_USER_ID } from 'dynamodb/db-test-helpers'
+import { TEST_USER_EMAIL, TEST_USER_ID } from 'dynamodb/db-test-helpers.ts'
 import {
 	validateEmail,
 	isUser,
@@ -11,7 +11,7 @@ import {
 	useMatchesData,
 	useOptionalUser,
 	useUser,
-} from './utils'
+} from './utils.ts'
 
 vi.mock('@remix-run/react')
 

@@ -1,6 +1,9 @@
 @app
 my-aws-remix
 
+@sandbox
+seed-data  ./sandbox-seed.cjs
+
 @http
 /*
   method any

@@ -1,10 +1,10 @@
 /* ignore file coverage */
 import { ulid } from 'ulid'
-import { Item } from '../base'
+import { Item } from '../base.ts'
 
 import invariant from 'tiny-invariant'
-import { getClient } from 'dynamodb/client'
-import { UserItem } from '../user/user.server'
+import { getClient } from 'dynamodb/client.ts'
+import { UserItem } from '../user/user.server.ts'
 import {
 	AttributeMap,
 	checkForDBAttributes,
@@ -15,7 +15,7 @@ import {
 	PrimaryKeyAttributeValues,
 	readItem,
 	unmarshall,
-} from 'dynamodb/utils'
+} from 'dynamodb/utils.ts'
 import { QueryCommand } from '@aws-sdk/client-dynamodb'
 interface NoteWithOptional {
 	userId: string

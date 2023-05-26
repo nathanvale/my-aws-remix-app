@@ -5,19 +5,19 @@ import {
 	readOrderItem,
 	updateOrderItem,
 	OrderItemItem,
-} from '../order-item.server'
+} from '../order-item.server.ts'
 import ulid from 'ulid'
-import { OrderItemError } from '../errors'
+import { OrderItemError } from '../errors.ts'
 import {
 	clientApiMethodReject,
 	clientApiMethodResolve,
 	TEST_ORDER_ID,
 	TEST_ORDER_ITEM_ID,
 	TEST_PRODUCT_ID,
-} from 'dynamodb/db-test-helpers'
-import * as client from 'dynamodb/client'
-import * as log from '../../log'
-import { createOrderItemSeed } from 'dynamodb/seed-utils'
+} from 'dynamodb/db-test-helpers.ts'
+import * as client from 'dynamodb/client.ts'
+import * as log from '../../log.ts'
+import { createOrderItemSeed } from 'dynamodb/seed-utils.ts'
 
 const createdNow = new Date('2022-12-01T00:00:00.000Z')
 const updatedNow = new Date('2022-12-05T00:00:00.000Z')

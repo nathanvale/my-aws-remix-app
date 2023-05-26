@@ -1,14 +1,14 @@
 import { faker } from '@faker-js/faker'
-import { HomePage } from 'playwright/support/pages/HomePage'
-import { JoinPage } from 'playwright/support/pages/JoinPage'
-import { NotesPage } from 'playwright/support/pages/NotesPage'
+import { HomePage } from 'playwright/support/pages/HomePage.ts'
+import { JoinPage } from 'playwright/support/pages/JoinPage.ts'
+import { NotesPage } from 'playwright/support/pages/NotesPage.ts'
 import {
 	test,
 	expect,
 	makeLoginForm,
 	deleteUserByEmail,
 	loginPage,
-} from '../fixtures'
+} from '../fixtures.ts'
 
 test.describe('Smoke Tests', () => {
 	test.describe('Authentication', () => {

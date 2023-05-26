@@ -9,19 +9,19 @@ import {
 	UserItem,
 	verifyEmailNotExist,
 	verifyLogin,
-} from '../user.server'
+} from '../user.server.ts'
 import ulid from 'ulid'
-import { UserError } from '../errors'
+import { UserError } from '../errors.ts'
 import {
 	clientApiMethodReject,
 	clientApiMethodResolve,
 	TEST_USER_EMAIL,
 	TEST_USER_ID,
-} from 'dynamodb/db-test-helpers'
-import * as client from 'dynamodb/client'
-import * as log from '../../log'
+} from 'dynamodb/db-test-helpers.ts'
+import * as client from 'dynamodb/client.ts'
+import * as log from '../../log.ts'
 import { SpyInstance } from 'vitest'
-import { createUserSeed } from 'dynamodb/seed-utils'
+import { createUserSeed } from 'dynamodb/seed-utils.ts'
 
 let compareSpy: SpyInstance
 const createdNow = new Date('2022-12-01T00:00:00.000Z')

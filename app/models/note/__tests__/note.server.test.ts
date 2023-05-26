@@ -5,10 +5,10 @@ import {
 	readNote,
 	getNoteListItems,
 	NoteItem,
-} from '../note.server'
+} from '../note.server.ts'
 import ulid from 'ulid'
 import { vi } from 'vitest'
-import { TEST_NOTE_ID, TEST_USER_ID } from 'dynamodb/db-test-helpers'
+import { TEST_NOTE_ID, TEST_USER_ID } from 'dynamodb/db-test-helpers.ts'
 describe.skip('Skip for now...', () => {
 	describe('NoteItem', () => {
 		test('should get a DynamoDB attribute map of a note', async () => {

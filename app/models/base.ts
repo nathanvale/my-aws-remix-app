@@ -1,4 +1,7 @@
-import { GSIKeyAttributeValue, PrimaryKeyAttributeValues } from 'dynamodb/utils'
+import {
+	GSIKeyAttributeValue,
+	PrimaryKeyAttributeValues,
+} from 'dynamodb/utils.ts'
 
 export interface Base {
 	readonly createdAt: string

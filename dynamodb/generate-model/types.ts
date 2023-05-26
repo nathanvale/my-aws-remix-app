@@ -1,4 +1,4 @@
-import type { DynamoDBItem } from 'dynamodb/utils'
+import type { DynamoDBItem } from 'dynamodb/utils.ts'
 
 export interface DataModel {
 	ModelName: string

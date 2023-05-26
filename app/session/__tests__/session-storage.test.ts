@@ -11,7 +11,7 @@ vi.mock('@remix-run/node', () => {
 
 describe('sessionStorage', () => {
 	test('should get a session', async () => {
-		const { sessionStorage } = await import('../session-storage')
+		const { sessionStorage } = await import('../session-storage.ts')
 		expect(sessionStorage).toMatchInlineSnapshot(`
       {
         "cookie": {

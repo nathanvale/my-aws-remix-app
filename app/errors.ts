@@ -1,4 +1,4 @@
-import { logError } from './models/log'
+import { logError } from './models/log.ts'
 
 export type AppErrorCodes = 'APP_NO_USER_FOUND'
 

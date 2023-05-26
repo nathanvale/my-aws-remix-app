@@ -1,15 +1,15 @@
 import { test as baseTest, Page } from '@playwright/test'
 import { faker } from '@faker-js/faker'
-import { createUserSeed } from '../dynamodb/seed-utils'
+import { createUserSeed } from '../dynamodb/seed-utils.ts'
 import {
 	createUser,
 	deleteUser,
 	getUserByEmail,
 	User,
-} from '~/models/user/user.server'
-import { commitSession, getSession } from '~/session/session-storage'
+} from '~/models/user/user.server.ts'
+import { commitSession, getSession } from '~/session/session-storage.ts'
 import { parse } from 'cookie'
-import { USER_SESSION_KEY } from '~/session/session.server'
+import { USER_SESSION_KEY } from '~/session/session.server.ts'
 import { ulid } from 'ulid'
 export { expect } from '@playwright/test'
 

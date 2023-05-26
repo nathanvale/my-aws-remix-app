@@ -15,8 +15,8 @@ import {
 } from '@remix-run/react'
 
 import tailwindStylesheetUrl from './styles/tailwind.css'
-import { getUserFromSession } from './session/session.server'
-import { GeneralErrorBoundary } from './components/error-boundary'
+import { getUserFromSession } from './session/session.server.ts'
+import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 
 export const links: LinksFunction = () => {
 	return [
