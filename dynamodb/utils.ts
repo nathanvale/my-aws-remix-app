@@ -9,9 +9,19 @@ import {
 	unmarshall as AWSUnmarshall,
 	marshall as AWSMarshall,
 } from '@aws-sdk/util-dynamodb'
+import {
+	type QueryCommandInput,
+	QueryCommand,
+	BatchWriteCommand,
+	type BatchWriteCommandInput,
+} from '@aws-sdk/lib-dynamodb'
+
+import type { NativeAttributeValue } from '@aws-sdk/util-dynamodb'
+import type { PutRequest, DeleteRequest } from '@aws-sdk/client-dynamodb'
 
 import invariant from 'tiny-invariant'
 import { getClient } from './client'
+import { setTimeout } from 'timers/promises'
 
 /**
  * https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.Errors.html
@@ -35,6 +45,14 @@ export type ModelKeys = PrimaryKeys | 'EntityType' | 'Attributes'
 export type DynamoDBItem =
 	| Record<ModelKeys, AttributeValue> & Partial<Record<GSIKeys, AttributeValue>>
 
+export interface WriteRequestItems {
+	PutRequest?: Omit<PutRequest, 'Item'> & {
+		Item: Record<string, NativeAttributeValue> | undefined
+	}
+	DeleteRequest?: Omit<DeleteRequest, 'Key'> & {
+		Key: Record<string, NativeAttributeValue> | undefined
+	}
+}
 /**
  * https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/Converter.html
  * @param item
@@ -91,7 +109,8 @@ export const readItem = async (key: AttributeMap) => {
 		TableName,
 		Key: key,
 	})
-	return await client.send(command)
+	const resp = await client.send(command)
+	return resp.Item ? unmarshall<Record<string, any>>(resp.Item) : null
 }
 
 /**
@@ -116,9 +135,17 @@ export const updateItem = async (
 		},
 		ReturnValues: 'ALL_NEW',
 	})
-	return await client.send(command)
+	const resp = await client.send(command)
+	return resp.Attributes
+		? unmarshall<Record<string, any>>(resp.Attributes)
+		: null
 }
 
+/**
+ * Deletes a DynamoDB item from a DynamoDB key.
+ * @param key
+ * @returns
+ */
 export const deleteItem = async (key: AttributeMap) => {
 	const { client, TableName } = await getClient()
 	const command = new DeleteItemCommand({
@@ -126,5 +153,77 @@ export const deleteItem = async (key: AttributeMap) => {
 		Key: key,
 		ReturnValues: 'ALL_OLD',
 	})
-	return await client.send(command)
+	const resp = await client.send(command)
+	console.log('core', resp)
+	return resp.Attributes
+		? unmarshall<Record<string, any>>(resp.Attributes)
+		: null
 }
+
+export const query = async (input: Omit<QueryCommandInput, 'TableName'>) => {
+	const { client, TableName } = await getClient()
+	const asd: QueryCommandInput = { TableName, ...input }
+	const queryCommand = new QueryCommand(asd)
+	return await client.send(queryCommand)
+}
+
+/**
+ * The BatchWriteItem operation puts or deletes multiple items in one or more
+ * tables. A single call to BatchWriteItem can transmit up to 16MB of data over
+ * the network, consisting of up to 25 item put or delete operations. Typically,
+ * you would call BatchWriteItem in a loop. Each iteration would check for
+ * unprocessed items and submit a new BatchWriteItem request with those
+ * unprocessed items
+ * @param requestItems
+ * @param retryCount
+ */
+export const batchWrite = async (
+	requestItems: WriteRequestItems[],
+	retryCount = 0,
+) => {
+	const { client, TableName } = await getClient()
+	const batchWriteCommandInput: BatchWriteCommandInput = {
+		RequestItems: {
+			[TableName]: requestItems,
+		},
+	}
+	const batchWriteCommand = new BatchWriteCommand(batchWriteCommandInput)
+	const batchWriteCommandOutput = await client.send(batchWriteCommand)
+	const unprocessedItems = batchWriteCommandOutput.UnprocessedItems
+
+	if (
+		unprocessedItems &&
+		unprocessedItems[TableName] &&
+		unprocessedItems[TableName].length > 0
+	) {
+		if (retryCount > 8) {
+			return unprocessedItems[TableName]
+		}
+		//If DynamoDB returns any unprocessed items, you should retry the batch
+		//operation on those items. However, AWS strongly recommend that you use
+		//an exponential backoff algorithm. If you retry the batch operation
+		//immediately, the underlying read or write requests can still fail due
+		//to throttling on the individual tables. If you delay the batch
+		//operation using exponential backoff, the individual requests in the
+		//batch are much more likely to succeed.
+		await setTimeout(2 ** retryCount * 10)
+		await batchWrite(unprocessedItems[TableName], retryCount + 1)
+	}
+	return unprocessedItems?.[TableName] || []
+}
+
+/**
+ * Maps a DynamoDB item to a WriteRequestItems object for a batch write.
+ * @param item
+ * @returns
+ */
+export const mapToDeleteItem = (
+	item: Record<string, any>,
+): WriteRequestItems => ({
+	DeleteRequest: {
+		Key: {
+			PK: item.PK,
+			SK: item.SK,
+		},
+	},
+})

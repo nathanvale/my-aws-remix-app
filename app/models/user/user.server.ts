@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs'
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import { getClient } from 'dynamodb/client'
@@ -12,6 +11,7 @@ import {
 	GSIKeyAttributeValue,
 	marshall,
 	PrimaryKeyAttributeValues,
+	query,
 	readItem,
 	unmarshall,
 	updateItem,
@@ -25,6 +25,7 @@ export interface User extends Base {
 	password: string
 	username: string
 	name: string
+	image?: string
 }
 
 export class UserItem extends Item {
@@ -39,28 +40,12 @@ export class UserItem extends Item {
 		}
 	}
 
-	static fromItem(item?: AttributeMap): UserItem {
-		invariant(item, 'No item!')
+	static fromItem(item: Record<string, any>): UserItem {
 		invariant(item.Attributes, 'No attributes!')
-		invariant(item.Attributes.M, 'No attributes!')
-		const user = new UserItem({
-			createdAt: '',
-			updatedAt: '',
-			userId: '',
-			email: '',
-			password: '',
-			name: '',
-			username: '',
-		})
-		const itemAttributes = item.Attributes.M
-
-		checkForDBAttributes(user.attributes, itemAttributes)
-
-		const { Attributes } = unmarshall<{
-			Attributes: User
-		}>(item)
-
-		return new UserItem(Attributes)
+		invariant(item.EntityType, 'No entityType!')
+		invariant(item.EntityType === 'user', 'Not a user entityType!')
+		const user = new UserItem(item.Attributes)
+		return user
 	}
 
 	static getPrimaryKeyAttributeValues(
@@ -78,10 +63,15 @@ export class UserItem extends Item {
 		return user.keys()
 	}
 
-	static getGSIAttributeValues(
-		userId: User['userId'],
-		email: User['email'],
-	): GSIKeyAttributeValue {
+	static getGSIAttributeValues({
+		email = '',
+		userId = '',
+		username = '',
+	}: {
+		userId?: User['userId']
+		email?: User['email']
+		username?: User['username']
+	}): GSIKeyAttributeValue {
 		const user = new UserItem({
 			createdAt: '',
 			updatedAt: '',
@@ -89,7 +79,7 @@ export class UserItem extends Item {
 			email,
 			password: '',
 			name: '',
-			username: '',
+			username,
 		})
 		return user.gSIKeys()
 	}
@@ -114,12 +104,12 @@ export class UserItem extends Item {
 		return `USER#${this.attributes.email}`
 	}
 
-	get GS2PK() {
-		return undefined
+	get GS2PK(): `USER#${string}` {
+		return `USER#${this.attributes.username}`
 	}
 
-	get GS2SK() {
-		return undefined
+	get GS2SK(): `USER#${string}` {
+		return `USER#${this.attributes.username}`
 	}
 
 	get GS3PK() {
@@ -157,90 +147,80 @@ export class UserItem extends Item {
 export const createUser = async (
 	user: Omit<User, 'userId' | 'createdAt' | 'updatedAt'>,
 ): Promise<User> => {
-	const hashedPassword = await bcrypt.hash(user.password, 10)
 	const userItem = new UserItem({
 		...user,
 		createdAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),
 		userId: ulid(),
-		password: hashedPassword,
 	})
 	await createItem(userItem.toDynamoDBItem())
 	return userItem.attributes
 }
 
-export const readUser = async (userId: string): Promise<User> => {
+export const readUser = async (userId: string): Promise<User | null> => {
 	const key = UserItem.getPrimaryKeyAttributeValues(userId)
-	const resp = await readItem(key)
-	if (resp.Item) return UserItem.fromItem(resp.Item).attributes
-	else throw new UserError('USER_NOT_FOUND')
+	const item = await readItem(key)
+	if (item) return UserItem.fromItem(item).attributes
+	else return null
 }
 
-export const updateUser = async (user: User): Promise<User> => {
+export const updateUser = async (user: User): Promise<User | null> => {
 	const key = UserItem.getPrimaryKeyAttributeValues(user.userId)
-	const productItem = new UserItem({
+	const userItem = new UserItem({
 		...user,
 		updatedAt: new Date().toISOString(),
 	})
-	const resp = await updateItem(key, productItem.toDynamoDBItem().Attributes)
-	if (resp?.Attributes) return UserItem.fromItem(resp.Attributes).attributes
-	else throw new UserError('USER_UPDATES_MUST_RETURN_VALUES')
+	const item = await updateItem(key, userItem.toDynamoDBItem().Attributes)
+	if (item) return UserItem.fromItem(item).attributes
+	else return null
 }
 
-export const deleteUser = async (userId: User['userId']): Promise<User> => {
+export const deleteUser = async (
+	userId: User['userId'],
+): Promise<User | null> => {
 	const key = UserItem.getPrimaryKeyAttributeValues(userId)
-	const resp = await deleteItem(key)
-	if (resp.Attributes) return UserItem.fromItem(resp.Attributes).attributes
-	else throw new UserError('USER_DOES_NOT_EXIST')
+	const item = await deleteItem(key)
+	if (item) return UserItem.fromItem(item).attributes
+	else return null
 }
 
 export const getUserByEmail = async function (
 	email: User['email'],
-): Promise<User> {
-	const { client, TableName } = await getClient()
-	const gSIKeys = UserItem.getGSIAttributeValues('', email)
+): Promise<User | null> {
+	const gSIKeys = UserItem.getGSIAttributeValues({ email })
 	invariant(gSIKeys.GS1PK, 'Missing GS1PK!')
 	invariant(gSIKeys.GS1SK, 'Missing GlS1SK!')
-	const params = {
-		TableName,
+
+	const resp = await query({
 		IndexName: 'GSI1',
 		KeyConditionExpression: 'GS1PK = :GS1PK AND GS1SK = :GS1SK',
 		ExpressionAttributeValues: {
-			':GS1PK': gSIKeys.GS1PK,
-			':GS1SK': gSIKeys.GS1SK,
+			':GS1PK': gSIKeys.GS1PK.S,
+			':GS1SK': gSIKeys.GS1SK.S,
 		},
-	}
-	const command = new QueryCommand(params)
-	const resp = await client.send(command)
+	})
 	if (resp.Items && resp.Count && resp.Count > 0)
 		return resp.Items.map(item => UserItem.fromItem(item))[0].attributes
-	else throw new UserError('USER_NOT_FOUND')
+	else return null
 }
+export const getUserByUsername = async function (
+	username: User['username'],
+): Promise<User | null> {
+	const gSIKeys = UserItem.getGSIAttributeValues({ username })
+	invariant(gSIKeys.GS2PK, 'Missing GS2PK!')
+	invariant(gSIKeys.GS2SK, 'Missing GlS2SK!')
 
-export const verifyEmailNotExist = async (
-	email: User['email'],
-): Promise<boolean> => {
-	let user: User
-	try {
-		user = await getUserByEmail(email)
-		if (user.email === email) throw new UserError('USER_ALREADY_EXISTS')
-	} catch (error) {
-		if (error instanceof UserError) {
-			if (error.code === 'USER_NOT_FOUND') return true
-		}
-		throw error
-	}
-	// We should never get here but need to keep TS happy
-	/* c8 ignore next */
-	return false
-}
+	// const command = new QueryCommand(params)
+	const resp = await query({
+		IndexName: 'GSI2',
+		KeyConditionExpression: 'GS2PK = :GS2PK AND GS2SK = :GS2SK',
+		ExpressionAttributeValues: {
+			':GS2PK': gSIKeys.GS2PK.S,
+			':GS2SK': gSIKeys.GS2SK.S,
+		},
+	})
 
-export const verifyLogin = async (
-	email: User['email'],
-	password: User['password'],
-): Promise<User> => {
-	const existingUser = await getUserByEmail(email)
-	const isValidPassword = await bcrypt.compare(password, existingUser.password)
-	if (!isValidPassword) throw new UserError('USER_PASSWORD_INVALID')
-	return existingUser
+	if (resp.Items && resp.Count && resp.Count > 0)
+		return resp.Items.map(item => UserItem.fromItem(item))[0].attributes
+	else return null
 }

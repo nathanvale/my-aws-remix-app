@@ -14,6 +14,7 @@ import {
 	TEST_INVOICE_ID,
 	TEST_NOTE_ID,
 	TEST_SHIPMENT_ID,
+	TEST_SESSION_ID,
 } from 'dynamodb/db-test-helpers'
 
 import { ProductItem } from '~/models/product/product.server'
@@ -25,6 +26,7 @@ import { InvoiceItem } from '~/models/invoice/invoice.server'
 import { ShipmentItem } from '~/models/shipment/shipment.server'
 import { ShipmentItemItem } from '~/models/shipment-item/shipment-item.server'
 import { NoteItem } from '~/models/note/note.server'
+import { SessionItem } from '~/models/session/session.server'
 
 export async function main() {
 	const testUser = new UserItem({
@@ -35,8 +37,24 @@ export async function main() {
 		password: '$2a$12$9AW1GJShZ3fd42xjtWyaUeA6BIlLJOByxj9vV90Rnoa9I1iEjYwyq',
 		name: 'Test User',
 		username: 'test_user',
+		image: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
 	})
 
+	const testSession = new SessionItem({
+		createdAt: '2022-08-31T05:46:41.205Z',
+		updatedAt: '2022-11-25T13:45:46.999Z',
+		expirationDate: '2022-11-25T13:45:46.999Z',
+		sessionId: TEST_SESSION_ID,
+		userId: TEST_USER_ID,
+	})
+
+	const testSession2 = new SessionItem({
+		createdAt: '2022-08-30T05:46:41.205Z',
+		updatedAt: '2022-11-25T13:45:46.999Z',
+		expirationDate: '2022-11-25T13:45:46.999Z',
+		sessionId: '54321',
+		userId: '54321',
+	})
 	const testProduct = new ProductItem({
 		company: 'Mann - Thiel',
 		createdAt: '2022-08-31T05:46:41.205Z',
@@ -117,6 +135,8 @@ export async function main() {
 	})
 
 	const tableData: TableData = [
+		testSession.toDynamoDBItem(),
+		testSession2.toDynamoDBItem(),
 		testUser.toDynamoDBItem(),
 		testProduct.toDynamoDBItem(),
 		testWarehouse.toDynamoDBItem(),
