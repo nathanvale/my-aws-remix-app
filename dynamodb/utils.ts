@@ -89,7 +89,6 @@ export const checkForDBAttributes = (
  */
 export const createItem = async (item: AttributeMap) => {
 	const { client, TableName } = await getClient()
-
 	const command = new PutItemCommand({
 		TableName,
 		Item: item,

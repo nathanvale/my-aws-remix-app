@@ -39,7 +39,7 @@ authenticator.use(
 		if (!user) {
 			throw new Error('Invalid username or password')
 		}
-		gagawait deleteAllUserSessions(user.id)
+		deleteAllUserSessions(user.id)
 		const session = await createSession({
 			userId: user.id,
 			expirationDate: new Date(

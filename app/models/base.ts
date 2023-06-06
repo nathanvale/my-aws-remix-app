@@ -1,4 +1,9 @@
-import { GSIKeyAttributeValue, PrimaryKeyAttributeValues } from 'dynamodb/utils'
+import { unmarshall } from '@aws-sdk/util-dynamodb'
+import {
+	GSIKeyAttributeValue,
+	GSIKeys,
+	PrimaryKeyAttributeValues,
+} from 'dynamodb/utils'
 
 export interface Base {
 	readonly createdAt: string
@@ -47,5 +52,9 @@ export abstract class Item {
 		}
 
 		return gsiKeys
+	}
+
+	public umarshalledGsiKeys(): Record<GSIKeys, string> {
+		return unmarshall(this.gSIKeys())
 	}
 }

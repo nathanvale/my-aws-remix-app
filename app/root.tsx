@@ -2,7 +2,6 @@ import { cssBundleHref } from '@remix-run/css-bundle'
 import type {
 	DataFunctionArgs,
 	LinksFunction,
-	LoaderFunction,
 	V2_MetaFunction,
 } from '@remix-run/node'
 
@@ -18,11 +17,9 @@ import {
 } from '@remix-run/react'
 
 import tailwindStylesheetUrl from './styles/tailwind.css'
-import { getUserFromSession } from './session/session.server'
 import { GeneralErrorBoundary } from './components/error-boundary'
 import { Container } from './components/container'
 import { Navbar } from './components/navbar/navbar'
-import { useOptionalUser } from './utils'
 import { readUser } from './models/user/user.server'
 import { authenticator, getUserId } from './utils/auth.server'
 import { getEnv } from './utils/env.server'

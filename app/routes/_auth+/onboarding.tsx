@@ -27,29 +27,63 @@ import {
 } from '~/utils/user-validation'
 import { checkboxSchema } from '~/utils/zod-extensions'
 import { onboardingEmailSessionKey } from './signup'
+import { getUserByUsername } from '~/models/user/user.server'
 
-const OnboardingFormSchema = z
-	.object({
-		username: usernameSchema,
-		name: nameSchema,
-		password: passwordSchema,
-		confirmPassword: passwordSchema,
-		agreeToTermsOfServiceAndPrivacyPolicy: checkboxSchema(
-			'You must agree to the terms of service and privacy policy',
-		),
-		agreeToMailingList: checkboxSchema(),
-		remember: checkboxSchema(),
-		redirectTo: z.string().optional(),
-	})
-	.superRefine(({ confirmPassword, password }, ctx) => {
-		if (confirmPassword !== password) {
-			ctx.addIssue({
-				path: ['confirmPassword'],
-				code: 'custom',
-				message: 'The passwords did not match',
-			})
-		}
-	})
+function createSchema(
+	constraints: {
+		isUsernameUnique?: (username: string) => Promise<boolean>
+	} = {},
+) {
+	const onboardingSchema = z
+		.object({
+			username: usernameSchema.superRefine((username, ctx) => {
+				// if constraint is not defined, throw an error
+				if (typeof constraints.isUsernameUnique === 'undefined') {
+					ctx.addIssue({
+						code: z.ZodIssueCode.custom,
+						message: conform.VALIDATION_UNDEFINED,
+					})
+					return
+				}
+				// if constraint is defined, validate uniqueness
+				return constraints.isUsernameUnique(username).then(isUnique => {
+					if (isUnique) {
+						return
+					}
+					ctx.addIssue({
+						code: z.ZodIssueCode.custom,
+						message: 'A user already exists with this username',
+					})
+				})
+			}),
+			name: nameSchema,
+			password: passwordSchema,
+			confirmPassword: passwordSchema,
+			agreeToTermsOfServiceAndPrivacyPolicy: checkboxSchema(
+				'You must agree to the terms of service and privacy policy',
+			),
+			agreeToMailingList: checkboxSchema(),
+			remember: checkboxSchema(),
+			redirectTo: z.string().optional(),
+		})
+		.superRefine(({ confirmPassword, password }, ctx) => {
+			if (confirmPassword !== password) {
+				ctx.addIssue({
+					path: ['confirmPassword'],
+					code: 'custom',
+					message: 'The passwords did not match',
+				})
+			}
+		})
+	return onboardingSchema
+}
+
+const OnboardingFormSchema = createSchema({
+	async isUsernameUnique(username: string) {
+		const existingUser = await getUserByUsername(username)
+		return !existingUser
+	},
+})
 
 export async function loader({ request }: DataFunctionArgs) {
 	await requireAnonymous(request)
@@ -77,9 +111,16 @@ export async function action({ request }: DataFunctionArgs) {
 	}
 
 	const formData = await request.formData()
-	const submission = parse(formData, {
-		schema: OnboardingFormSchema,
+	const submission = await parse(formData, {
+		schema: () =>
+			createSchema({
+				async isUsernameUnique(username: string) {
+					const existingUser = await getUserByUsername(username)
+					return !existingUser
+				},
+			}),
 		acceptMultipleErrors: () => true,
+		async: true,
 	})
 	if (submission.intent !== 'submit') {
 		return json({ status: 'idle', submission } as const)

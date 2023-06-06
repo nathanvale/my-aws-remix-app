@@ -1,7 +1,6 @@
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import {
-	AttributeMap,
 	batchWrite,
 	createItem,
 	deleteItem,
@@ -14,13 +13,7 @@ import {
 } from 'dynamodb/utils'
 
 import invariant from 'tiny-invariant'
-import {
-	checkForDBAttributes,
-	DynamoDBItem,
-	marshall,
-	unmarshall,
-} from '../../../dynamodb/utils'
-import { SessionError } from './errors'
+import { DynamoDBItem, marshall } from '../../../dynamodb/utils'
 import { User } from '../user/user.server'
 
 export interface Session extends Base {
@@ -59,7 +52,24 @@ export class SessionItem extends Item {
 		})
 		return session.keys()
 	}
-
+	static getGSIAttributeValues({
+		sessionId = '',
+		userId = '',
+		createdAt = '',
+	}: {
+		userId?: Session['userId']
+		sessionId?: Session['sessionId']
+		createdAt?: Session['createdAt']
+	}) {
+		const session = new SessionItem({
+			sessionId,
+			createdAt,
+			userId,
+			expirationDate: '',
+			updatedAt: '',
+		})
+		return session.umarshalledGsiKeys()
+	}
 	get entityType(): string {
 		return `session`
 	}
@@ -142,7 +152,9 @@ export const readSession = async (
 	else return null
 }
 
-export const updateSession = async (session: Session): Promise<Session | null> => {
+export const updateSession = async (
+	session: Session,
+): Promise<Session | null> => {
 	const key = SessionItem.getPrimaryKeyAttributeValues(session.sessionId)
 	const sessionItem = new SessionItem({
 		...session,

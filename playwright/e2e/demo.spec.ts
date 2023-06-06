@@ -41,7 +41,7 @@ test.describe('Smoke Tests', () => {
 			await notesPage.saveButton.click()
 			await notesPage.deleteButton.click()
 			await expect(notesPage.noNotesYetTest).toBeVisible()
-			await deleteUserByEmail(user.email)
+			// await deleteUserByEmail(user.email)
 		})
 	})
 })

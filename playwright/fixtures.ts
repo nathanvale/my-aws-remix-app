@@ -1,15 +1,8 @@
 import { test as baseTest, Page } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import { createUserSeed } from '../dynamodb/seed-utils'
-import {
-	createUser,
-	deleteUser,
-	getUserByEmail,
-	User,
-} from '~/models/user/user.server'
-import { commitSession, getSession } from '~/session/session-storage'
+import { createUser, User } from '~/models/user/user.server'
 import { parse } from 'cookie'
-import { USER_SESSION_KEY } from '~/session/session.server'
 import { ulid } from 'ulid'
 export { expect } from '@playwright/test'
 
@@ -54,12 +47,12 @@ export async function insertNewUser({ password }: { password?: string } = {}) {
 }
 
 export async function deleteUserByEmail(email: string) {
-	const user = await getUserByEmail(email)
-	try {
-		await deleteUser(user.userId)
-	} catch (error) {
-		console.log(error)
-	}
+	// const user = await getUserByEmail(email)
+	// try {
+	// 	await deleteUser(user.userId)
+	// } catch (error) {
+	// 	console.log(error)
+	// }
 }
 
 export const test = baseTest.extend<{
@@ -82,20 +75,20 @@ export async function loginPage({
 	baseURL: string | undefined
 	user?: User
 }) {
-	user = user ?? (await insertNewUser())
-	const session = await getSession()
-	session.set(USER_SESSION_KEY, user.userId)
-	const cookieValue = await commitSession(session)
-	const { _session } = parse(cookieValue)
-	page.context().addCookies([
-		{
-			name: '_session',
-			sameSite: 'Lax',
-			url: baseURL,
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			value: _session,
-		},
-	])
-	return user
+	// user = user ?? (await insertNewUser())
+	// const session = await getSession()
+	// session.set(USER_SESSION_KEY, user.userId)
+	// const cookieValue = await commitSession(session)
+	// const { _session } = parse(cookieValue)
+	// page.context().addCookies([
+	// 	{
+	// 		name: '_session',
+	// 		sameSite: 'Lax',
+	// 		url: baseURL,
+	// 		httpOnly: true,
+	// 		secure: process.env.NODE_ENV === 'production',
+	// 		value: _session,
+	// 	},
+	// ])
+	// return user
 }

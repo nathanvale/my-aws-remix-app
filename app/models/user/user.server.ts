@@ -1,23 +1,16 @@
 import { ulid } from 'ulid'
 import { Base, Item } from '../base'
-import { getClient } from 'dynamodb/client'
 import invariant from 'tiny-invariant'
 import {
-	AttributeMap,
-	checkForDBAttributes,
 	createItem,
 	deleteItem,
 	DynamoDBItem,
-	GSIKeyAttributeValue,
 	marshall,
 	PrimaryKeyAttributeValues,
 	query,
 	readItem,
-	unmarshall,
 	updateItem,
 } from 'dynamodb/utils'
-import { UserError } from './errors'
-import { QueryCommand } from '@aws-sdk/client-dynamodb'
 
 export interface User extends Base {
 	readonly userId: string
@@ -28,6 +21,7 @@ export interface User extends Base {
 	image?: string
 }
 
+const EntityType = 'user'
 export class UserItem extends Item {
 	readonly attributes: User
 
@@ -43,7 +37,7 @@ export class UserItem extends Item {
 	static fromItem(item: Record<string, any>): UserItem {
 		invariant(item.Attributes, 'No attributes!')
 		invariant(item.EntityType, 'No entityType!')
-		invariant(item.EntityType === 'user', 'Not a user entityType!')
+		invariant(item.EntityType === EntityType, 'Not a user entityType!')
 		const user = new UserItem(item.Attributes)
 		return user
 	}
@@ -71,7 +65,7 @@ export class UserItem extends Item {
 		userId?: User['userId']
 		email?: User['email']
 		username?: User['username']
-	}): GSIKeyAttributeValue {
+	}) {
 		const user = new UserItem({
 			createdAt: '',
 			updatedAt: '',
@@ -81,11 +75,11 @@ export class UserItem extends Item {
 			name: '',
 			username,
 		})
-		return user.gSIKeys()
+		return user.umarshalledGsiKeys()
 	}
 
 	get entityType(): string {
-		return `user`
+		return EntityType
 	}
 
 	get PK(): `USER#${string}` {
@@ -195,8 +189,8 @@ export const getUserByEmail = async function (
 		IndexName: 'GSI1',
 		KeyConditionExpression: 'GS1PK = :GS1PK AND GS1SK = :GS1SK',
 		ExpressionAttributeValues: {
-			':GS1PK': gSIKeys.GS1PK.S,
-			':GS1SK': gSIKeys.GS1SK.S,
+			':GS1PK': gSIKeys.GS1PK,
+			':GS1SK': gSIKeys.GS1SK,
 		},
 	})
 	if (resp.Items && resp.Count && resp.Count > 0)
@@ -210,13 +204,12 @@ export const getUserByUsername = async function (
 	invariant(gSIKeys.GS2PK, 'Missing GS2PK!')
 	invariant(gSIKeys.GS2SK, 'Missing GlS2SK!')
 
-	// const command = new QueryCommand(params)
 	const resp = await query({
 		IndexName: 'GSI2',
 		KeyConditionExpression: 'GS2PK = :GS2PK AND GS2SK = :GS2SK',
 		ExpressionAttributeValues: {
-			':GS2PK': gSIKeys.GS2PK.S,
-			':GS2SK': gSIKeys.GS2SK.S,
+			':GS2PK': gSIKeys.GS2PK,
+			':GS2SK': gSIKeys.GS2SK,
 		},
 	})
 

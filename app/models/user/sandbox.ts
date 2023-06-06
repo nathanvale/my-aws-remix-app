@@ -8,10 +8,8 @@ import {
 } from './user.server'
 import { setTimeout } from 'timers/promises'
 import os from 'os'
-import { create } from 'domain'
 import {
 	createSession,
-	deleteAllSessions,
 	deleteAllUserSessions,
 	deleteSessions,
 	readSession,
@@ -51,12 +49,17 @@ export async function teardown() {
 	const deletedUser = await deleteUser(createdUser.userId) //?
 	let userByName = await getUserByUsername('test_user') //?
 	let userBrEmail = await getUserByEmail('test@test.com') //?
-	let createdSession = await createSession({
-		expirationDate: new Date(Date.now() + 100000).toISOString(),
-		userId: user.userId,
-	}) //?
-	const sesion = await readSession(createdSession.sessionId) //?
-	const userUpdated = await updateUser({ ...user, name: 'Fuck you!' }) //?
+	if (user) {
+		const userUpdated = await updateUser({
+			...user,
+			name: 'Updated User',
+		}) //?
+		let createdSession = await createSession({
+			expirationDate: new Date(Date.now() + 100000).toISOString(),
+			userId: user.userId,
+		}) //?
+		const sesion = await readSession(createdSession.sessionId) //?
+	}
 
 	// const unprocessed = await deleteAllUserSessions('12345') //?
 	// console.log(unprocessed)
