@@ -16,6 +16,7 @@ import { getDomainUrl } from '~/utils/misc.server'
 import { commitSession, getSession } from '~/utils/session.server'
 import { emailSchema } from '~/utils/user-validation'
 import { getUserByEmail } from '~/models/user/user.server'
+;<div>nfo </div>
 
 export const onboardingEmailSessionKey = 'onboardingToken'
 const onboardingTokenQueryParam = 'token'
@@ -162,7 +163,6 @@ export default function SignupRoute() {
 		onValidate({ formData }) {
 			return parse(formData, { schema: emailFieldSchema })
 		},
-		shouldRevalidate: 'onBlur',
 	})
 
 	return (

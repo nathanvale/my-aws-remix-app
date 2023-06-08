@@ -102,11 +102,11 @@ export const createItem = async (item: AttributeMap) => {
  * @param Key
  * @returns
  */
-export const readItem = async (key: AttributeMap) => {
+export const readItem = async (key: Record<PrimaryKeys, string>) => {
 	const { client, TableName } = await getClient()
 	const command = new GetItemCommand({
 		TableName,
-		Key: key,
+		Key: marshall(key),
 	})
 	const resp = await client.send(command)
 	return resp.Item ? unmarshall<Record<string, any>>(resp.Item) : null
@@ -120,13 +120,13 @@ export const readItem = async (key: AttributeMap) => {
  * @returns
  */
 export const updateItem = async (
-	key: AttributeMap,
+	key: Record<PrimaryKeys, string>,
 	attributes: AttributeValue,
 ) => {
 	const { client, TableName } = await getClient()
 	const command = new UpdateItemCommand({
 		TableName,
-		Key: key,
+		Key: marshall(key),
 		UpdateExpression: 'set Attributes = :val',
 		ConditionExpression: 'attribute_exists(PK)',
 		ExpressionAttributeValues: {
@@ -145,15 +145,14 @@ export const updateItem = async (
  * @param key
  * @returns
  */
-export const deleteItem = async (key: AttributeMap) => {
+export const deleteItem = async (key: Record<PrimaryKeys, string>) => {
 	const { client, TableName } = await getClient()
 	const command = new DeleteItemCommand({
 		TableName,
-		Key: key,
+		Key: marshall(key),
 		ReturnValues: 'ALL_OLD',
 	})
 	const resp = await client.send(command)
-	console.log('core', resp)
 	return resp.Attributes
 		? unmarshall<Record<string, any>>(resp.Attributes)
 		: null
@@ -162,6 +161,7 @@ export const deleteItem = async (key: AttributeMap) => {
 export const query = async (input: Omit<QueryCommandInput, 'TableName'>) => {
 	const { client, TableName } = await getClient()
 	const asd: QueryCommandInput = { TableName, ...input }
+	console.log(asd)
 	const queryCommand = new QueryCommand(asd)
 	return await client.send(queryCommand)
 }
@@ -216,13 +216,14 @@ export const batchWrite = async (
  * @param item
  * @returns
  */
-export const mapToDeleteItem = (
-	item: Record<string, any>,
-): WriteRequestItems => ({
+export const mapToDeleteItem = ({
+	PK,
+	SK,
+}: Record<PrimaryKeys, string>): WriteRequestItems => ({
 	DeleteRequest: {
 		Key: {
-			PK: item.PK,
-			SK: item.SK,
+			PK,
+			SK,
 		},
 	},
 })

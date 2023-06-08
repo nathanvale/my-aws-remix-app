@@ -78,7 +78,7 @@ function createSchema(
 	return onboardingSchema
 }
 
-const OnboardingFormSchema = createSchema({
+const onboardingFormSchema = createSchema({
 	async isUsernameUnique(username: string) {
 		const existingUser = await getUserByUsername(username)
 		return !existingUser
@@ -112,13 +112,7 @@ export async function action({ request }: DataFunctionArgs) {
 
 	const formData = await request.formData()
 	const submission = await parse(formData, {
-		schema: () =>
-			createSchema({
-				async isUsernameUnique(username: string) {
-					const existingUser = await getUserByUsername(username)
-					return !existingUser
-				},
-			}),
+		schema: () => onboardingFormSchema,
 		acceptMultipleErrors: () => true,
 		async: true,
 	})
@@ -170,12 +164,11 @@ export default function OnboardingPage() {
 
 	const [form, fields] = useForm({
 		id: 'onboarding',
-		constraint: getFieldsetConstraint(OnboardingFormSchema),
+		constraint: getFieldsetConstraint(onboardingFormSchema),
 		lastSubmission: actionData?.submission,
 		onValidate({ formData }) {
-			return parse(formData, { schema: OnboardingFormSchema })
+			return parse(formData, { schema: onboardingFormSchema })
 		},
-		shouldRevalidate: 'onBlur',
 	})
 
 	const redirectTo = searchParams.get('redirectTo') || '/'

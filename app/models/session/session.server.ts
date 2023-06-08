@@ -4,7 +4,6 @@ import {
 	batchWrite,
 	createItem,
 	deleteItem,
-	PrimaryKeyAttributeValues,
 	query,
 	readItem,
 	WriteRequestItems,
@@ -13,7 +12,6 @@ import {
 } from 'dynamodb/utils'
 
 import invariant from 'tiny-invariant'
-import { DynamoDBItem, marshall } from '../../../dynamodb/utils'
 import { User } from '../user/user.server'
 
 export interface Session extends Base {
@@ -40,9 +38,7 @@ export class SessionItem extends Item {
 		return session
 	}
 
-	static getPrimaryKeyAttributeValues(
-		sessionId: Session['sessionId'],
-	): PrimaryKeyAttributeValues {
+	static getPrimaryKeys(sessionId: Session['sessionId']) {
 		const session = new SessionItem({
 			createdAt: '',
 			updatedAt: '',
@@ -52,15 +48,7 @@ export class SessionItem extends Item {
 		})
 		return session.keys()
 	}
-	static getGSIAttributeValues({
-		sessionId = '',
-		userId = '',
-		createdAt = '',
-	}: {
-		userId?: Session['userId']
-		sessionId?: Session['sessionId']
-		createdAt?: Session['createdAt']
-	}) {
+	static getGSIKeys({ sessionId = '', userId = '', createdAt = '' }) {
 		const session = new SessionItem({
 			sessionId,
 			createdAt,
@@ -68,7 +56,7 @@ export class SessionItem extends Item {
 			expirationDate: '',
 			updatedAt: '',
 		})
-		return session.umarshalledGsiKeys()
+		return session.gSIKeys()
 	}
 	get entityType(): string {
 		return `session`
@@ -115,17 +103,6 @@ export class SessionItem extends Item {
 			userId: this.attributes.userId,
 		}
 	}
-
-	toDynamoDBItem(): DynamoDBItem {
-		return {
-			...this.keys(),
-			...this.gSIKeys(),
-			EntityType: { S: this.entityType },
-			Attributes: {
-				M: marshall(this.attributes),
-			},
-		}
-	}
 }
 
 export const createSession = async ({
@@ -146,7 +123,7 @@ export const createSession = async ({
 export const readSession = async (
 	sessionId: string,
 ): Promise<Session | null> => {
-	const key = SessionItem.getPrimaryKeyAttributeValues(sessionId)
+	const key = SessionItem.getPrimaryKeys(sessionId)
 	const item = await readItem(key)
 	if (item) return SessionItem.fromItem(item).attributes
 	else return null
@@ -155,7 +132,7 @@ export const readSession = async (
 export const updateSession = async (
 	session: Session,
 ): Promise<Session | null> => {
-	const key = SessionItem.getPrimaryKeyAttributeValues(session.sessionId)
+	const key = SessionItem.getPrimaryKeys(session.sessionId)
 	const sessionItem = new SessionItem({
 		...session,
 		updatedAt: new Date().toISOString(),
@@ -168,7 +145,7 @@ export const updateSession = async (
 export const deleteSession = async (
 	sessionId: Session['sessionId'],
 ): Promise<Session | null> => {
-	const key = SessionItem.getPrimaryKeyAttributeValues(sessionId)
+	const key = SessionItem.getPrimaryKeys(sessionId)
 	const item = await deleteItem(key)
 	if (item) return SessionItem.fromItem(item).attributes
 	else return null
@@ -184,7 +161,9 @@ export const deleteAllUserSessions = async (userId: User['userId']) => {
 		},
 	})
 	const requestItems: WriteRequestItems[] =
-		queryCommandOutput.Items?.map(mapToDeleteItem) || []
+		queryCommandOutput.Items?.map(item =>
+			mapToDeleteItem({ PK: item.PK, SK: item.SK }),
+		) || []
 	return await batchWrite(requestItems)
 }
 
@@ -208,7 +187,9 @@ export const deleteSessions = async (range?: {
 			}),
 		},
 	})
-	const requestItems: WriteRequestItems[] =
-		queryCommandOutput.Items?.map(mapToDeleteItem) || []
+	const requestItems =
+		queryCommandOutput.Items?.map(item =>
+			mapToDeleteItem({ PK: item.PK, SK: item.SK }),
+		) || []
 	return await batchWrite(requestItems)
 }

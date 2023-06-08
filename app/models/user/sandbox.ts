@@ -1,6 +1,6 @@
 import {
 	createUser,
-	deleteUser,
+	deleteUserById,
 	getUserByEmail,
 	getUserByUsername,
 	readUser,
@@ -45,8 +45,9 @@ export async function teardown() {
 ;(async () => {
 	await setup()
 	const user = await readUser('12345') //?
-	const createdUser = await createUser(createUserSeed()) //?
-	const deletedUser = await deleteUser(createdUser.userId) //?
+	const mockUser = createUserSeed() //?
+	const createdUser = await createUser(mockUser) //?
+	const deletedUser = await deleteUserById(createdUser.userId) //?
 	let userByName = await getUserByUsername('test_user') //?
 	let userBrEmail = await getUserByEmail('test@test.com') //?
 	if (user) {
@@ -60,9 +61,10 @@ export async function teardown() {
 		}) //?
 		const sesion = await readSession(createdSession.sessionId) //?
 	}
+	const what = await getUserByUsername('nathanvale') //?
 
-	// const unprocessed = await deleteAllUserSessions('12345') //?
-	// console.log(unprocessed)
+	//const unprocessed = await deleteAllUserSessions('12345') //?
+	//console.log(unprocessed)
 	// await teardown()
 	// console.log(session)
 })()

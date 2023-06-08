@@ -93,7 +93,6 @@ export function InlineLogin({
 		onValidate({ formData }) {
 			return parse(formData, { schema: LoginFormSchema })
 		},
-		shouldRevalidate: 'onBlur',
 	})
 
 	return (

@@ -139,6 +139,7 @@ export async function verifyLogin(
 	password: User['password'],
 ) {
 	const userWithPassword = await getUserByUsername(username)
+	console.log(userWithPassword)
 	if (!userWithPassword || !userWithPassword.password) {
 		return null
 	}

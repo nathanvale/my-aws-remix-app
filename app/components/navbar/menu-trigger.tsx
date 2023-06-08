@@ -4,7 +4,10 @@ import { useOptionalUser } from '~/utils'
 
 export const getInitials = (name: string) => {
 	const [first, last] = name.split(' ')
-	return `${first[0]}${last[0]}`.toLocaleUpperCase()
+	if (last) {
+		return `${first[0]}${last[0]}`.toLocaleUpperCase()
+	}
+	return first[0].toLocaleUpperCase()
 }
 
 export const MenuTrigger = React.forwardRef<

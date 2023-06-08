@@ -4,6 +4,7 @@ export const usernameSchema = z
 	.string()
 	.min(3, { message: 'Username is too short' })
 	.max(20, { message: 'Username is too long' })
+	.regex(/^[^@]*$/, 'Username can not contain "@"')
 export const passwordSchema = z
 	.string()
 	.min(6, { message: 'Password is too short' })
@@ -12,6 +13,10 @@ export const nameSchema = z
 	.string()
 	.min(3, { message: 'Name is too short' })
 	.max(40, { message: 'Name is too long' })
+	.refine(value => {
+		const parts = value.split(' ')
+		return parts.length > 1
+	}, 'Name must be your full name')
 export const emailSchema = z
 	.string()
 	.email({ message: 'Email is invalid' })

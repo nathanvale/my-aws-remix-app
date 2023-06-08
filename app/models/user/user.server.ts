@@ -2,11 +2,10 @@ import { ulid } from 'ulid'
 import { Base, Item } from '../base'
 import invariant from 'tiny-invariant'
 import {
+	batchWrite,
 	createItem,
 	deleteItem,
-	DynamoDBItem,
-	marshall,
-	PrimaryKeyAttributeValues,
+	mapToDeleteItem,
 	query,
 	readItem,
 	updateItem,
@@ -42,9 +41,7 @@ export class UserItem extends Item {
 		return user
 	}
 
-	static getPrimaryKeyAttributeValues(
-		userId: User['userId'],
-	): PrimaryKeyAttributeValues {
+	static getPrimaryKeys(userId: User['userId']) {
 		const user = new UserItem({
 			createdAt: '',
 			updatedAt: '',
@@ -57,15 +54,7 @@ export class UserItem extends Item {
 		return user.keys()
 	}
 
-	static getGSIAttributeValues({
-		email = '',
-		userId = '',
-		username = '',
-	}: {
-		userId?: User['userId']
-		email?: User['email']
-		username?: User['username']
-	}) {
+	static getGSIKeys({ email = '', userId = '', username = '' }) {
 		const user = new UserItem({
 			createdAt: '',
 			updatedAt: '',
@@ -75,7 +64,7 @@ export class UserItem extends Item {
 			name: '',
 			username,
 		})
-		return user.umarshalledGsiKeys()
+		return user.gSIKeys()
 	}
 
 	get entityType(): string {
@@ -125,17 +114,6 @@ export class UserItem extends Item {
 			username: this.attributes.username,
 		}
 	}
-
-	toDynamoDBItem(): DynamoDBItem {
-		return {
-			...this.keys(),
-			...this.gSIKeys(),
-			EntityType: { S: this.entityType },
-			Attributes: {
-				M: marshall(this.attributes),
-			},
-		}
-	}
 }
 
 export const createUser = async (
@@ -152,14 +130,14 @@ export const createUser = async (
 }
 
 export const readUser = async (userId: string): Promise<User | null> => {
-	const key = UserItem.getPrimaryKeyAttributeValues(userId)
+	const key = UserItem.getPrimaryKeys(userId)
 	const item = await readItem(key)
 	if (item) return UserItem.fromItem(item).attributes
 	else return null
 }
 
 export const updateUser = async (user: User): Promise<User | null> => {
-	const key = UserItem.getPrimaryKeyAttributeValues(user.userId)
+	const key = UserItem.getPrimaryKeys(user.userId)
 	const userItem = new UserItem({
 		...user,
 		updatedAt: new Date().toISOString(),
@@ -169,10 +147,20 @@ export const updateUser = async (user: User): Promise<User | null> => {
 	else return null
 }
 
-export const deleteUser = async (
+export const deleteUserById = async (
 	userId: User['userId'],
 ): Promise<User | null> => {
-	const key = UserItem.getPrimaryKeyAttributeValues(userId)
+	const key = UserItem.getPrimaryKeys(userId)
+	const item = await deleteItem(key)
+	if (item) return UserItem.fromItem(item).attributes
+	else return null
+}
+export const deleteUserByUsername = async (
+	userName: User['username'],
+): Promise<User | null> => {
+	const user = await getUserByUsername(userName)
+	if (!user) return null
+	const key = UserItem.getPrimaryKeys(user?.userId)
 	const item = await deleteItem(key)
 	if (item) return UserItem.fromItem(item).attributes
 	else return null
@@ -181,10 +169,7 @@ export const deleteUser = async (
 export const getUserByEmail = async function (
 	email: User['email'],
 ): Promise<User | null> {
-	const gSIKeys = UserItem.getGSIAttributeValues({ email })
-	invariant(gSIKeys.GS1PK, 'Missing GS1PK!')
-	invariant(gSIKeys.GS1SK, 'Missing GlS1SK!')
-
+	const gSIKeys = UserItem.getGSIKeys({ email })
 	const resp = await query({
 		IndexName: 'GSI1',
 		KeyConditionExpression: 'GS1PK = :GS1PK AND GS1SK = :GS1SK',
@@ -200,10 +185,8 @@ export const getUserByEmail = async function (
 export const getUserByUsername = async function (
 	username: User['username'],
 ): Promise<User | null> {
-	const gSIKeys = UserItem.getGSIAttributeValues({ username })
-	invariant(gSIKeys.GS2PK, 'Missing GS2PK!')
-	invariant(gSIKeys.GS2SK, 'Missing GlS2SK!')
-
+	const gSIKeys = UserItem.getGSIKeys({ username })
+	console.log(JSON.stringify(gSIKeys))
 	const resp = await query({
 		IndexName: 'GSI2',
 		KeyConditionExpression: 'GS2PK = :GS2PK AND GS2SK = :GS2SK',
@@ -216,4 +199,10 @@ export const getUserByUsername = async function (
 	if (resp.Items && resp.Count && resp.Count > 0)
 		return resp.Items.map(item => UserItem.fromItem(item))[0].attributes
 	else return null
+}
+export const deleteManyUsers = async (userIds: User['userId'][]) => {
+	const deleteRequests = userIds.map(userId => {
+		return mapToDeleteItem(UserItem.getPrimaryKeys(userId))
+	})
+	return await batchWrite(deleteRequests)
 }

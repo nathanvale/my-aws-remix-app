@@ -1,8 +1,10 @@
-import { unmarshall } from '@aws-sdk/util-dynamodb'
+import { marshall } from '@aws-sdk/util-dynamodb'
 import {
+	DynamoDBItem,
 	GSIKeyAttributeValue,
 	GSIKeys,
 	PrimaryKeyAttributeValues,
+	PrimaryKeys,
 } from 'dynamodb/utils'
 
 export interface Base {
@@ -10,6 +12,7 @@ export interface Base {
 	readonly updatedAt: string
 }
 export abstract class Item {
+	abstract get attributes(): Base
 	abstract get PK(): string
 	abstract get SK(): string
 	abstract get GS1PK(): string | undefined
@@ -19,42 +22,54 @@ export abstract class Item {
 	abstract get GS3PK(): string | undefined
 	abstract get GS3SK(): string | undefined
 	abstract get entityType(): string
-	abstract toDynamoDBItem(): Record<string, unknown>
+
 	abstract toItem(): Record<string, any>
 
-	public keys(): PrimaryKeyAttributeValues {
+	public keys(): Record<PrimaryKeys, string> {
 		return {
-			PK: { S: this.PK },
-			SK: { S: this.SK },
+			PK: this.PK,
+			SK: this.SK,
 		}
 	}
-
-	public gSIKeys(): GSIKeyAttributeValue {
-		const gsiKeys: GSIKeyAttributeValue = {}
-
-		if (this.GS1PK) {
-			gsiKeys.GS1PK = { S: this.GS1PK }
+	public marshalledKeys(): PrimaryKeyAttributeValues {
+		return marshall(this.keys()) as PrimaryKeyAttributeValues
+	}
+	public gSIKeys(): Record<GSIKeys, string | undefined> {
+		const gsiKeys = {
+			GS1PK: this.GS1PK,
+			GS1SK: this.GS1SK,
+			GS2PK: this.GS2PK,
+			GS2SK: this.GS2SK,
+			GS3PK: this.GS3PK,
+			GS3SK: this.GS3SK,
 		}
-		if (this.GS1SK) {
-			gsiKeys.GS1SK = { S: this.GS1SK }
-		}
-		if (this.GS2PK) {
-			gsiKeys.GS2PK = { S: this.GS2PK }
-		}
-		if (this.GS2SK) {
-			gsiKeys.GS2SK = { S: this.GS2SK }
-		}
-		if (this.GS3PK) {
-			gsiKeys.GS3PK = { S: this.GS3PK }
-		}
-		if (this.GS3SK) {
-			gsiKeys.GS3SK = { S: this.GS3SK }
-		}
-
 		return gsiKeys
 	}
 
-	public umarshalledGsiKeys(): Record<GSIKeys, string> {
-		return unmarshall(this.gSIKeys())
+	public marshalledGsiKeys(): GSIKeyAttributeValue {
+		return marshall(this.gSIKeys()) as GSIKeyAttributeValue
+	}
+
+	public toDynamoDBItem(): DynamoDBItem {
+		//We dont want to send undefined gsi entries to AWS
+		const refinedGsiKeys = Object.fromEntries(
+			Object.entries(this.gSIKeys()).filter(
+				([_, value]) => value !== undefined,
+			),
+		)
+
+		const marshalledKeys = marshall(this.keys()) as GSIKeyAttributeValue
+		const marshalledGsiKeys = marshall(
+			refinedGsiKeys,
+		) as PrimaryKeyAttributeValues
+
+		return {
+			...marshalledKeys,
+			...marshalledGsiKeys,
+			EntityType: { S: this.entityType },
+			Attributes: {
+				M: marshall(this.attributes),
+			},
+		}
 	}
 }
