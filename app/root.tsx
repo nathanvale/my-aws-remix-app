@@ -17,12 +17,12 @@ import {
 } from '@remix-run/react'
 
 import tailwindStylesheetUrl from './styles/tailwind.css'
-import { GeneralErrorBoundary } from './components/error-boundary'
-import { Container } from './components/container'
-import { Navbar } from './components/navbar/navbar'
-import { readUser } from './models/user/user.server'
-import { authenticator, getUserId } from './utils/auth.server'
-import { getEnv } from './utils/env.server'
+import { GeneralErrorBoundary } from './components/error-boundary.tsx'
+import { Container } from './components/container.tsx'
+import { Navbar } from './components/navbar/navbar.tsx'
+import { readUser } from './models/user/user.server.ts'
+import { authenticator, getUserId } from './utils/auth.server.ts'
+import { getEnv } from './utils/env.server.ts'
 
 export const links: LinksFunction = () => {
 	return [

@@ -1,8 +1,8 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import { faker } from '@faker-js/faker'
-import { expect, insertNewUser, test } from '../playwright-utils'
-import { createMockUser } from '../../tests/db-utils'
-import { verifyLogin } from '~/utils/auth.server'
+import { expect, insertNewUser, test } from '../playwright-utils.ts'
+import { createMockUser } from '../../tests/db-utils.ts'
+import { verifyLogin } from '~/utils/auth.server.ts'
 
 test.skip('Users can update their basic info', async ({ login, page }) => {
 	await login()
@@ -49,7 +49,7 @@ test.skip('Users can update their password', async ({ login, page }) => {
 	expect(
 		await verifyLogin(user.username, newPassword),
 		'New password does not work',
-	).toEqual({ id: user.id })
+	).toEqual({ id: user.userId })
 })
 
 test.skip('Users can update their profile photo', async ({ login, page }) => {

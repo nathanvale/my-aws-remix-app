@@ -1,4 +1,4 @@
-import type { DataModel, TableData } from './types'
+import type { DataModel, TableData } from './types.ts'
 
 export function getEmptyDataModel(tableData: TableData) {
 	// Get current date and time

@@ -1,5 +1,5 @@
 import { ulid } from 'ulid'
-import { Base, Item } from '../base'
+import { Base, Item } from '../base.ts'
 import {
 	batchWrite,
 	createItem,
@@ -9,10 +9,10 @@ import {
 	WriteRequestItems,
 	updateItem,
 	mapToDeleteItem,
-} from 'dynamodb/utils'
+} from 'dynamodb/utils.ts'
 
 import invariant from 'tiny-invariant'
-import { User } from '../user/user.server'
+import { User } from '../user/user.server.ts'
 
 export interface Session extends Base {
 	readonly sessionId: string

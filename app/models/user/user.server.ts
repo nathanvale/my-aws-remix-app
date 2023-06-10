@@ -1,5 +1,5 @@
 import { ulid } from 'ulid'
-import { Base, Item } from '../base'
+import { Base, Item } from '../base.ts'
 import invariant from 'tiny-invariant'
 import {
 	batchWrite,
@@ -9,7 +9,7 @@ import {
 	query,
 	readItem,
 	updateItem,
-} from 'dynamodb/utils'
+} from 'dynamodb/utils.ts'
 
 export interface User extends Base {
 	readonly userId: string

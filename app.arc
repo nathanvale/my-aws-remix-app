@@ -1,5 +1,8 @@
 @app
-my-aws-remix
+my-aws-remix-app-d2df
+
+@sandbox
+seed-data  ./sandbox-seed.cjs
 
 @http
 /*

@@ -8,13 +8,13 @@ import {
 	getUserByUsername,
 	updateUser,
 	type User,
-} from '~/models/user/user.server'
-import { sessionStorage } from './session.server'
+} from '~/models/user/user.server.ts'
+import { sessionStorage } from './session.server.ts'
 import {
 	createSession,
 	deleteAllUserSessions,
 	readSession,
-} from '~/models/session/session.server'
+} from '~/models/session/session.server.ts'
 
 export type { User }
 

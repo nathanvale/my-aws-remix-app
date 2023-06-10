@@ -1,8 +1,8 @@
 import React from 'react'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import { MenuContent } from './menu-content'
-import { MenuTrigger } from './menu-trigger'
-import clsx from 'clsx'
+import { MenuContent } from './menu-content.tsx'
+import { MenuTrigger } from './menu-trigger.tsx'
+import { clsx } from 'clsx'
 import { Form, Link, useSubmit } from '@remix-run/react'
 
 interface MenuProps {

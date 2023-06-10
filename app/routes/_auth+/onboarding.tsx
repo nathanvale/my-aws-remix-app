@@ -15,19 +15,19 @@ import {
 	useSearchParams,
 } from '@remix-run/react'
 import { z } from 'zod'
-import { Spacer } from '~/components/spacer'
-import { authenticator, requireAnonymous, signup } from '~/utils/auth.server'
-import { Button, CheckboxField, ErrorList, Field } from '~/utils/forms'
-import { safeRedirect } from '~/utils/misc'
-import { commitSession, getSession } from '~/utils/session.server'
+import { Spacer } from '~/components/spacer.tsx'
+import { authenticator, requireAnonymous, signup } from '~/utils/auth.server.ts'
+import { Button, CheckboxField, ErrorList, Field } from '~/utils/forms.tsx'
+import { safeRedirect } from '~/utils/misc.ts'
+import { commitSession, getSession } from '~/utils/session.server.ts'
 import {
 	nameSchema,
 	passwordSchema,
 	usernameSchema,
-} from '~/utils/user-validation'
-import { checkboxSchema } from '~/utils/zod-extensions'
-import { onboardingEmailSessionKey } from './signup'
-import { getUserByUsername } from '~/models/user/user.server'
+} from '~/utils/user-validation.ts'
+import { checkboxSchema } from '~/utils/zod-extensions.ts'
+import { onboardingEmailSessionKey } from './signup.tsx'
+import { getUserByUsername } from '~/models/user/user.server.ts'
 
 function createSchema(
 	constraints: {

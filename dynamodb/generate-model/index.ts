@@ -1,11 +1,11 @@
 import fs from 'fs'
-import { UserItem } from '~/models/user/user.server'
-import type { TableData } from './types'
-import { getEmptyDataModel } from './utils'
+import { UserItem } from '~/models/user/user.server.ts'
+import type { TableData } from './types.ts'
+import { getEmptyDataModel } from './utils.ts'
 
-import { TEST_USER_ID, TEST_SESSION_ID } from 'dynamodb/db-test-helpers'
+import { TEST_USER_ID, TEST_SESSION_ID } from 'dynamodb/db-test-helpers.ts'
 
-import { SessionItem } from '~/models/session/session.server'
+import { SessionItem } from '~/models/session/session.server.ts'
 
 export async function main() {
 	const testUser = new UserItem({

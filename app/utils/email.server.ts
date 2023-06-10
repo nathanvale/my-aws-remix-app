@@ -1,5 +1,3 @@
-const fetch = require('node-fetch')
-
 export async function sendEmail(email: {
 	to: string
 	subject: string

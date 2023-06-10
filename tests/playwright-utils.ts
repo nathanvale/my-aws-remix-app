@@ -1,15 +1,15 @@
 import { test as base, type Page } from '@playwright/test'
 import { parse } from 'cookie'
-import { authenticator, getPasswordHash } from '~/utils/auth.server'
-import { commitSession, getSession } from '~/utils/session.server'
-import { createMockUser } from './db-utils'
+import { authenticator, getPasswordHash } from '~/utils/auth.server.ts'
+import { commitSession, getSession } from '~/utils/session.server.ts'
+import { createMockUser } from './db-utils.ts'
 import {
 	createUser,
 	deleteManyUsers,
 	deleteUserByUsername,
 	readUser,
-} from '~/models/user/user.server'
-import { createSession } from '~/models/session/session.server'
+} from '~/models/user/user.server.ts'
+import { createSession } from '~/models/session/session.server.ts'
 export const dataCleanup = {
 	users: new Set<string>(),
 }

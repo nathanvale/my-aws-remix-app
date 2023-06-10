@@ -2,7 +2,7 @@ import {
 	marshall,
 	unmarshall,
 	checkForDBAttributes,
-} from '../../../dynamodb/utils'
+} from '../../../dynamodb/utils.ts'
 
 describe('marshall', () => {
 	test('should convert a JavaScript object into a DynamoDB record', () => {

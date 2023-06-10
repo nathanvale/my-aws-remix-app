@@ -1,4 +1,4 @@
-import { SvgLogo } from './svg-logo'
+import { SvgLogo } from './svg-logo.tsx'
 
 export const Logo = () => {
 	return (

@@ -1,7 +1,9 @@
 import { setTimeout } from 'timers/promises'
 import os from 'os'
+import util from 'util'
+// eslint-disable-next-line import/no-commonjs
 const sandbox = require('@architect/sandbox')
-const util = require('util')
+// eslint-disable-next-line import/no-commonjs
 const exec = util.promisify(require('child_process').exec)
 
 function isMacOs() {
