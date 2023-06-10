@@ -1,8 +1,8 @@
 import { useMatches } from '@remix-run/react'
 import { useMemo } from 'react'
 
-import type { User } from '~/models/user/user.server'
-import { AppError, APP_ERROR_MESSAGES } from './errors'
+import type { User } from '~/models/user/user.server.ts'
+import { AppError, APP_ERROR_MESSAGES } from './errors.ts'
 
 export const DEFAULT_REDIRECT = '/'
 

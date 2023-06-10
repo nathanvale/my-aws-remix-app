@@ -149,7 +149,7 @@ auto-complete. To run type checking across the whole project, run
 
 ### Linting
 
-This project uses ESLint for linting. That is configured in `.eslintrc.js`.
+This project uses ESLint for linting. That is configured in `.eslintrc.cjs`.
 
 ### Formatting
 

@@ -20,7 +20,7 @@ import type { NativeAttributeValue } from '@aws-sdk/util-dynamodb'
 import type { PutRequest, DeleteRequest } from '@aws-sdk/client-dynamodb'
 
 import invariant from 'tiny-invariant'
-import { getClient } from './client'
+import { getClient } from './client.ts'
 import { setTimeout } from 'timers/promises'
 
 /**

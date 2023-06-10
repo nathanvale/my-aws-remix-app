@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import bcrypt from 'bcryptjs'
-import { memoizeUnique } from './memoize-unique'
+import { memoizeUnique } from './memoize-unique.ts'
 
 const unique = memoizeUnique(faker.internet.userName)
 
@@ -19,7 +19,9 @@ export function createMockUser() {
 	}
 }
 
-export function createMockPassword(username: string = faker.internet.userName()) {
+export function createMockPassword(
+	username: string = faker.internet.userName(),
+) {
 	return {
 		hash: bcrypt.hashSync(username, 10),
 	}

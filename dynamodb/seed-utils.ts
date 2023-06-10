@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import type { User } from '~/models/user/user.server'
+import type { User } from '~/models/user/user.server.ts'
 
 function getDates() {
 	const today = new Date()

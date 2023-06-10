@@ -1,3 +1,4 @@
+/* eslint-disable import/no-commonjs */
 import {
 	createUser,
 	deleteUserById,
@@ -5,7 +6,7 @@ import {
 	getUserByUsername,
 	readUser,
 	updateUser,
-} from './user.server'
+} from './user.server.ts'
 import { setTimeout } from 'timers/promises'
 import os from 'os'
 import {
@@ -13,8 +14,8 @@ import {
 	deleteAllUserSessions,
 	deleteSessions,
 	readSession,
-} from '../session/session.server'
-import { createUserSeed } from 'dynamodb/seed-utils'
+} from '../session/session.server.ts'
+import { createUserSeed } from 'dynamodb/seed-utils.ts'
 const sandbox = require('@architect/sandbox')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)

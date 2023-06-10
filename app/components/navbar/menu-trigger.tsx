@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import React from 'react'
-import { useOptionalUser } from '~/utils'
+import { useOptionalUser } from '~/utils.ts'
 
 export const getInitials = (name: string) => {
 	const [first, last] = name.split(' ')

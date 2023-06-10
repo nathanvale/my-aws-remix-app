@@ -1,12 +1,12 @@
-import type { User } from '~/models/user/user.server'
-import { Container } from '../container'
-import { Logo } from './logo'
-import { Menu } from './menu'
+import type { User } from '~/models/user/user.server.ts'
+import { Container } from '../container.tsx'
+import { Logo } from './logo.tsx'
+import { Menu } from './menu.tsx'
 import React from 'react'
 
 import { clsx } from 'clsx'
-import { menuContentAnimation } from './menu-content'
-import { ButtonLink } from '~/utils/forms'
+import { menuContentAnimation } from './menu-content.tsx'
+import { ButtonLink } from '~/utils/forms.tsx'
 import { Link, useLocation } from '@remix-run/react'
 interface NavbarProps {
 	user?: User | null

@@ -1,5 +1,5 @@
-import { AppError, BaseError, ServerError } from './errors'
-import * as log from './models/log'
+import { AppError, BaseError, ServerError } from './errors.ts'
+import * as log from './models/log.ts'
 
 beforeEach(() => {
 	vi.restoreAllMocks()
