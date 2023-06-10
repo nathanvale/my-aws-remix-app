@@ -1,5 +1,5 @@
 @app
-my-aws-remix
+my-aws-remix-app-d2df
 
 @http
 /*
