@@ -5,7 +5,9 @@
 	"type": "module",
 	"scripts": {
 		"build": "remix build",
-		"dev": "remix dev -c \"node ./server/dev-server.js\" --no-restart",
+		"dev": "cross-env MOCKS=true run-p dev:*",
+		"dev:arc": "tsx ./dev sandbox",
+		"dev:remix": "remix watch",
 		"dynamolocaldb": "cross-env ARC_TABLES_PORT=8000 ARC_DB_EXTERNAL=true run-p docker:up dev:*",
 		"docker:up": "docker compose up",
 		"format": "prettier --write .",
